@@ -17,6 +17,14 @@ module Mailgunner
       @http.use_ssl = true
     end
 
+    def get_unsubscribes(params = {})
+      get("/v2/#{escape @domain}/unsubscribes", params)
+    end
+
+    def get_unsubscribe(address)
+      get("/v2/#{escape @domain}/unsubscribes/#{escape address}")
+    end
+
     def get_stats(params = {})
       get("/v2/#{escape @domain}/stats", params)
     end

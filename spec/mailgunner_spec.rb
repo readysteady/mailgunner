@@ -33,6 +33,28 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_unsubscribes method' do
+    it 'fetches the domain unsubscribes resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes")
+
+      @client.get_unsubscribes.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes?skip=1&limit=2")
+
+      @client.get_unsubscribes(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_unsubscribe method' do
+    it 'fetches the unsubscribe resource with the given address and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes/ev%40mailgun.net")
+
+      @client.get_unsubscribe('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
   describe 'get_stats method' do
     it 'fetches the domain stats resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/stats")
