@@ -96,33 +96,27 @@ module Mailgunner
     private
 
     def get(path, params = {})
-      get_request = Net::HTTP::Get.new(request_uri(path, params))
-      get_request.basic_auth('api', @api_key)
-
-      Response.new(@http.request(get_request))
+      transmit(Net::HTTP::Get, request_uri(path, params))
     end
 
     def post(path, attributes = {})
-      post_request = Net::HTTP::Post.new(path)
-      post_request.basic_auth('api', @api_key)
-      post_request.body = URI.encode_www_form(attributes)
-
-      Response.new(@http.request(post_request))
+      transmit(Net::HTTP::Post, path, attributes)
     end
 
     def put(path, attributes = {})
-      put_request = Net::HTTP::Put.new(path)
-      put_request.basic_auth('api', @api_key)
-      put_request.body = URI.encode_www_form(attributes)
-
-      Response.new(@http.request(put_request))
+      transmit(Net::HTTP::Put, path, attributes)
     end
 
     def delete(path)
-      delete_request = Net::HTTP::Delete.new(path)
-      delete_request.basic_auth('api', @api_key)
+      transmit(Net::HTTP::Delete, path)
+    end
 
-      Response.new(@http.request(delete_request))
+    def transmit(subclass, path, attributes = nil)
+      message = subclass.new(path)
+      message.basic_auth('api', @api_key)
+      message.body = URI.encode_www_form(attributes) if attributes
+
+      Response.new(@http.request(message))
     end
 
     def request_uri(path, params_hash)
