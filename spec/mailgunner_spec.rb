@@ -70,10 +70,54 @@ describe 'Mailgunner::Client' do
       @client.add_unsubscribe({}).must_be_instance_of(Mailgunner::Response)
     end
 
-    it 'encodes the route attributes' do
+    it 'encodes the unsubscribe attributes' do
       expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes", responds_with(:body, 'address=ev%40mailgun.net'))
 
       @client.add_unsubscribe({address: 'ev@mailgun.net'})
+    end
+  end
+
+  describe 'get_complaints method' do
+    it 'fetches the domain complaints resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/complaints")
+
+      @client.get_complaints.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/complaints?skip=1&limit=2")
+
+      @client.get_complaints(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_complaint method' do
+    it 'fetches the complaint resource with the given address and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/complaints/romanto%40profista.com")
+
+      @client.get_complaint('romanto@profista.com').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_complaint method' do
+    it 'posts to the domain complaints resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/complaints")
+
+      @client.add_complaint({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the complaint attributes' do
+      expect(Net::HTTP::Post, "/v2/#@domain/complaints", responds_with(:body, 'address=ev%40mailgun.net'))
+
+      @client.add_complaint({address: 'ev@mailgun.net'})
+    end
+  end
+
+  describe 'delete_complaint method' do
+    it 'deletes the domain complaint resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/#@domain/complaints/romanto%40profista.com")
+
+      @client.delete_complaint('romanto@profista.com').must_be_instance_of(Mailgunner::Response)
     end
   end
 

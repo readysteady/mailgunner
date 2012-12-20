@@ -33,6 +33,22 @@ module Mailgunner
       post("/v2/#{escape @domain}/unsubscribes", attributes)
     end
 
+    def get_complaints(params = {})
+      get("/v2/#{escape @domain}/complaints", params)
+    end
+
+    def get_complaint(address)
+      get("/v2/#{escape @domain}/complaints/#{escape address}")
+    end
+
+    def add_complaint(attributes = {})
+      post("/v2/#{escape @domain}/complaints", attributes)
+    end
+
+    def delete_complaint(address)
+      delete("/v2/#{escape @domain}/complaints/#{escape address}")
+    end
+
     def get_stats(params = {})
       get("/v2/#{escape @domain}/stats", params)
     end
