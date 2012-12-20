@@ -49,6 +49,22 @@ module Mailgunner
       delete("/v2/#{escape @domain}/complaints/#{escape address}")
     end
 
+    def get_bounces(params = {})
+      get("/v2/#{escape @domain}/bounces", params)
+    end
+
+    def get_bounce(address)
+      get("/v2/#{escape @domain}/bounces/#{escape address}")
+    end
+
+    def add_bounce(attributes = {})
+      post("/v2/#{escape @domain}/bounces", attributes)
+    end
+
+    def delete_bounce(address)
+      delete("/v2/#{escape @domain}/bounces/#{escape address}")
+    end
+
     def get_stats(params = {})
       get("/v2/#{escape @domain}/stats", params)
     end

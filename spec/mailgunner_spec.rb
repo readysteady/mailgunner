@@ -121,6 +121,50 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_bounces method' do
+    it 'fetches the domain bounces resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/bounces")
+
+      @client.get_bounces.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/bounces?skip=1&limit=2")
+
+      @client.get_bounces(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_bounce method' do
+    it 'fetches the bounce resource with the given address and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/bounces/foo%40bar.com")
+
+      @client.get_bounce('foo@bar.com').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_bounce method' do
+    it 'posts to the domain bounces resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/bounces")
+
+      @client.add_bounce({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the bounce attributes' do
+      expect(Net::HTTP::Post, "/v2/#@domain/bounces", responds_with(:body, 'address=ev%40mailgun.net'))
+
+      @client.add_bounce({address: 'ev@mailgun.net'})
+    end
+  end
+
+  describe 'delete_bounce method' do
+    it 'deletes the domain bounce resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/#@domain/bounces/ev%40mailgun.net")
+
+      @client.delete_bounce('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
   describe 'get_stats method' do
     it 'fetches the domain stats resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/stats")
