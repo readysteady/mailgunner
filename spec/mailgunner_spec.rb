@@ -55,6 +55,28 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'delete_unsubscribe method' do
+    it 'deletes the domain unsubscribe resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/#@domain/unsubscribes/ev%40mailgun.net")
+
+      @client.delete_unsubscribe('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_unsubscribe method' do
+    it 'posts to the domain unsubscribes resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes")
+
+      @client.add_unsubscribe({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the route attributes' do
+      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes", responds_with(:body, 'address=ev%40mailgun.net'))
+
+      @client.add_unsubscribe({address: 'ev@mailgun.net'})
+    end
+  end
+
   describe 'get_stats method' do
     it 'fetches the domain stats resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/stats")

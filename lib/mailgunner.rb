@@ -25,6 +25,14 @@ module Mailgunner
       get("/v2/#{escape @domain}/unsubscribes/#{escape address}")
     end
 
+    def delete_unsubscribe(address_or_id)
+      delete("/v2/#{escape @domain}/unsubscribes/#{escape address_or_id}")
+    end
+
+    def add_unsubscribe(attributes = {})
+      post("/v2/#{escape @domain}/unsubscribes", attributes)
+    end
+
     def get_stats(params = {})
       get("/v2/#{escape @domain}/stats", params)
     end
@@ -60,6 +68,13 @@ module Mailgunner
       post_request.body = URI.encode_www_form(attributes)
 
       Response.new(@http.request(post_request))
+    end
+
+    def delete(path)
+      delete_request = Net::HTTP::Delete.new(path)
+      delete_request.basic_auth('api', @api_key)
+
+      Response.new(@http.request(delete_request))
     end
 
     def request_uri(path, params_hash)
