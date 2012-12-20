@@ -93,6 +93,22 @@ module Mailgunner
       delete("/v2/routes/#{escape id}")
     end
 
+    def get_mailboxes(params = {})
+      get("/v2/#{escape @domain}/mailboxes", params)
+    end
+
+    def add_mailbox(attributes = {})
+      post("/v2/#{escape @domain}/mailboxes", attributes)
+    end
+
+    def update_mailbox(name, attributes = {})
+      put("/v2/#{escape @domain}/mailboxes/#{escape name}", attributes)
+    end
+
+    def delete_mailbox(name)
+      delete("/v2/#{escape @domain}/mailboxes/#{escape name}")
+    end
+
     private
 
     def get(path, params = {})

@@ -260,6 +260,56 @@ describe 'Mailgunner::Client' do
       @client.delete_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
     end
   end
+
+  describe 'get_mailboxes method' do
+    it 'fetches the domain mailboxes resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/mailboxes")
+
+      @client.get_mailboxes.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/mailboxes?skip=1&limit=2")
+
+      @client.get_mailboxes(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'add_mailbox method' do
+    it 'posts to the domain mailboxes resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/mailboxes")
+
+      @client.add_mailbox({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the mailbox attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, 'mailbox=user'))
+
+      @client.add_mailbox({mailbox: 'user'})
+    end
+  end
+
+  describe 'update_mailbox method' do
+    it 'posts to the domain mailbox resource and returns a response object' do
+      expect(Net::HTTP::Put, "/v2/#@domain/mailboxes/user")
+
+      @client.update_mailbox('user', {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the mailbox attributes' do
+      expect(Net::HTTP::Put, responds_with(:body, 'password=secret'))
+
+      @client.update_mailbox('user', {password: 'secret'})
+    end
+  end
+
+  describe 'delete_mailbox method' do
+    it 'deletes the domain mailbox resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/#@domain/mailboxes/user")
+
+      @client.delete_mailbox('user').must_be_instance_of(Mailgunner::Response)
+    end
+  end
 end
 
 describe 'Mailgunner::Response' do
