@@ -85,6 +85,10 @@ module Mailgunner
       post('/v2/routes', attributes)
     end
 
+    def update_route(id, attributes = {})
+      put("/v2/routes/#{escape id}", attributes)
+    end
+
     def delete_route(id)
       delete("/v2/routes/#{escape id}")
     end
@@ -104,6 +108,14 @@ module Mailgunner
       post_request.body = URI.encode_www_form(attributes)
 
       Response.new(@http.request(post_request))
+    end
+
+    def put(path, attributes = {})
+      put_request = Net::HTTP::Put.new(path)
+      put_request.basic_auth('api', @api_key)
+      put_request.body = URI.encode_www_form(attributes)
+
+      Response.new(@http.request(put_request))
     end
 
     def delete(path)

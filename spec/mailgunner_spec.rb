@@ -239,6 +239,20 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'update_route method' do
+    it 'updates the route resource with the given id and returns a response object' do
+      expect(Net::HTTP::Put, '/v2/routes/4f3bad2335335426750048c6')
+
+      @client.update_route('4f3bad2335335426750048c6', {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the route attributes' do
+      expect(Net::HTTP::Put, '/v2/routes/4f3bad2335335426750048c6', responds_with(:body, 'priority=10'))
+
+      @client.update_route('4f3bad2335335426750048c6', {priority: 10})
+    end
+  end
+
   describe 'delete_route method' do
     it 'deletes the route resource with the given id and returns a response object' do
       expect(Net::HTTP::Delete, '/v2/routes/4f3bad2335335426750048c6')
