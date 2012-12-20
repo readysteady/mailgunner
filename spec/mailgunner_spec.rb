@@ -62,6 +62,28 @@ describe 'Mailgunner::Client' do
       @client.get_log(skip: 1, limit: 2)
     end
   end
+
+  describe 'get_routes method' do
+    it 'fetches the global routes resource and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/routes')
+
+      @client.get_routes.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, '/v2/routes?skip=1&limit=2')
+
+      @client.get_routes(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_route method' do
+    it 'fetches the route resource with the given id and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/routes/4f3bad2335335426750048c6')
+
+      @client.get_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
+    end
+  end
 end
 
 describe 'Mailgunner::Response' do

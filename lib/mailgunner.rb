@@ -24,6 +24,14 @@ module Mailgunner
       get("/v2/#{escape @domain}/log", params)
     end
 
+    def get_routes(params = {})
+      get('/v2/routes', params)
+    end
+
+    def get_route(id)
+      get("/v2/routes/#{escape id}")
+    end
+
     private
 
     def get(path, params = {})
