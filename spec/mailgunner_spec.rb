@@ -238,6 +238,14 @@ describe 'Mailgunner::Client' do
       @client.add_route({description: 'Example route', priority: 1})
     end
   end
+
+  describe 'delete_route method' do
+    it 'deletes the route resource with the given id and returns a response object' do
+      expect(Net::HTTP::Delete, '/v2/routes/4f3bad2335335426750048c6')
+
+      @client.delete_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
+    end
+  end
 end
 
 describe 'Mailgunner::Response' do

@@ -85,6 +85,10 @@ module Mailgunner
       post('/v2/routes', attributes)
     end
 
+    def delete_route(id)
+      delete("/v2/routes/#{escape id}")
+    end
+
     private
 
     def get(path, params = {})
