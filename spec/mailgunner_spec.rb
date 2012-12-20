@@ -4,7 +4,11 @@ require 'mocha'
 
 class Net::HTTPGenericRequest
   def inspect
-    "<#{self.class.name} #{path}>"
+    if request_body_permitted?
+      "<#{self.class.name} #{path} #{body}>"
+    else
+      "<#{self.class.name} #{path}>"
+    end
   end
 end
 
@@ -15,8 +19,8 @@ describe 'Mailgunner::Client' do
     @client = Mailgunner::Client.new(domain: @domain, api_key: 'xxx')
   end
 
-  def expect(request_class, request_uri)
-    request = all_of(instance_of(request_class), responds_with(:path, request_uri))
+  def expect(request_class, request_uri, *matchers)
+    request = all_of(instance_of(request_class), responds_with(:path, request_uri), *matchers)
 
     @client.http.expects(:request).with(request).returns(stub)
   end
@@ -82,6 +86,20 @@ describe 'Mailgunner::Client' do
       expect(Net::HTTP::Get, '/v2/routes/4f3bad2335335426750048c6')
 
       @client.get_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_route method' do
+    it 'posts to the routes resource and returns a response object' do
+      expect(Net::HTTP::Post, '/v2/routes')
+
+      @client.add_route({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the route attributes' do
+      expect(Net::HTTP::Post, '/v2/routes', responds_with(:body, 'description=Example+route&priority=1'))
+
+      @client.add_route({description: 'Example route', priority: 1})
     end
   end
 end

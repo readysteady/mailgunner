@@ -1,6 +1,7 @@
 require 'net/http'
 require 'json'
 require 'cgi'
+require 'uri'
 
 module Mailgunner
   class Client
@@ -32,6 +33,10 @@ module Mailgunner
       get("/v2/routes/#{escape id}")
     end
 
+    def add_route(attributes = {})
+      post('/v2/routes', attributes)
+    end
+
     private
 
     def get(path, params = {})
@@ -39,6 +44,14 @@ module Mailgunner
       get_request.basic_auth('api', @api_key)
 
       Response.new(@http.request(get_request))
+    end
+
+    def post(path, attributes = {})
+      post_request = Net::HTTP::Post.new(path)
+      post_request.basic_auth('api', @api_key)
+      post_request.body = URI.encode_www_form(attributes)
+
+      Response.new(@http.request(post_request))
     end
 
     def request_uri(path, params_hash)
