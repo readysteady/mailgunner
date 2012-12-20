@@ -365,6 +365,20 @@ describe 'Mailgunner::Response' do
     end
   end
 
+  describe 'client_error query method' do
+    it 'returns true if the status code is 4xx' do
+      @http_response.stubs(:code).returns('404')
+
+      @response.client_error?.must_equal(true)
+    end
+
+    it 'returns false otherwise' do
+      @http_response.stubs(:code).returns('200')
+
+      @response.client_error?.must_equal(false)
+    end
+  end
+
   describe 'json query method' do
     it 'returns true if the response has a json content type' do
       @http_response.expects(:[]).with('Content-Type').returns('application/json;charset=utf-8')

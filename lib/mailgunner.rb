@@ -173,6 +173,10 @@ module Mailgunner
       code.to_i == 200
     end
 
+    def client_error?
+      (400 .. 499).include?(code.to_i)
+    end
+
     def json?
       self['Content-Type'].split(';').first == 'application/json'
     end
