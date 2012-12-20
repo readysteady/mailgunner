@@ -17,6 +17,10 @@ describe 'Mailgunner::Client' do
     @domain = 'samples.mailgun.org'
 
     @client = Mailgunner::Client.new(domain: @domain, api_key: 'xxx')
+
+    @address = 'user@example.com'
+
+    @encoded_address = 'user%40example.com'
   end
 
   def expect(request_class, request_uri, *matchers)
@@ -49,17 +53,17 @@ describe 'Mailgunner::Client' do
 
   describe 'get_unsubscribe method' do
     it 'fetches the unsubscribe resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes/ev%40mailgun.net")
+      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes/#@encoded_address")
 
-      @client.get_unsubscribe('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.get_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
   describe 'delete_unsubscribe method' do
     it 'deletes the domain unsubscribe resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/unsubscribes/ev%40mailgun.net")
+      expect(Net::HTTP::Delete, "/v2/#@domain/unsubscribes/#@encoded_address")
 
-      @client.delete_unsubscribe('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.delete_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
@@ -71,9 +75,9 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the unsubscribe attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes", responds_with(:body, 'address=ev%40mailgun.net'))
+      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes", responds_with(:body, "address=#@encoded_address"))
 
-      @client.add_unsubscribe({address: 'ev@mailgun.net'})
+      @client.add_unsubscribe({address: @address})
     end
   end
 
@@ -93,9 +97,9 @@ describe 'Mailgunner::Client' do
 
   describe 'get_complaint method' do
     it 'fetches the complaint resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/complaints/romanto%40profista.com")
+      expect(Net::HTTP::Get, "/v2/#@domain/complaints/#@encoded_address")
 
-      @client.get_complaint('romanto@profista.com').must_be_instance_of(Mailgunner::Response)
+      @client.get_complaint(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
@@ -107,17 +111,17 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the complaint attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/complaints", responds_with(:body, 'address=ev%40mailgun.net'))
+      expect(Net::HTTP::Post, "/v2/#@domain/complaints", responds_with(:body, "address=#@encoded_address"))
 
-      @client.add_complaint({address: 'ev@mailgun.net'})
+      @client.add_complaint({address: @address})
     end
   end
 
   describe 'delete_complaint method' do
     it 'deletes the domain complaint resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/complaints/romanto%40profista.com")
+      expect(Net::HTTP::Delete, "/v2/#@domain/complaints/#@encoded_address")
 
-      @client.delete_complaint('romanto@profista.com').must_be_instance_of(Mailgunner::Response)
+      @client.delete_complaint(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
@@ -137,9 +141,9 @@ describe 'Mailgunner::Client' do
 
   describe 'get_bounce method' do
     it 'fetches the bounce resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/bounces/foo%40bar.com")
+      expect(Net::HTTP::Get, "/v2/#@domain/bounces/#@encoded_address")
 
-      @client.get_bounce('foo@bar.com').must_be_instance_of(Mailgunner::Response)
+      @client.get_bounce(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
@@ -151,17 +155,17 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the bounce attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/bounces", responds_with(:body, 'address=ev%40mailgun.net'))
+      expect(Net::HTTP::Post, "/v2/#@domain/bounces", responds_with(:body, "address=#@encoded_address"))
 
-      @client.add_bounce({address: 'ev@mailgun.net'})
+      @client.add_bounce({address: @address})
     end
   end
 
   describe 'delete_bounce method' do
     it 'deletes the domain bounce resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/bounces/ev%40mailgun.net")
+      expect(Net::HTTP::Delete, "/v2/#@domain/bounces/#@encoded_address")
 
-      @client.delete_bounce('ev@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.delete_bounce(@address).must_be_instance_of(Mailgunner::Response)
     end
   end
 
