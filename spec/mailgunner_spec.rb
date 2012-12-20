@@ -16,7 +16,9 @@ describe 'Mailgunner::Client' do
   before do
     @domain = 'samples.mailgun.org'
 
-    @client = Mailgunner::Client.new(domain: @domain, api_key: 'xxx')
+    @api_key = 'xxx'
+
+    @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
 
     @address = 'user@example.com'
 
@@ -34,6 +36,30 @@ describe 'Mailgunner::Client' do
       @client.http.must_be_instance_of(Net::HTTP)
 
       @client.http.use_ssl?.must_equal(true)
+    end
+  end
+
+  describe 'domain method' do
+    it 'returns the value passed to the constructor' do
+      @client.domain.must_equal(@domain)
+    end
+
+    it 'defaults to the domain in the MAILGUN_SMTP_LOGIN environment variable' do
+      ENV['MAILGUN_SMTP_LOGIN'] = 'postmaster@samples.mailgun.org'
+
+      Mailgunner::Client.new(api_key: @api_key).domain.must_equal(@domain)
+    end
+  end
+
+  describe 'api_key method' do
+    it 'returns the value passed to the constructor' do
+      @client.api_key.must_equal(@api_key)
+    end
+
+    it 'defaults to the value of MAILGUN_API_KEY environment variable' do
+      ENV['MAILGUN_API_KEY'] = @api_key
+
+      Mailgunner::Client.new(domain: @domain).api_key.must_equal(@api_key)
     end
   end
 

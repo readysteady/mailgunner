@@ -5,12 +5,12 @@ require 'uri'
 
 module Mailgunner
   class Client
-    attr_accessor :http
+    attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
-      @domain = options.fetch(:domain)
+      @domain = options.fetch(:domain) { ENV.fetch('MAILGUN_SMTP_LOGIN').split('@').last }
 
-      @api_key = options.fetch(:api_key)
+      @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
       @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
 
