@@ -23,10 +23,10 @@ describe 'Mailgunner::Client' do
     @encoded_address = 'user%40example.com'
   end
 
-  def expect(request_class, request_uri, *matchers)
-    request = all_of(instance_of(request_class), responds_with(:path, request_uri), *matchers)
+  def expect(request_class, arg)
+    matcher = String === arg ? responds_with(:path, arg) : arg
 
-    @client.http.expects(:request).with(request).returns(stub)
+    @client.http.expects(:request).with(all_of(instance_of(request_class), matcher)).returns(stub)
   end
 
   describe 'http method' do
@@ -75,7 +75,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the unsubscribe attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes", responds_with(:body, "address=#@encoded_address"))
+      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
 
       @client.add_unsubscribe({address: @address})
     end
@@ -111,7 +111,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the complaint attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/complaints", responds_with(:body, "address=#@encoded_address"))
+      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
 
       @client.add_complaint({address: @address})
     end
@@ -155,7 +155,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the bounce attributes' do
-      expect(Net::HTTP::Post, "/v2/#@domain/bounces", responds_with(:body, "address=#@encoded_address"))
+      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
 
       @client.add_bounce({address: @address})
     end
@@ -233,7 +233,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the route attributes' do
-      expect(Net::HTTP::Post, '/v2/routes', responds_with(:body, 'description=Example+route&priority=1'))
+      expect(Net::HTTP::Post, responds_with(:body, 'description=Example+route&priority=1'))
 
       @client.add_route({description: 'Example route', priority: 1})
     end
@@ -247,7 +247,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the route attributes' do
-      expect(Net::HTTP::Put, '/v2/routes/4f3bad2335335426750048c6', responds_with(:body, 'priority=10'))
+      expect(Net::HTTP::Put, responds_with(:body, 'priority=10'))
 
       @client.update_route('4f3bad2335335426750048c6', {priority: 10})
     end
