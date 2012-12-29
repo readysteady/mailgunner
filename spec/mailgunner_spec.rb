@@ -346,7 +346,7 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_mailbox method' do
-    it 'posts to the domain mailbox resource and returns a response object' do
+    it 'updates the mailbox resource and returns a response object' do
       expect(Net::HTTP::Put, "/v2/#@domain/mailboxes/user")
 
       @client.update_mailbox('user', {}).must_be_instance_of(Mailgunner::Response)
@@ -404,7 +404,7 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_campaign method' do
-    it 'posts to the domain campaign resource and returns a response object' do
+    it 'updates the campaign resource and returns a response object' do
       expect(Net::HTTP::Put, "/v2/#@domain/campaigns/id")
 
       @client.update_campaign('id', {}).must_be_instance_of(Mailgunner::Response)
@@ -546,7 +546,7 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_list method' do
-    it 'posts to the domain list resource and returns a response object' do
+    it 'updates the list resource and returns a response object' do
       expect(Net::HTTP::Put, '/v2/lists/developers%40mailgun.net')
 
       @client.update_list('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
@@ -604,7 +604,7 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_list_member method' do
-    it 'posts to the list member resource with the given address and returns a response object' do
+    it 'updates the list member resource with the given address and returns a response object' do
       expect(Net::HTTP::Put, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
 
       @client.update_list_member('developers@mailgun.net', @address, {}).must_be_instance_of(Mailgunner::Response)
