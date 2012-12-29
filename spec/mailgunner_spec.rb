@@ -508,6 +508,130 @@ describe 'Mailgunner::Client' do
       @client.get_campaign_complaints('id', groupby: 'month', limit: 100)
     end
   end
+
+  describe 'get_lists method' do
+    it 'fetches the domain lists resource and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/lists')
+
+      @client.get_lists.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, '/v2/lists?skip=1&limit=2')
+
+      @client.get_lists(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_list method' do
+    it 'fetches the list resource with the given address and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net')
+
+      @client.get_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_list method' do
+    it 'posts to the domain lists resource and returns a response object' do
+      expect(Net::HTTP::Post, '/v2/lists')
+
+      @client.add_list({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the list attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, 'address=developers%40mailgun.net'))
+
+      @client.add_list({address: 'developers@mailgun.net'})
+    end
+  end
+
+  describe 'update_list method' do
+    it 'posts to the domain list resource and returns a response object' do
+      expect(Net::HTTP::Put, '/v2/lists/developers%40mailgun.net')
+
+      @client.update_list('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the list attributes' do
+      expect(Net::HTTP::Put, responds_with(:body, 'name=Example+list'))
+
+      @client.update_list('developers@mailgun.net', {name: 'Example list'})
+    end
+  end
+
+  describe 'delete_list method' do
+    it 'deletes the domain list resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, '/v2/lists/developers%40mailgun.net')
+
+      @client.delete_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'get_list_members method' do
+    it 'fetches the list members resource and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/members')
+
+      @client.get_list_members('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/members?skip=1&limit=2')
+
+      @client.get_list_members('developers@mailgun.net', skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_list_member method' do
+    it 'fetches the list member resource with the given address and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+
+      @client.get_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_list_member method' do
+    it 'posts to the list members resource and returns a response object' do
+      expect(Net::HTTP::Post, '/v2/lists/developers%40mailgun.net/members')
+
+      @client.add_list_member('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the list attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
+
+      @client.add_list_member('developers@mailgun.net', {address: @address})
+    end
+  end
+
+  describe 'update_list_member method' do
+    it 'posts to the list member resource with the given address and returns a response object' do
+      expect(Net::HTTP::Put, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+
+      @client.update_list_member('developers@mailgun.net', @address, {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the list member attributes' do
+      expect(Net::HTTP::Put, responds_with(:body, 'subscribed=no'))
+
+      @client.update_list_member('developers@mailgun.net', @address, {subscribed: 'no'})
+    end
+  end
+
+  describe 'delete_list_member method' do
+    it 'deletes the list member resource with the given address and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+
+      @client.delete_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'get_list_stats method' do
+    it 'fetches the list stats resource and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/stats')
+
+      @client.get_list_stats('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
 end
 
 describe 'Mailgunner::Response' do
