@@ -63,6 +63,24 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'send_message method' do
+    it 'posts to the domain messages resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/messages")
+
+      @client.send_message({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the message attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, "to=#@encoded_address"))
+
+      @client.add_domain({to: @address})
+    end
+
+    it 'encodes the message attributes as multipart form data when sending attachments' do
+      # TODO
+    end
+  end
+
   describe 'get_domains method' do
     it 'fetches the domains resource and returns a response object' do
       expect(Net::HTTP::Get, '/v2/domains')

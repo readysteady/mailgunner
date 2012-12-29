@@ -17,6 +17,10 @@ module Mailgunner
       @http.use_ssl = true
     end
 
+    def send_message(attributes = {})
+      post("/v2/#{escape @domain}/messages", attributes)
+    end
+
     def get_domains(params = {})
       get('/v2/domains', params)
     end
