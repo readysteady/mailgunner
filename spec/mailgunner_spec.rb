@@ -366,6 +366,148 @@ describe 'Mailgunner::Client' do
       @client.delete_mailbox('user').must_be_instance_of(Mailgunner::Response)
     end
   end
+
+  describe 'get_campaigns method' do
+    it 'fetches the domain campaigns resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns")
+
+      @client.get_campaigns.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes skip and limit parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns?skip=1&limit=2")
+
+      @client.get_campaigns(skip: 1, limit: 2)
+    end
+  end
+
+  describe 'get_campaign method' do
+    it 'fetches the campaign resource with the given id and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id")
+
+      @client.get_campaign('id').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_campaign method' do
+    it 'posts to the domain campaigns resource and returns a response object' do
+      expect(Net::HTTP::Post, "/v2/#@domain/campaigns")
+
+      @client.add_campaign({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the campaign attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, 'id=id'))
+
+      @client.add_campaign({id: 'id'})
+    end
+  end
+
+  describe 'update_campaign method' do
+    it 'posts to the domain campaign resource and returns a response object' do
+      expect(Net::HTTP::Put, "/v2/#@domain/campaigns/id")
+
+      @client.update_campaign('id', {}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the campaign attributes' do
+      expect(Net::HTTP::Put, responds_with(:body, 'name=Example+Campaign'))
+
+      @client.update_campaign('id', {name: 'Example Campaign'})
+    end
+  end
+
+  describe 'delete_campaign method' do
+    it 'deletes the domain campaign resource with the given id and returns a response object' do
+      expect(Net::HTTP::Delete, "/v2/#@domain/campaigns/id")
+
+      @client.delete_campaign('id').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'get_campaign_events method' do
+    it 'fetches the domain campaign events resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/events")
+
+      @client.get_campaign_events('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/events?country=US&limit=100")
+
+      @client.get_campaign_events('id', country: 'US', limit: 100)
+    end
+  end
+
+  describe 'get_campaign_stats method' do
+    it 'fetches the domain campaign stats resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/stats")
+
+      @client.get_campaign_stats('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/stats?groupby=dailyhour")
+
+      @client.get_campaign_stats('id', groupby: 'dailyhour')
+    end
+  end
+
+  describe 'get_campaign_clicks method' do
+    it 'fetches the domain campaign clicks resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/clicks")
+
+      @client.get_campaign_clicks('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/clicks?groupby=month&limit=100")
+
+      @client.get_campaign_clicks('id', groupby: 'month', limit: 100)
+    end
+  end
+
+  describe 'get_campaign_opens method' do
+    it 'fetches the domain campaign opens resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/opens")
+
+      @client.get_campaign_opens('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/opens?groupby=month&limit=100")
+
+      @client.get_campaign_opens('id', groupby: 'month', limit: 100)
+    end
+  end
+
+  describe 'get_campaign_unsubscribes method' do
+    it 'fetches the domain campaign unsubscribes resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/unsubscribes")
+
+      @client.get_campaign_unsubscribes('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/unsubscribes?groupby=month&limit=100")
+
+      @client.get_campaign_unsubscribes('id', groupby: 'month', limit: 100)
+    end
+  end
+
+  describe 'get_campaign_complaints method' do
+    it 'fetches the domain campaign complaints resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/complaints")
+
+      @client.get_campaign_complaints('id').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/complaints?groupby=month&limit=100")
+
+      @client.get_campaign_complaints('id', groupby: 'month', limit: 100)
+    end
+  end
 end
 
 describe 'Mailgunner::Response' do
