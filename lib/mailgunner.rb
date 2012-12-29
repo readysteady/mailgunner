@@ -5,12 +5,14 @@ require 'uri'
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :http
+    attr_accessor :domain, :api_key, :json, :http
 
     def initialize(options = {})
       @domain = options.fetch(:domain) { ENV.fetch('MAILGUN_SMTP_LOGIN').split('@').last }
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
+
+      @json = options.fetch(:json) { JSON }
 
       @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
 
@@ -236,7 +238,7 @@ module Mailgunner
       message.basic_auth('api', @api_key)
       message.body = URI.encode_www_form(attributes) if attributes
 
-      Response.new(@http.request(message))
+      Response.new(@http.request(message), :json => @json)
     end
 
     def request_uri(path, params_hash)
@@ -261,8 +263,10 @@ module Mailgunner
   end
 
   class Response
-    def initialize(http_response)
+    def initialize(http_response, options = {})
       @http_response = http_response
+
+      @json = options.fetch(:json) { JSON }
     end
 
     def method_missing(name, *args, &block)
@@ -290,7 +294,7 @@ module Mailgunner
     end
 
     def object
-      @object ||= JSON.parse(body)
+      @object ||= @json.load(body)
     end
   end
 end

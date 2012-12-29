@@ -63,6 +63,18 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'json method' do
+    it 'returns the value passed to the constructor' do
+      json = stub
+
+      Mailgunner::Client.new(json: json).json.must_equal(json)
+    end
+
+    it 'defaults to the standard library json implementation' do
+      @client.json.must_equal(JSON)
+    end
+  end
+
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns a response object' do
       expect(Net::HTTP::Post, "/v2/#@domain/messages")
@@ -726,6 +738,26 @@ describe 'Mailgunner::Response' do
       @http_response.expects(:body).returns('{"foo":"bar"}')
 
       @response.object.must_equal({'foo' => 'bar'})
+    end
+  end
+end
+
+describe 'Mailgunner::Response initialized with an alternative json implementation' do
+  before do
+    @json = mock()
+
+    @http_response = mock()
+
+    @response = Mailgunner::Response.new(@http_response, :json => @json)
+  end
+
+  describe 'object method' do
+    it 'uses the alternative json implementation to parse the response body' do
+      @http_response.stubs(:body).returns(response_body = '{"foo":"bar"}')
+
+      @json.expects(:load).with(response_body)
+
+      @response.object
     end
   end
 end
