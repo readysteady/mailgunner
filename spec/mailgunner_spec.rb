@@ -63,6 +63,36 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_domains method' do
+    it 'fetches the domains resource and returns a response object' do
+      expect(Net::HTTP::Get, '/v2/domains')
+
+      @client.get_domains.must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'get_domain method' do
+    it 'fetches the domain resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/domains/#@domain")
+
+      @client.get_domain(@domain).must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'add_domain method' do
+    it 'posts to the domains resource and returns a response object' do
+      expect(Net::HTTP::Post, '/v2/domains')
+
+      @client.add_domain({}).must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes the domain attributes' do
+      expect(Net::HTTP::Post, responds_with(:body, "name=#@domain"))
+
+      @client.add_domain({name: @domain})
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes")

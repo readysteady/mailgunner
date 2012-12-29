@@ -17,6 +17,18 @@ module Mailgunner
       @http.use_ssl = true
     end
 
+    def get_domains(params = {})
+      get('/v2/domains', params)
+    end
+
+    def get_domain(name)
+      get("/v2/domains/#{escape name}")
+    end
+
+    def add_domain(attributes = {})
+      post('/v2/domains', attributes)
+    end
+
     def get_unsubscribes(params = {})
       get("/v2/#{escape @domain}/unsubscribes", params)
     end
