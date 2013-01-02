@@ -2,13 +2,22 @@ A Ruby wrapper for the [Mailgun API](http://documentation.mailgun.net/api_refere
 =========================================================================================
 
 
+Installation
+------------
+
+    $ gem install mailgunner
+
+
 Quick Start
 -----------
 
 ```ruby
 require 'mailgunner'
 
-mailgun = Mailgunner::Client.new(domain: 'samples.mailgun.org', api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0')
+mailgun = Mailgunner::Client.new({
+  domain: 'samples.mailgun.org',
+  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0'
+})
 
 response = mailgun.get_stats(limit: 5)
 
