@@ -338,7 +338,11 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_mailboxes method' do
-    it 'fetches the domain mailboxes resource and returns a response object' do
+    before do
+      Kernel.stubs(:warn)
+    end
+
+    it 'emits a deprecation warning and fetches the domain mailboxes resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/mailboxes")
 
       @client.get_mailboxes.must_be_instance_of(Mailgunner::Response)
@@ -349,9 +353,21 @@ describe 'Mailgunner::Client' do
 
       @client.get_mailboxes(skip: 1, limit: 2)
     end
+
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#get_mailboxes is deprecated/))
+
+      @client.http.stubs(:request)
+
+      @client.get_mailboxes
+    end
   end
 
   describe 'add_mailbox method' do
+    before do
+      Kernel.stubs(:warn)
+    end
+
     it 'posts to the domain mailboxes resource and returns a response object' do
       expect(Net::HTTP::Post, "/v2/#@domain/mailboxes")
 
@@ -363,9 +379,21 @@ describe 'Mailgunner::Client' do
 
       @client.add_mailbox({mailbox: 'user'})
     end
+
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#add_mailbox is deprecated/))
+
+      @client.http.stubs(:request)
+
+      @client.add_mailbox({})
+    end
   end
 
   describe 'update_mailbox method' do
+    before do
+      Kernel.stubs(:warn)
+    end
+
     it 'updates the mailbox resource and returns a response object' do
       expect(Net::HTTP::Put, "/v2/#@domain/mailboxes/user")
 
@@ -377,13 +405,33 @@ describe 'Mailgunner::Client' do
 
       @client.update_mailbox('user', {password: 'secret'})
     end
+
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#update_mailbox is deprecated/))
+
+      @client.http.stubs(:request)
+
+      @client.update_mailbox('user', {})
+    end
   end
 
   describe 'delete_mailbox method' do
+    before do
+      Kernel.stubs(:warn)
+    end
+
     it 'deletes the domain mailbox resource with the given address and returns a response object' do
       expect(Net::HTTP::Delete, "/v2/#@domain/mailboxes/user")
 
       @client.delete_mailbox('user').must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#delete_mailbox is deprecated/))
+
+      @client.http.stubs(:request)
+
+      @client.delete_mailbox('user')
     end
   end
 

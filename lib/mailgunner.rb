@@ -130,18 +130,26 @@ module Mailgunner
     end
 
     def get_mailboxes(params = {})
+      Kernel.warn 'Mailgunner::Client#get_mailboxes is deprecated'
+
       get("/v2/#{escape @domain}/mailboxes", params)
     end
 
     def add_mailbox(attributes = {})
+      Kernel.warn 'Mailgunner::Client#add_mailbox is deprecated'
+
       post("/v2/#{escape @domain}/mailboxes", attributes)
     end
 
     def update_mailbox(name, attributes = {})
+      Kernel.warn 'Mailgunner::Client#update_mailbox is deprecated'
+
       put("/v2/#{escape @domain}/mailboxes/#{escape name}", attributes)
     end
 
     def delete_mailbox(name)
+      Kernel.warn 'Mailgunner::Client#delete_mailbox is deprecated'
+
       delete("/v2/#{escape @domain}/mailboxes/#{escape name}")
     end
 
