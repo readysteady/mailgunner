@@ -294,7 +294,7 @@ module Mailgunner
     end
 
     def object
-      @object ||= @json.load(body)
+      @object ||= @json.parse(body)
     end
   end
 end

@@ -1,6 +1,8 @@
 require 'minitest/autorun'
 require 'mocha/setup'
 require 'mailgunner'
+require 'faux'
+require 'json'
 
 class Net::HTTPGenericRequest
   def inspect
@@ -744,9 +746,9 @@ end
 
 describe 'Mailgunner::Response initialized with an alternative json implementation' do
   before do
-    @json = mock()
+    @json = faux(JSON)
 
-    @http_response = mock()
+    @http_response = stub
 
     @response = Mailgunner::Response.new(@http_response, :json => @json)
   end
@@ -755,7 +757,7 @@ describe 'Mailgunner::Response initialized with an alternative json implementati
     it 'uses the alternative json implementation to parse the response body' do
       @http_response.stubs(:body).returns(response_body = '{"foo":"bar"}')
 
-      @json.expects(:load).with(response_body)
+      @json.expects(:parse).with(response_body)
 
       @response.object
     end
