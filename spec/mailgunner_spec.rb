@@ -65,18 +65,6 @@ describe 'Mailgunner::Client' do
     end
   end
 
-  describe 'json method' do
-    it 'returns the value passed to the constructor' do
-      json = stub
-
-      Mailgunner::Client.new(json: json).json.must_equal(json)
-    end
-
-    it 'defaults to the standard library json implementation' do
-      @client.json.must_equal(JSON)
-    end
-  end
-
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns a response object' do
       expect(Net::HTTP::Post, "/v2/#@domain/messages")
@@ -662,6 +650,41 @@ describe 'Mailgunner::Client' do
       expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/stats')
 
       @client.get_list_stats('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'json method' do
+    it 'emits a deprecation warning and returns the standard library json module' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#json is deprecated/))
+
+      Mailgunner::Client.new.json.must_equal(JSON)
+    end
+  end
+
+  describe 'json equals method' do
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#json= is deprecated/))
+
+      Mailgunner::Client.new.json = nil
+    end
+  end
+
+  describe 'when initialized with a different json implementation' do
+    it 'emits a deprecation warning' do
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client :json option is deprecated/))
+ 
+      Mailgunner::Client.new(domain: @domain, api_key: @api_key, json: stub)
+    end
+
+    describe 'json method' do
+      it 'emits a deprecation warning and returns the value passed to the constructor' do
+        json = stub
+
+        Kernel.expects(:warn).once
+        Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#json is deprecated/))
+
+        Mailgunner::Client.new(json: json).json.must_equal(json)
+      end
     end
   end
 end

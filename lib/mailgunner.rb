@@ -5,18 +5,36 @@ require 'uri'
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :json, :http
+    attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
       @domain = options.fetch(:domain) { ENV.fetch('MAILGUN_SMTP_LOGIN').split('@').last }
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
-      @json = options.fetch(:json) { JSON }
+      if options.has_key?(:json)
+        Kernel.warn 'Mailgunner::Client :json option is deprecated'
+
+        @json = options[:json]
+      else
+        @json = JSON
+      end
 
       @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
 
       @http.use_ssl = true
+    end
+
+    def json
+      Kernel.warn 'Mailgunner::Client#json is deprecated'
+
+      @json
+    end
+
+    def json=(json)
+      Kernel.warn 'Mailgunner::Client#json= is deprecated'
+
+      @json = json
     end
 
     def send_message(attributes = {})

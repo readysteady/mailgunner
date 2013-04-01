@@ -29,19 +29,6 @@ end
 ```
 
 
-Alternative JSON Implementations
---------------------------------
-
-Mailgunner::Client defaults to using the "json" library which is available
-in the Ruby 1.9 standard library, and as a gem for Ruby 1.8. You can specify
-an alternative implementation using the json option when constructing a client
-object. For example, to use [multi_json](https://rubygems.org/gems/multi_json):
-
-```ruby
-mailgun = Mailgunner::Client.new(:json => MultiJson)
-```
-
-
 Environment Variables
 ---------------------
 
