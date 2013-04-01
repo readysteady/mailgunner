@@ -1,5 +1,8 @@
-A Ruby wrapper for the [Mailgun API](http://documentation.mailgun.net/api_reference.html)
-=========================================================================================
+mailgunner
+==========
+
+
+A Ruby wrapper for the [Mailgun API](http://documentation.mailgun.net/api_reference.html).
 
 
 Installation
@@ -8,7 +11,7 @@ Installation
     $ gem install mailgunner
 
 
-Quick Start
+Quick start
 -----------
 
 ```ruby
@@ -29,7 +32,7 @@ end
 ```
 
 
-Environment Variables
+Environment variables
 ---------------------
 
 Best practice for storing credentials for external services is to use environment
@@ -38,4 +41,3 @@ variables, as described by [12factor.net/config](http://www.12factor.net/config)
 Mailgunner::Client defaults to extracting the domain and api_key values it needs
 from the MAILGUN_API_KEY and MAILGUN_SMTP_LOGIN environment variables. These will
 exist if you are using Mailgun on Heroku, or you can set them manually.
-
