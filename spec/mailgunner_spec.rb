@@ -1,6 +1,6 @@
 require 'minitest/autorun'
+require 'mocha/setup'
 require 'mailgunner'
-require 'mocha'
 
 class Net::HTTPGenericRequest
   def inspect
