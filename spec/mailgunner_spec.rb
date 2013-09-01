@@ -279,6 +279,20 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_events method' do
+    it 'fetches the domain events resource and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/#@domain/events")
+
+      @client.get_events.must_be_instance_of(Mailgunner::Response)
+    end
+
+    it 'encodes optional parameters' do
+      expect(Net::HTTP::Get, "/v2/#@domain/events?event=accepted&limit=10")
+
+      @client.get_events(event: 'accepted', limit: 10)
+    end
+  end
+
   describe 'get_routes method' do
     it 'fetches the global routes resource and returns a response object' do
       expect(Net::HTTP::Get, '/v2/routes')

@@ -109,6 +109,10 @@ module Mailgunner
       get("/v2/#{escape @domain}/log", params)
     end
 
+    def get_events(params = {})
+      get("/v2/#{escape @domain}/events", params)
+    end
+
     def get_routes(params = {})
       get('/v2/routes', params)
     end
