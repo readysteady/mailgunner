@@ -266,7 +266,7 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_log method' do
-    it 'fetches the domain stats resource and returns a response object' do
+    it 'fetches the domain log resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/log")
 
       @client.get_log.must_be_instance_of(Mailgunner::Response)
@@ -342,7 +342,7 @@ describe 'Mailgunner::Client' do
       Kernel.stubs(:warn)
     end
 
-    it 'emits a deprecation warning and fetches the domain mailboxes resource and returns a response object' do
+    it 'fetches the domain mailboxes resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/mailboxes")
 
       @client.get_mailboxes.must_be_instance_of(Mailgunner::Response)
@@ -720,7 +720,7 @@ describe 'Mailgunner::Client' do
   describe 'when initialized with a different json implementation' do
     it 'emits a deprecation warning' do
       Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client :json option is deprecated/))
- 
+
       Mailgunner::Client.new(domain: @domain, api_key: @api_key, json: stub)
     end
 
