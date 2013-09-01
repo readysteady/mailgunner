@@ -37,6 +37,14 @@ module Mailgunner
       @json = json
     end
 
+    def validate_address(value)
+      get('/v2/address/validate', address: value)
+    end
+
+    def parse_addresses(values)
+      get('/v2/address/parse', addresses: Array(values).join(','))
+    end
+
     def send_message(attributes = {})
       post("/v2/#{escape @domain}/messages", attributes)
     end

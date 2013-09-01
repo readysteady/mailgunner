@@ -65,6 +65,22 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'validate_address method' do
+    it 'calls the address validate resource with the given email address and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/address/validate?address=#{@encoded_address}")
+
+      @client.validate_address(@address).must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
+  describe 'parse_addresses method' do
+    it 'calls the address parse resource with the given email addresses and returns a response object' do
+      expect(Net::HTTP::Get, "/v2/address/parse?addresses=bob%40example.com%2Ceve%40example.com")
+
+      @client.parse_addresses(['bob@example.com', 'eve@example.com']).must_be_instance_of(Mailgunner::Response)
+    end
+  end
+
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns a response object' do
       expect(Net::HTTP::Post, "/v2/#@domain/messages")
