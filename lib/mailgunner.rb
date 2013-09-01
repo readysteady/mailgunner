@@ -106,6 +106,8 @@ module Mailgunner
     end
 
     def get_log(params = {})
+      Kernel.warn 'Mailgunner::Client#get_log is deprecated'
+
       get("/v2/#{escape @domain}/log", params)
     end
 
