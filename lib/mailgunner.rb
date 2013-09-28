@@ -5,12 +5,14 @@ require 'uri'
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :http
+    attr_accessor :domain, :api_key, :public_key, :http
 
     def initialize(options = {})
       @domain = options.fetch(:domain) { ENV.fetch('MAILGUN_SMTP_LOGIN').split('@').last }
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
+
+      @public_key = options.fetch(:public_key) { ENV.fetch('MAILGUN_PUBLIC_KEY') }
 
       if options.has_key?(:json)
         Kernel.warn 'Mailgunner::Client :json option is deprecated'
@@ -38,7 +40,7 @@ module Mailgunner
     end
 
     def validate_address(value)
-      get('/v2/address/validate', address: value)
+      get('/v2/address/validate', {address: value}, :public_key)
     end
 
     def parse_addresses(values)
@@ -257,26 +259,26 @@ module Mailgunner
 
     private
 
-    def get(path, params = {})
-      transmit(Net::HTTP::Get, request_uri(path, params))
+    def get(path, params = {}, auth = :api_key)
+      transmit(Net::HTTP::Get, request_uri(path, params), {}, auth)
     end
 
-    def post(path, attributes = {})
-      transmit(Net::HTTP::Post, path, attributes)
+    def post(path, attributes = {}, auth = :api_key)
+      transmit(Net::HTTP::Post, path, attributes, auth)
     end
 
-    def put(path, attributes = {})
-      transmit(Net::HTTP::Put, path, attributes)
+    def put(path, attributes = {}, auth = :api_key)
+      transmit(Net::HTTP::Put, path, attributes, auth)
     end
 
-    def delete(path)
-      transmit(Net::HTTP::Delete, path)
+    def delete(path, auth = :api_key)
+      transmit(Net::HTTP::Delete, path, {}, auth)
     end
 
-    def transmit(subclass, path, attributes = nil)
+    def transmit(subclass, path, attributes = nil, auth = :api_key)
       message = subclass.new(path)
-      message.basic_auth('api', @api_key)
-      message.body = URI.encode_www_form(attributes) if attributes
+      message.basic_auth('api', ((auth == :api_key) ? @api_key : @public_key))
+      message.body = URI.encode_www_form(attributes) if attributes && attributes.length > 0
 
       Response.new(@http.request(message), :json => @json)
     end
