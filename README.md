@@ -37,7 +37,24 @@ Environment variables
 
 Best practice for storing credentials for external services is to use environment
 variables, as described by [12factor.net/config](http://www.12factor.net/config).
-
 Mailgunner::Client defaults to extracting the domain and api_key values it needs
 from the MAILGUN_API_KEY and MAILGUN_SMTP_LOGIN environment variables. These will
 exist if you are using Mailgun on Heroku, or you can set them manually.
+
+
+Email validation
+----------------
+
+If you only need [email validation](http://documentation.mailgun.com/api-email-validation.html),
+you can instead use your Mailgun public key to authenticate like this:
+
+```ruby
+require 'mailgunner'
+
+mailgun = Mailgunner::Client.new({
+  api_key: 'pubkey-5ogiflzbnjrljiky49qxsiozqef5jxp7',
+  domain: nil
+})
+
+response = mailgun.validate_address('john@gmail.com')
+```
