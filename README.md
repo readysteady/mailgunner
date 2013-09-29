@@ -19,7 +19,8 @@ require 'mailgunner'
 
 mailgun = Mailgunner::Client.new({
   domain: 'samples.mailgun.org',
-  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0'
+  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0',
+  public_key: 'pubkey-9hddctfripa1jnhc3qf664cg6aeyb-e6'
 })
 
 response = mailgun.get_stats(limit: 5)
