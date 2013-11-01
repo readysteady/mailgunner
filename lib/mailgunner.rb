@@ -113,12 +113,6 @@ module Mailgunner
       get("/v2/#{escape @domain}/stats", params)
     end
 
-    def get_log(params = {})
-      Kernel.warn 'Mailgunner::Client#get_log is deprecated'
-
-      get("/v2/#{escape @domain}/log", params)
-    end
-
     def get_events(params = {})
       get("/v2/#{escape @domain}/events", params)
     end

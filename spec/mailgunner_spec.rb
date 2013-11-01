@@ -286,32 +286,6 @@ describe 'Mailgunner::Client' do
     end
   end
 
-  describe 'get_log method' do
-    before do
-      Kernel.stubs(:warn)
-    end
-
-    it 'fetches the domain log resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/log")
-
-      @client.get_log.must_be_instance_of(Mailgunner::Response)
-    end
-
-    it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/log?skip=1&limit=2")
-
-      @client.get_log(skip: 1, limit: 2)
-    end
-
-    it 'emits a deprecation warning' do
-      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#get_log is deprecated/))
-
-      @client.http.stubs(:request)
-
-      @client.get_log
-    end
-  end
-
   describe 'get_events method' do
     it 'fetches the domain events resource and returns a response object' do
       expect(Net::HTTP::Get, "/v2/#@domain/events")
