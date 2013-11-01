@@ -1,7 +1,6 @@
 require 'minitest/autorun'
 require 'mocha/setup'
 require 'mailgunner'
-require 'faux'
 require 'json'
 
 class Net::HTTPGenericRequest
@@ -865,7 +864,7 @@ end
 
 describe 'Mailgunner::Response initialized with an alternative json implementation' do
   before do
-    @json = faux(JSON)
+    @json = mock()
 
     @http_response = stub
 
