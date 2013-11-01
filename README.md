@@ -51,10 +51,9 @@ you can instead use your Mailgun public key to authenticate like this:
 ```ruby
 require 'mailgunner'
 
-mailgun = Mailgunner::Client.new({
-  api_key: 'pubkey-5ogiflzbnjrljiky49qxsiozqef5jxp7',
-  domain: nil
-})
+public_key = 'pubkey-5ogiflzbnjrljiky49qxsiozqef5jxp7'
+
+mailgun = Mailgunner::Client.new(api_key: public_key)
 
 response = mailgun.validate_address('john@gmail.com')
 ```

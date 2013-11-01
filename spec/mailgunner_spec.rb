@@ -51,6 +51,12 @@ describe 'Mailgunner::Client' do
 
       Mailgunner::Client.new(api_key: @api_key).domain.must_equal(@domain)
     end
+
+    it 'defaults to nil if the MAILGUN_SMTP_LOGIN environment variable does not exist' do
+      ENV.delete('MAILGUN_SMTP_LOGIN')
+
+      Mailgunner::Client.new(api_key: @api_key).domain.must_be_nil
+    end
   end
 
   describe 'api_key method' do

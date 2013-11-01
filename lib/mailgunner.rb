@@ -8,7 +8,7 @@ module Mailgunner
     attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
-      @domain = options.fetch(:domain) { ENV.fetch('MAILGUN_SMTP_LOGIN').split('@').last }
+      @domain = options.fetch(:domain) { ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last }
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
