@@ -25,18 +25,6 @@ module Mailgunner
       @http.use_ssl = true
     end
 
-    def json
-      Kernel.warn 'Mailgunner::Client#json is deprecated'
-
-      @json
-    end
-
-    def json=(json)
-      Kernel.warn 'Mailgunner::Client#json= is deprecated'
-
-      @json = json
-    end
-
     def validate_address(value)
       get('/v2/address/validate', address: value)
     end
