@@ -96,7 +96,7 @@ describe 'Mailgunner::Client' do
     it 'encodes the message attributes' do
       expect(Net::HTTP::Post, responds_with(:body, "to=#@encoded_address"))
 
-      @client.add_domain({to: @address})
+      @client.send_message({to: @address})
     end
 
     it 'encodes the message attributes as multipart form data when sending attachments' do
