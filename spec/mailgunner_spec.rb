@@ -1,17 +1,8 @@
 require 'minitest/autorun'
+require 'webmock/minitest'
 require 'mocha/setup'
 require 'mailgunner'
 require 'json'
-
-class Net::HTTPGenericRequest
-  def inspect
-    if request_body_permitted?
-      "<#{self.class.name} #{path} #{body}>"
-    else
-      "<#{self.class.name} #{path}>"
-    end
-  end
-end
 
 describe 'Mailgunner::Client' do
   before do
@@ -19,17 +10,13 @@ describe 'Mailgunner::Client' do
 
     @api_key = 'xxx'
 
+    @base_url = "https://api:#{@api_key}@api.mailgun.net/v2"
+
     @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
 
     @address = 'user@example.com'
 
     @encoded_address = 'user%40example.com'
-  end
-
-  def expect(request_class, arg)
-    matcher = String === arg ? responds_with(:path, arg) : arg
-
-    @client.http.expects(:request).with(all_of(instance_of(request_class), matcher)).returns(stub)
   end
 
   describe 'http method' do
@@ -72,7 +59,7 @@ describe 'Mailgunner::Client' do
 
   describe 'validate_address method' do
     it 'calls the address validate resource with the given email address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/address/validate?address=#{@encoded_address}")
+      stub_request(:get, "#@base_url/address/validate?address=#@encoded_address")
 
       @client.validate_address(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -80,7 +67,7 @@ describe 'Mailgunner::Client' do
 
   describe 'parse_addresses method' do
     it 'calls the address parse resource with the given email addresses and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/address/parse?addresses=bob%40example.com%2Ceve%40example.com")
+      stub_request(:get, "#@base_url/address/parse?addresses=bob%40example.com%2Ceve%40example.com")
 
       @client.parse_addresses(['bob@example.com', 'eve@example.com']).must_be_instance_of(Mailgunner::Response)
     end
@@ -88,13 +75,13 @@ describe 'Mailgunner::Client' do
 
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns a response object' do
-      expect(Net::HTTP::Post, "/v2/#@domain/messages")
+      stub_request(:post, "#@base_url/#@domain/messages")
 
       @client.send_message({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the message attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "to=#@encoded_address"))
+      stub_request(:post, "#@base_url/#@domain/messages").with(body: "to=#@encoded_address")
 
       @client.send_message({to: @address})
     end
@@ -106,7 +93,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_domains method' do
     it 'fetches the domains resource and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/domains')
+      stub_request(:get, "#@base_url/domains")
 
       @client.get_domains.must_be_instance_of(Mailgunner::Response)
     end
@@ -114,7 +101,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_domain method' do
     it 'fetches the domain resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/domains/#@domain")
+      stub_request(:get, "#@base_url/domains/#@domain")
 
       @client.get_domain(@domain).must_be_instance_of(Mailgunner::Response)
     end
@@ -122,13 +109,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_domain method' do
     it 'posts to the domains resource and returns a response object' do
-      expect(Net::HTTP::Post, '/v2/domains')
+      stub_request(:post, "#@base_url/domains")
 
       @client.add_domain({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the domain attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "name=#@domain"))
+      stub_request(:post, "#@base_url/domains").with(body: "name=#@domain")
 
       @client.add_domain({name: @domain})
     end
@@ -136,13 +123,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes")
+      stub_request(:get, "#@base_url/#@domain/unsubscribes")
 
       @client.get_unsubscribes.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes?skip=1&limit=2")
+      stub_request(:get, "#@base_url/#@domain/unsubscribes?skip=1&limit=2")
 
       @client.get_unsubscribes(skip: 1, limit: 2)
     end
@@ -150,7 +137,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_unsubscribe method' do
     it 'fetches the unsubscribe resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/unsubscribes/#@encoded_address")
+      stub_request(:get, "#@base_url/#@domain/unsubscribes/#@encoded_address")
 
       @client.get_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -158,7 +145,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_unsubscribe method' do
     it 'deletes the domain unsubscribe resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/unsubscribes/#@encoded_address")
+      stub_request(:delete, "#@base_url/#@domain/unsubscribes/#@encoded_address")
 
       @client.delete_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -166,13 +153,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_unsubscribe method' do
     it 'posts to the domain unsubscribes resource and returns a response object' do
-      expect(Net::HTTP::Post, "/v2/#@domain/unsubscribes")
+      stub_request(:post, "#@base_url/#@domain/unsubscribes")
 
       @client.add_unsubscribe({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the unsubscribe attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
+      stub_request(:post, "#@base_url/#@domain/unsubscribes").with(body: "address=#@encoded_address")
 
       @client.add_unsubscribe({address: @address})
     end
@@ -180,13 +167,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_complaints method' do
     it 'fetches the domain complaints resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/complaints")
+      stub_request(:get, "#@base_url/#@domain/complaints")
 
       @client.get_complaints.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/complaints?skip=1&limit=2")
+      stub_request(:get, "#@base_url/#@domain/complaints?skip=1&limit=2")
 
       @client.get_complaints(skip: 1, limit: 2)
     end
@@ -194,7 +181,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_complaint method' do
     it 'fetches the complaint resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/complaints/#@encoded_address")
+      stub_request(:get, "#@base_url/#@domain/complaints/#@encoded_address")
 
       @client.get_complaint(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -202,13 +189,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_complaint method' do
     it 'posts to the domain complaints resource and returns a response object' do
-      expect(Net::HTTP::Post, "/v2/#@domain/complaints")
+      stub_request(:post, "#@base_url/#@domain/complaints")
 
       @client.add_complaint({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the complaint attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
+      stub_request(:post, "#@base_url/#@domain/complaints").with(body: "address=#@encoded_address")
 
       @client.add_complaint({address: @address})
     end
@@ -216,7 +203,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_complaint method' do
     it 'deletes the domain complaint resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/complaints/#@encoded_address")
+      stub_request(:delete, "#@base_url/#@domain/complaints/#@encoded_address")
 
       @client.delete_complaint(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -224,13 +211,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_bounces method' do
     it 'fetches the domain bounces resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/bounces")
+      stub_request(:get, "#@base_url/#@domain/bounces")
 
       @client.get_bounces.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/bounces?skip=1&limit=2")
+      stub_request(:get, "#@base_url/#@domain/bounces?skip=1&limit=2")
 
       @client.get_bounces(skip: 1, limit: 2)
     end
@@ -238,7 +225,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_bounce method' do
     it 'fetches the bounce resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/bounces/#@encoded_address")
+      stub_request(:get, "#@base_url/#@domain/bounces/#@encoded_address")
 
       @client.get_bounce(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -246,13 +233,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_bounce method' do
     it 'posts to the domain bounces resource and returns a response object' do
-      expect(Net::HTTP::Post, "/v2/#@domain/bounces")
+      stub_request(:post, "#@base_url/#@domain/bounces")
 
       @client.add_bounce({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the bounce attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
+      stub_request(:post, "#@base_url/#@domain/bounces").with(body: "address=#@encoded_address")
 
       @client.add_bounce({address: @address})
     end
@@ -260,7 +247,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_bounce method' do
     it 'deletes the domain bounce resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/bounces/#@encoded_address")
+      stub_request(:delete, "#@base_url/#@domain/bounces/#@encoded_address")
 
       @client.delete_bounce(@address).must_be_instance_of(Mailgunner::Response)
     end
@@ -268,19 +255,19 @@ describe 'Mailgunner::Client' do
 
   describe 'get_stats method' do
     it 'fetches the domain stats resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/stats")
+      stub_request(:get, "#@base_url/#@domain/stats")
 
       @client.get_stats.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/stats?skip=1&limit=2")
+      stub_request(:get, "#@base_url/#@domain/stats?skip=1&limit=2")
 
       @client.get_stats(skip: 1, limit: 2)
     end
 
     it 'encodes an event parameter with multiple values' do
-      expect(Net::HTTP::Get, "/v2/#@domain/stats?event=sent&event=opened")
+      stub_request(:get, "#@base_url/#@domain/stats?event=sent&event=opened")
 
       @client.get_stats(event: %w(sent opened))
     end
@@ -288,27 +275,27 @@ describe 'Mailgunner::Client' do
 
   describe 'get_events method' do
     it 'fetches the domain events resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/events")
+      stub_request(:get, "#@base_url/#@domain/events")
 
       @client.get_events.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/events?event=accepted&limit=10")
+      stub_request(:get, "#@base_url/#@domain/events?event=accepted&limit=10")
 
       @client.get_events(event: 'accepted', limit: 10)
     end
   end
 
   describe 'get_routes method' do
-    it 'fetches the global routes resource and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/routes')
+    it 'fetches the routes resource and returns a response object' do
+      stub_request(:get, "#@base_url/routes")
 
       @client.get_routes.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, '/v2/routes?skip=1&limit=2')
+      stub_request(:get, "#@base_url/routes?skip=1&limit=2")
 
       @client.get_routes(skip: 1, limit: 2)
     end
@@ -316,7 +303,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_route method' do
     it 'fetches the route resource with the given id and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/routes/4f3bad2335335426750048c6')
+      stub_request(:get, "#@base_url/routes/4f3bad2335335426750048c6")
 
       @client.get_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
     end
@@ -324,13 +311,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_route method' do
     it 'posts to the routes resource and returns a response object' do
-      expect(Net::HTTP::Post, '/v2/routes')
+      stub_request(:post, "#@base_url/routes")
 
       @client.add_route({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the route attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, 'description=Example+route&priority=1'))
+      stub_request(:post, "#@base_url/routes").with(body: 'description=Example+route&priority=1')
 
       @client.add_route({description: 'Example route', priority: 1})
     end
@@ -338,13 +325,13 @@ describe 'Mailgunner::Client' do
 
   describe 'update_route method' do
     it 'updates the route resource with the given id and returns a response object' do
-      expect(Net::HTTP::Put, '/v2/routes/4f3bad2335335426750048c6')
+      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6")
 
       @client.update_route('4f3bad2335335426750048c6', {}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the route attributes' do
-      expect(Net::HTTP::Put, responds_with(:body, 'priority=10'))
+      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6").with(body: 'priority=10')
 
       @client.update_route('4f3bad2335335426750048c6', {priority: 10})
     end
@@ -352,7 +339,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_route method' do
     it 'deletes the route resource with the given id and returns a response object' do
-      expect(Net::HTTP::Delete, '/v2/routes/4f3bad2335335426750048c6')
+      stub_request(:delete, "#@base_url/routes/4f3bad2335335426750048c6")
 
       @client.delete_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
     end
@@ -360,13 +347,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaigns method' do
     it 'fetches the domain campaigns resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns")
+      stub_request(:get, "#@base_url/#@domain/campaigns")
 
       @client.get_campaigns.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns?skip=1&limit=2")
+      stub_request(:get, "#@base_url/#@domain/campaigns?skip=1&limit=2")
 
       @client.get_campaigns(skip: 1, limit: 2)
     end
@@ -374,7 +361,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign method' do
     it 'fetches the campaign resource with the given id and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id")
 
       @client.get_campaign('id').must_be_instance_of(Mailgunner::Response)
     end
@@ -382,13 +369,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_campaign method' do
     it 'posts to the domain campaigns resource and returns a response object' do
-      expect(Net::HTTP::Post, "/v2/#@domain/campaigns")
+      stub_request(:post, "#@base_url/#@domain/campaigns")
 
       @client.add_campaign({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the campaign attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, 'id=id'))
+      stub_request(:post, "#@base_url/#@domain/campaigns").with(body: 'id=id')
 
       @client.add_campaign({id: 'id'})
     end
@@ -396,13 +383,13 @@ describe 'Mailgunner::Client' do
 
   describe 'update_campaign method' do
     it 'updates the campaign resource and returns a response object' do
-      expect(Net::HTTP::Put, "/v2/#@domain/campaigns/id")
+      stub_request(:put, "#@base_url/#@domain/campaigns/id")
 
       @client.update_campaign('id', {}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the campaign attributes' do
-      expect(Net::HTTP::Put, responds_with(:body, 'name=Example+Campaign'))
+      stub_request(:put, "#@base_url/#@domain/campaigns/id").with(body: 'name=Example+Campaign')
 
       @client.update_campaign('id', {name: 'Example Campaign'})
     end
@@ -410,7 +397,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_campaign method' do
     it 'deletes the domain campaign resource with the given id and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/#@domain/campaigns/id")
+      stub_request(:delete, "#@base_url/#@domain/campaigns/id")
 
       @client.delete_campaign('id').must_be_instance_of(Mailgunner::Response)
     end
@@ -418,13 +405,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_events method' do
     it 'fetches the domain campaign events resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/events")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/events")
 
       @client.get_campaign_events('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/events?country=US&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/events?country=US&limit=100")
 
       @client.get_campaign_events('id', country: 'US', limit: 100)
     end
@@ -432,13 +419,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_stats method' do
     it 'fetches the domain campaign stats resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/stats")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats")
 
       @client.get_campaign_stats('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/stats?groupby=dailyhour")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats?groupby=dailyhour")
 
       @client.get_campaign_stats('id', groupby: 'dailyhour')
     end
@@ -446,13 +433,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_clicks method' do
     it 'fetches the domain campaign clicks resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/clicks")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks")
 
       @client.get_campaign_clicks('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/clicks?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks?groupby=month&limit=100")
 
       @client.get_campaign_clicks('id', groupby: 'month', limit: 100)
     end
@@ -460,13 +447,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_opens method' do
     it 'fetches the domain campaign opens resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/opens")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens")
 
       @client.get_campaign_opens('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/opens?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens?groupby=month&limit=100")
 
       @client.get_campaign_opens('id', groupby: 'month', limit: 100)
     end
@@ -474,13 +461,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_unsubscribes method' do
     it 'fetches the domain campaign unsubscribes resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/unsubscribes")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes")
 
       @client.get_campaign_unsubscribes('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/unsubscribes?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes?groupby=month&limit=100")
 
       @client.get_campaign_unsubscribes('id', groupby: 'month', limit: 100)
     end
@@ -488,27 +475,27 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign_complaints method' do
     it 'fetches the domain campaign complaints resource and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/complaints")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints")
 
       @client.get_campaign_complaints('id').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the optional parameters' do
-      expect(Net::HTTP::Get, "/v2/#@domain/campaigns/id/complaints?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints?groupby=month&limit=100")
 
       @client.get_campaign_complaints('id', groupby: 'month', limit: 100)
     end
   end
 
   describe 'get_lists method' do
-    it 'fetches the domain lists resource and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/lists')
+    it 'fetches the lists resource and returns a response object' do
+      stub_request(:get, "#@base_url/lists")
 
       @client.get_lists.must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, '/v2/lists?skip=1&limit=2')
+      stub_request(:get, "#@base_url/lists?skip=1&limit=2")
 
       @client.get_lists(skip: 1, limit: 2)
     end
@@ -516,21 +503,21 @@ describe 'Mailgunner::Client' do
 
   describe 'get_list method' do
     it 'fetches the list resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net')
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net")
 
       @client.get_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
     end
   end
 
   describe 'add_list method' do
-    it 'posts to the domain lists resource and returns a response object' do
-      expect(Net::HTTP::Post, '/v2/lists')
+    it 'posts to the lists resource and returns a response object' do
+      stub_request(:post, "#@base_url/lists")
 
       @client.add_list({}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the list attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, 'address=developers%40mailgun.net'))
+      stub_request(:post, "#@base_url/lists").with(body: 'address=developers%40mailgun.net')
 
       @client.add_list({address: 'developers@mailgun.net'})
     end
@@ -538,21 +525,21 @@ describe 'Mailgunner::Client' do
 
   describe 'update_list method' do
     it 'updates the list resource and returns a response object' do
-      expect(Net::HTTP::Put, '/v2/lists/developers%40mailgun.net')
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net")
 
       @client.update_list('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the list attributes' do
-      expect(Net::HTTP::Put, responds_with(:body, 'name=Example+list'))
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net").with(body: 'name=Example+list')
 
       @client.update_list('developers@mailgun.net', {name: 'Example list'})
     end
   end
 
   describe 'delete_list method' do
-    it 'deletes the domain list resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, '/v2/lists/developers%40mailgun.net')
+    it 'deletes the list resource with the given address and returns a response object' do
+      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net")
 
       @client.delete_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
     end
@@ -560,13 +547,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_list_members method' do
     it 'fetches the list members resource and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/members')
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members")
 
       @client.get_list_members('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes skip and limit parameters' do
-      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/members?skip=1&limit=2')
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members?skip=1&limit=2")
 
       @client.get_list_members('developers@mailgun.net', skip: 1, limit: 2)
     end
@@ -574,7 +561,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_list_member method' do
     it 'fetches the list member resource with the given address and returns a response object' do
-      expect(Net::HTTP::Get, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
 
       @client.get_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
     end
@@ -582,13 +569,13 @@ describe 'Mailgunner::Client' do
 
   describe 'add_list_member method' do
     it 'posts to the list members resource and returns a response object' do
-      expect(Net::HTTP::Post, '/v2/lists/developers%40mailgun.net/members')
+      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members")
 
       @client.add_list_member('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the list attributes' do
-      expect(Net::HTTP::Post, responds_with(:body, "address=#@encoded_address"))
+      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members").with(body: "address=#@encoded_address")
 
       @client.add_list_member('developers@mailgun.net', {address: @address})
     end
@@ -596,13 +583,13 @@ describe 'Mailgunner::Client' do
 
   describe 'update_list_member method' do
     it 'updates the list member resource with the given address and returns a response object' do
-      expect(Net::HTTP::Put, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
 
       @client.update_list_member('developers@mailgun.net', @address, {}).must_be_instance_of(Mailgunner::Response)
     end
 
     it 'encodes the list member attributes' do
-      expect(Net::HTTP::Put, responds_with(:body, 'subscribed=no'))
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").with(body: 'subscribed=no')
 
       @client.update_list_member('developers@mailgun.net', @address, {subscribed: 'no'})
     end
@@ -610,7 +597,7 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_list_member method' do
     it 'deletes the list member resource with the given address and returns a response object' do
-      expect(Net::HTTP::Delete, "/v2/lists/developers%40mailgun.net/members/#@encoded_address")
+      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
 
       @client.delete_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
     end
@@ -618,7 +605,7 @@ describe 'Mailgunner::Client' do
 
   describe 'get_list_stats method' do
     it 'fetches the list stats resource and returns a response object' do
-      expect(Net::HTTP::Get, '/v2/lists/developers%40mailgun.net/stats')
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/stats")
 
       @client.get_list_stats('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
     end
