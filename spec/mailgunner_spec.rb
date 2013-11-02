@@ -3,6 +3,7 @@ require 'webmock/minitest'
 require 'mocha/setup'
 require 'mailgunner'
 require 'json'
+require 'mail'
 
 describe 'Mailgunner::Client' do
   before do
@@ -88,6 +89,23 @@ describe 'Mailgunner::Client' do
 
     it 'encodes the message attributes as multipart form data when sending attachments' do
       # TODO
+    end
+  end
+
+  describe 'send_mime method' do
+    before do
+      @mail = Mail.new({
+        to: 'alice@example.com',
+        from: 'bob@example.com',
+        subject: 'Test email',
+        body: 'This is a test email'
+      })
+    end
+
+    it 'posts to the domain messages resource and returns a response object' do
+      stub_request(:post, "#@base_url/#@domain/messages.mime")
+
+      @client.send_mime(@mail).must_be_instance_of(Mailgunner::Response)
     end
   end
 

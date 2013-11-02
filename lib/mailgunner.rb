@@ -36,6 +36,14 @@ module Mailgunner
       post("/v2/#{escape @domain}/messages", attributes)
     end
 
+    def send_mime(mail)
+      to = ['to', Array(mail.to).join(',')]
+
+      message = ['message', mail.encoded, {filename: 'message.mime'}]
+
+      multipart_post("/v2/#{escape @domain}/messages.mime", [to, message])
+    end
+
     def get_domains(params = {})
       get('/v2/domains', params)
     end
@@ -220,6 +228,10 @@ module Mailgunner
 
     def post(path, attributes = {})
       transmit(Net::HTTP::Post.new(path)) { |message| message.set_form_data(attributes) }
+    end
+
+    def multipart_post(path, data)
+      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form(data, 'multipart/form-data') }
     end
 
     def put(path, attributes = {})
