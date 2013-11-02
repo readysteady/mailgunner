@@ -215,25 +215,25 @@ module Mailgunner
     private
 
     def get(path, params = {})
-      transmit(Net::HTTP::Get, request_uri(path, params))
+      transmit(Net::HTTP::Get.new(request_uri(path, params)))
     end
 
     def post(path, attributes = {})
-      transmit(Net::HTTP::Post, path, attributes)
+      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form_data(attributes) }
     end
 
     def put(path, attributes = {})
-      transmit(Net::HTTP::Put, path, attributes)
+      transmit(Net::HTTP::Put.new(path)) { |message| message.set_form_data(attributes) }
     end
 
     def delete(path)
-      transmit(Net::HTTP::Delete, path)
+      transmit(Net::HTTP::Delete.new(path))
     end
 
-    def transmit(subclass, path, attributes = nil)
-      message = subclass.new(path)
+    def transmit(message)
       message.basic_auth('api', @api_key)
-      message.set_form_data(attributes) if attributes
+
+      yield message if block_given?
 
       Response.new(@http.request(message), :json => @json)
     end
