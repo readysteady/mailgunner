@@ -1,7 +1,6 @@
 require 'net/http'
 require 'json'
 require 'cgi'
-require 'uri'
 
 module Mailgunner
   class Client
@@ -234,7 +233,7 @@ module Mailgunner
     def transmit(subclass, path, attributes = nil)
       message = subclass.new(path)
       message.basic_auth('api', @api_key)
-      message.body = URI.encode_www_form(attributes) if attributes
+      message.set_form_data(attributes) if attributes
 
       Response.new(@http.request(message), :json => @json)
     end
