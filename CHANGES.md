@@ -1,0 +1,33 @@
+# [v1.3.0](https://github.com/timcraft/mailgunner/tree/v1.3.0) (2013-11-03)
+
+  * Added [ActionMailer](https://rubygems.org/gems/actionmailer) integration
+
+  * Added Mailgunner::Client#send_mime method for sending [mail](https://rubygems.org/gems/mail) objects in MIME format
+
+  * Fixed default behaviour to allow for nil domain
+
+  * Removed deprecated Mailgunner::Client#get_log method
+
+  * Removed deprecated mailbox methods
+
+  * Removed deprecated json accessor methods
+
+# [v1.2.0](https://github.com/timcraft/mailgunner/tree/v1.2.0) (2013-09-01)
+
+  * Added methods for the new [Email Validation endpoint](http://documentation.mailgun.com/api-email-validation.html)
+
+  * Added Mailgunner::Client#get_events method for the new [Events API endpoint](http://documentation.mailgun.com/api-events.html)
+
+  * Deprecated the Mailgunner::Client#get_log method (use Mailgunner::Client#get_events instead)
+
+# [v1.1.0](https://github.com/timcraft/mailgunner/tree/v1.1.0) (2013-04-01)
+
+  * Fixed use of insecure JSON.load
+
+  * Deprecated the mailbox methods (legacy Mailgun feature)
+
+  * Deprecated the :json option and associated accessor methods
+
+# [v1.0.0](https://github.com/timcraft/mailgunner/tree/v1.0.0) (2013-01-02)
+
+  * First version!
