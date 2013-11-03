@@ -2,6 +2,10 @@ require 'net/http'
 require 'json'
 require 'cgi'
 
+if defined?(ActionMailer)
+  require 'mailgunner/delivery_method'
+end
+
 module Mailgunner
   class Client
     attr_accessor :domain, :api_key, :http

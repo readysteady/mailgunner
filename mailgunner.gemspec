@@ -12,5 +12,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('mocha', '~> 0.13.2')
   s.add_development_dependency('webmock', '~> 1.13.0')
   s.add_development_dependency('mail', '~> 2.5.4')
+  s.add_development_dependency('actionmailer', '~> 4.0.0')
   s.require_path = 'lib'
 end
