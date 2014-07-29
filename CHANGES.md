@@ -1,3 +1,13 @@
+# [v2.0.0](https://github.com/timcraft/mailgunner/tree/v2.0.0) (2014-07-29)
+
+  * Removed deprecated :json option
+
+  * Removed Mailgunner::Response class in favour of using exceptions to signal errors
+
+  * Added Mailgunner::Client#delete_domain method
+
+  * Added Mailgunner::Client methods for managing SMTP credentials
+
 # [v1.3.0](https://github.com/timcraft/mailgunner/tree/v1.3.0) (2013-11-03)
 
   * Added [ActionMailer](https://rubygems.org/gems/actionmailer) integration
