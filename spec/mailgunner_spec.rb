@@ -21,6 +21,8 @@ describe 'Mailgunner::Client' do
     @address = 'user@example.com'
 
     @encoded_address = 'user%40example.com'
+
+    @login = 'bob.bar'
   end
 
   describe 'http method' do
@@ -147,6 +149,44 @@ describe 'Mailgunner::Client' do
       stub_request(:delete, "#@base_url/domains/#@domain").to_return(@json_response)
 
       @client.delete_domain(@domain).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_credentials method' do
+    it 'fetches the domain credentials resource and returns the response object' do
+      stub_request(:get, "#@base_url/domains/#@domain/credentials").to_return(@json_response)
+
+      @client.get_credentials.must_equal(@json_response_object)
+    end
+  end
+
+  describe 'add_credentials method' do
+    it 'posts to the domain credentials resource and returns the response object' do
+      stub_request(:post, "#@base_url/domains/#@domain/credentials").with(body: "login=#@login").to_return(@json_response)
+
+      @client.add_credentials(login: @login).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'update_credentials method' do
+    it 'updates the domain credentials resource with the given login and returns the response object' do
+      stub_request(:put, "#@base_url/domains/#@domain/credentials/#@login").to_return(@json_response)
+
+      @client.update_credentials(@login, {}).must_equal(@json_response_object)
+    end
+
+    it 'encodes the password attribute' do
+      stub_request(:put, "#@base_url/domains/#@domain/credentials/#@login").with(body: 'password=secret')
+
+      @client.update_credentials(@login, password: 'secret')
+    end
+  end
+
+  describe 'delete_credentials method' do
+    it 'deletes the domain credentials resource with the given login and returns the response object' do
+      stub_request(:delete, "#@base_url/domains/#@domain/credentials/#@login").to_return(@json_response)
+
+      @client.delete_credentials(@login).must_equal(@json_response_object)
     end
   end
 

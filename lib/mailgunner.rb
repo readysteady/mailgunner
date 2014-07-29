@@ -55,6 +55,22 @@ module Mailgunner
       delete("/v2/domains/#{escape name}")
     end
 
+    def get_credentials
+      get("/v2/domains/#{escape @domain}/credentials")
+    end
+
+    def add_credentials(attributes)
+      post("/v2/domains/#{escape @domain}/credentials", attributes)
+    end
+
+    def update_credentials(login, attributes)
+      put("/v2/domains/#{escape @domain}/credentials/#{escape login}", attributes)
+    end
+
+    def delete_credentials(login)
+      delete("/v2/domains/#{escape @domain}/credentials/#{escape login}")
+    end
+
     def get_unsubscribes(params = {})
       get("/v2/#{escape @domain}/unsubscribes", params)
     end
