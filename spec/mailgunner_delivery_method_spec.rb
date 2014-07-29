@@ -42,7 +42,9 @@ describe 'Mailgunner::DeliveryMethod' do
       body: '{"message": "Invalid API key"}'
     })
 
-    proc { ExampleMailer.registration_confirmation(email: @address).deliver }.must_raise(Mailgunner::DeliveryFailed)
+    exception = proc { ExampleMailer.registration_confirmation(email: @address).deliver }.must_raise(Mailgunner::Error)
+
+    exception.message.must_include('Invalid API key')
   end
 
   it 'allows the domain to be specified explicitly via the delivery method settings' do

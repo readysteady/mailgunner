@@ -13,6 +13,10 @@ describe 'Mailgunner::Client' do
 
     @base_url = "https://api:#{@api_key}@api.mailgun.net/v2"
 
+    @json_response = {headers: {'Content-Type' => 'application/json;charset=utf-8'}, body: '{"key":"value"}'}
+
+    @json_response_object = {'key' => 'value'}
+
     @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
 
     @address = 'user@example.com'
@@ -59,26 +63,26 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'validate_address method' do
-    it 'calls the address validate resource with the given email address and returns a response object' do
-      stub_request(:get, "#@base_url/address/validate?address=#@encoded_address")
+    it 'calls the address validate resource with the given email address and returns the response object' do
+      stub_request(:get, "#@base_url/address/validate?address=#@encoded_address").to_return(@json_response)
 
-      @client.validate_address(@address).must_be_instance_of(Mailgunner::Response)
+      @client.validate_address(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'parse_addresses method' do
-    it 'calls the address parse resource with the given email addresses and returns a response object' do
-      stub_request(:get, "#@base_url/address/parse?addresses=bob%40example.com%2Ceve%40example.com")
+    it 'calls the address parse resource with the given email addresses and returns the response object' do
+      stub_request(:get, "#@base_url/address/parse?addresses=bob%40example.com%2Ceve%40example.com").to_return(@json_response)
 
-      @client.parse_addresses(['bob@example.com', 'eve@example.com']).must_be_instance_of(Mailgunner::Response)
+      @client.parse_addresses(['bob@example.com', 'eve@example.com']).must_equal(@json_response_object)
     end
   end
 
   describe 'send_message method' do
-    it 'posts to the domain messages resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/messages")
+    it 'posts to the domain messages resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/messages").to_return(@json_response)
 
-      @client.send_message({}).must_be_instance_of(Mailgunner::Response)
+      @client.send_message({}).must_equal(@json_response_object)
     end
 
     it 'encodes the message attributes' do
@@ -102,34 +106,34 @@ describe 'Mailgunner::Client' do
       })
     end
 
-    it 'posts to the domain messages resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/messages.mime")
+    it 'posts to the domain messages resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/messages.mime").to_return(@json_response)
 
-      @client.send_mime(@mail).must_be_instance_of(Mailgunner::Response)
+      @client.send_mime(@mail).must_equal(@json_response_object)
     end
   end
 
   describe 'get_domains method' do
-    it 'fetches the domains resource and returns a response object' do
-      stub_request(:get, "#@base_url/domains")
+    it 'fetches the domains resource and returns the response object' do
+      stub_request(:get, "#@base_url/domains").to_return(@json_response)
 
-      @client.get_domains.must_be_instance_of(Mailgunner::Response)
+      @client.get_domains.must_equal(@json_response_object)
     end
   end
 
   describe 'get_domain method' do
-    it 'fetches the domain resource and returns a response object' do
-      stub_request(:get, "#@base_url/domains/#@domain")
+    it 'fetches the domain resource and returns the response object' do
+      stub_request(:get, "#@base_url/domains/#@domain").to_return(@json_response)
 
-      @client.get_domain(@domain).must_be_instance_of(Mailgunner::Response)
+      @client.get_domain(@domain).must_equal(@json_response_object)
     end
   end
 
   describe 'add_domain method' do
-    it 'posts to the domains resource and returns a response object' do
-      stub_request(:post, "#@base_url/domains")
+    it 'posts to the domains resource and returns the response object' do
+      stub_request(:post, "#@base_url/domains").to_return(@json_response)
 
-      @client.add_domain({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_domain({}).must_equal(@json_response_object)
     end
 
     it 'encodes the domain attributes' do
@@ -140,10 +144,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_unsubscribes method' do
-    it 'fetches the domain unsubscribes resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/unsubscribes")
+    it 'fetches the domain unsubscribes resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/unsubscribes").to_return(@json_response)
 
-      @client.get_unsubscribes.must_be_instance_of(Mailgunner::Response)
+      @client.get_unsubscribes.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -154,26 +158,26 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_unsubscribe method' do
-    it 'fetches the unsubscribe resource with the given address and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/unsubscribes/#@encoded_address")
+    it 'fetches the unsubscribe resource with the given address and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/unsubscribes/#@encoded_address").to_return(@json_response)
 
-      @client.get_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
+      @client.get_unsubscribe(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'delete_unsubscribe method' do
-    it 'deletes the domain unsubscribe resource with the given address and returns a response object' do
-      stub_request(:delete, "#@base_url/#@domain/unsubscribes/#@encoded_address")
+    it 'deletes the domain unsubscribe resource with the given address and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/unsubscribes/#@encoded_address").to_return(@json_response)
 
-      @client.delete_unsubscribe(@address).must_be_instance_of(Mailgunner::Response)
+      @client.delete_unsubscribe(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'add_unsubscribe method' do
-    it 'posts to the domain unsubscribes resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/unsubscribes")
+    it 'posts to the domain unsubscribes resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/unsubscribes").to_return(@json_response)
 
-      @client.add_unsubscribe({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_unsubscribe({}).must_equal(@json_response_object)
     end
 
     it 'encodes the unsubscribe attributes' do
@@ -184,10 +188,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_complaints method' do
-    it 'fetches the domain complaints resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/complaints")
+    it 'fetches the domain complaints resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/complaints").to_return(@json_response)
 
-      @client.get_complaints.must_be_instance_of(Mailgunner::Response)
+      @client.get_complaints.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -198,18 +202,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_complaint method' do
-    it 'fetches the complaint resource with the given address and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/complaints/#@encoded_address")
+    it 'fetches the complaint resource with the given address and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/complaints/#@encoded_address").to_return(@json_response)
 
-      @client.get_complaint(@address).must_be_instance_of(Mailgunner::Response)
+      @client.get_complaint(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'add_complaint method' do
-    it 'posts to the domain complaints resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/complaints")
+    it 'posts to the domain complaints resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/complaints").to_return(@json_response)
 
-      @client.add_complaint({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_complaint({}).must_equal(@json_response_object)
     end
 
     it 'encodes the complaint attributes' do
@@ -220,18 +224,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_complaint method' do
-    it 'deletes the domain complaint resource with the given address and returns a response object' do
-      stub_request(:delete, "#@base_url/#@domain/complaints/#@encoded_address")
+    it 'deletes the domain complaint resource with the given address and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/complaints/#@encoded_address").to_return(@json_response)
 
-      @client.delete_complaint(@address).must_be_instance_of(Mailgunner::Response)
+      @client.delete_complaint(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'get_bounces method' do
-    it 'fetches the domain bounces resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/bounces")
+    it 'fetches the domain bounces resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/bounces").to_return(@json_response)
 
-      @client.get_bounces.must_be_instance_of(Mailgunner::Response)
+      @client.get_bounces.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -242,18 +246,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_bounce method' do
-    it 'fetches the bounce resource with the given address and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/bounces/#@encoded_address")
+    it 'fetches the bounce resource with the given address and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/bounces/#@encoded_address").to_return(@json_response)
 
-      @client.get_bounce(@address).must_be_instance_of(Mailgunner::Response)
+      @client.get_bounce(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'add_bounce method' do
-    it 'posts to the domain bounces resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/bounces")
+    it 'posts to the domain bounces resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/bounces").to_return(@json_response)
 
-      @client.add_bounce({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_bounce({}).must_equal(@json_response_object)
     end
 
     it 'encodes the bounce attributes' do
@@ -264,18 +268,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_bounce method' do
-    it 'deletes the domain bounce resource with the given address and returns a response object' do
-      stub_request(:delete, "#@base_url/#@domain/bounces/#@encoded_address")
+    it 'deletes the domain bounce resource with the given address and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/bounces/#@encoded_address").to_return(@json_response)
 
-      @client.delete_bounce(@address).must_be_instance_of(Mailgunner::Response)
+      @client.delete_bounce(@address).must_equal(@json_response_object)
     end
   end
 
   describe 'get_stats method' do
-    it 'fetches the domain stats resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/stats")
+    it 'fetches the domain stats resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/stats").to_return(@json_response)
 
-      @client.get_stats.must_be_instance_of(Mailgunner::Response)
+      @client.get_stats.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -292,10 +296,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_events method' do
-    it 'fetches the domain events resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/events")
+    it 'fetches the domain events resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/events").to_return(@json_response)
 
-      @client.get_events.must_be_instance_of(Mailgunner::Response)
+      @client.get_events.must_equal(@json_response_object)
     end
 
     it 'encodes optional parameters' do
@@ -306,10 +310,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_routes method' do
-    it 'fetches the routes resource and returns a response object' do
-      stub_request(:get, "#@base_url/routes")
+    it 'fetches the routes resource and returns the response object' do
+      stub_request(:get, "#@base_url/routes").to_return(@json_response)
 
-      @client.get_routes.must_be_instance_of(Mailgunner::Response)
+      @client.get_routes.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -320,18 +324,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_route method' do
-    it 'fetches the route resource with the given id and returns a response object' do
-      stub_request(:get, "#@base_url/routes/4f3bad2335335426750048c6")
+    it 'fetches the route resource with the given id and returns the response object' do
+      stub_request(:get, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
 
-      @client.get_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
+      @client.get_route('4f3bad2335335426750048c6').must_equal(@json_response_object)
     end
   end
 
   describe 'add_route method' do
-    it 'posts to the routes resource and returns a response object' do
-      stub_request(:post, "#@base_url/routes")
+    it 'posts to the routes resource and returns the response object' do
+      stub_request(:post, "#@base_url/routes").to_return(@json_response)
 
-      @client.add_route({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_route({}).must_equal(@json_response_object)
     end
 
     it 'encodes the route attributes' do
@@ -342,10 +346,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_route method' do
-    it 'updates the route resource with the given id and returns a response object' do
-      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6")
+    it 'updates the route resource with the given id and returns the response object' do
+      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
 
-      @client.update_route('4f3bad2335335426750048c6', {}).must_be_instance_of(Mailgunner::Response)
+      @client.update_route('4f3bad2335335426750048c6', {}).must_equal(@json_response_object)
     end
 
     it 'encodes the route attributes' do
@@ -356,18 +360,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_route method' do
-    it 'deletes the route resource with the given id and returns a response object' do
-      stub_request(:delete, "#@base_url/routes/4f3bad2335335426750048c6")
+    it 'deletes the route resource with the given id and returns the response object' do
+      stub_request(:delete, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
 
-      @client.delete_route('4f3bad2335335426750048c6').must_be_instance_of(Mailgunner::Response)
+      @client.delete_route('4f3bad2335335426750048c6').must_equal(@json_response_object)
     end
   end
 
   describe 'get_campaigns method' do
-    it 'fetches the domain campaigns resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns")
+    it 'fetches the domain campaigns resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns").to_return(@json_response)
 
-      @client.get_campaigns.must_be_instance_of(Mailgunner::Response)
+      @client.get_campaigns.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -378,18 +382,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign method' do
-    it 'fetches the campaign resource with the given id and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id")
+    it 'fetches the campaign resource with the given id and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
 
-      @client.get_campaign('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign('id').must_equal(@json_response_object)
     end
   end
 
   describe 'add_campaign method' do
-    it 'posts to the domain campaigns resource and returns a response object' do
-      stub_request(:post, "#@base_url/#@domain/campaigns")
+    it 'posts to the domain campaigns resource and returns the response object' do
+      stub_request(:post, "#@base_url/#@domain/campaigns").to_return(@json_response)
 
-      @client.add_campaign({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_campaign({}).must_equal(@json_response_object)
     end
 
     it 'encodes the campaign attributes' do
@@ -400,10 +404,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_campaign method' do
-    it 'updates the campaign resource and returns a response object' do
-      stub_request(:put, "#@base_url/#@domain/campaigns/id")
+    it 'updates the campaign resource and returns the response object' do
+      stub_request(:put, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
 
-      @client.update_campaign('id', {}).must_be_instance_of(Mailgunner::Response)
+      @client.update_campaign('id', {}).must_equal(@json_response_object)
     end
 
     it 'encodes the campaign attributes' do
@@ -414,18 +418,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_campaign method' do
-    it 'deletes the domain campaign resource with the given id and returns a response object' do
-      stub_request(:delete, "#@base_url/#@domain/campaigns/id")
+    it 'deletes the domain campaign resource with the given id and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
 
-      @client.delete_campaign('id').must_be_instance_of(Mailgunner::Response)
+      @client.delete_campaign('id').must_equal(@json_response_object)
     end
   end
 
   describe 'get_campaign_events method' do
-    it 'fetches the domain campaign events resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/events")
+    it 'fetches the domain campaign events resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/events").to_return(@json_response)
 
-      @client.get_campaign_events('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_events('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -436,10 +440,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign_stats method' do
-    it 'fetches the domain campaign stats resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats")
+    it 'fetches the domain campaign stats resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats").to_return(@json_response)
 
-      @client.get_campaign_stats('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_stats('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -450,10 +454,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign_clicks method' do
-    it 'fetches the domain campaign clicks resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks")
+    it 'fetches the domain campaign clicks resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks").to_return(@json_response)
 
-      @client.get_campaign_clicks('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_clicks('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -464,10 +468,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign_opens method' do
-    it 'fetches the domain campaign opens resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens")
+    it 'fetches the domain campaign opens resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens").to_return(@json_response)
 
-      @client.get_campaign_opens('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_opens('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -478,10 +482,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign_unsubscribes method' do
-    it 'fetches the domain campaign unsubscribes resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes")
+    it 'fetches the domain campaign unsubscribes resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes").to_return(@json_response)
 
-      @client.get_campaign_unsubscribes('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_unsubscribes('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -492,10 +496,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_campaign_complaints method' do
-    it 'fetches the domain campaign complaints resource and returns a response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints")
+    it 'fetches the domain campaign complaints resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints").to_return(@json_response)
 
-      @client.get_campaign_complaints('id').must_be_instance_of(Mailgunner::Response)
+      @client.get_campaign_complaints('id').must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
@@ -506,10 +510,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_lists method' do
-    it 'fetches the lists resource and returns a response object' do
-      stub_request(:get, "#@base_url/lists")
+    it 'fetches the lists resource and returns the response object' do
+      stub_request(:get, "#@base_url/lists").to_return(@json_response)
 
-      @client.get_lists.must_be_instance_of(Mailgunner::Response)
+      @client.get_lists.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -520,18 +524,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_list method' do
-    it 'fetches the list resource with the given address and returns a response object' do
-      stub_request(:get, "#@base_url/lists/developers%40mailgun.net")
+    it 'fetches the list resource with the given address and returns the response object' do
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net").to_return(@json_response)
 
-      @client.get_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.get_list('developers@mailgun.net').must_equal(@json_response_object)
     end
   end
 
   describe 'add_list method' do
-    it 'posts to the lists resource and returns a response object' do
-      stub_request(:post, "#@base_url/lists")
+    it 'posts to the lists resource and returns the response object' do
+      stub_request(:post, "#@base_url/lists").to_return(@json_response)
 
-      @client.add_list({}).must_be_instance_of(Mailgunner::Response)
+      @client.add_list({}).must_equal(@json_response_object)
     end
 
     it 'encodes the list attributes' do
@@ -542,10 +546,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_list method' do
-    it 'updates the list resource and returns a response object' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net")
+    it 'updates the list resource and returns the response object' do
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net").to_return(@json_response)
 
-      @client.update_list('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
+      @client.update_list('developers@mailgun.net', {}).must_equal(@json_response_object)
     end
 
     it 'encodes the list attributes' do
@@ -556,18 +560,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_list method' do
-    it 'deletes the list resource with the given address and returns a response object' do
-      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net")
+    it 'deletes the list resource with the given address and returns the response object' do
+      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net").to_return(@json_response)
 
-      @client.delete_list('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.delete_list('developers@mailgun.net').must_equal(@json_response_object)
     end
   end
 
   describe 'get_list_members method' do
-    it 'fetches the list members resource and returns a response object' do
-      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members")
+    it 'fetches the list members resource and returns the response object' do
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members").to_return(@json_response)
 
-      @client.get_list_members('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.get_list_members('developers@mailgun.net').must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
@@ -578,18 +582,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_list_member method' do
-    it 'fetches the list member resource with the given address and returns a response object' do
-      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
+    it 'fetches the list member resource with the given address and returns the response object' do
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").to_return(@json_response)
 
-      @client.get_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
+      @client.get_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
     end
   end
 
   describe 'add_list_member method' do
-    it 'posts to the list members resource and returns a response object' do
-      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members")
+    it 'posts to the list members resource and returns the response object' do
+      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members").to_return(@json_response)
 
-      @client.add_list_member('developers@mailgun.net', {}).must_be_instance_of(Mailgunner::Response)
+      @client.add_list_member('developers@mailgun.net', {}).must_equal(@json_response_object)
     end
 
     it 'encodes the list attributes' do
@@ -600,10 +604,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'update_list_member method' do
-    it 'updates the list member resource with the given address and returns a response object' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
+    it 'updates the list member resource with the given address and returns the response object' do
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").to_return(@json_response)
 
-      @client.update_list_member('developers@mailgun.net', @address, {}).must_be_instance_of(Mailgunner::Response)
+      @client.update_list_member('developers@mailgun.net', @address, {}).must_equal(@json_response_object)
     end
 
     it 'encodes the list member attributes' do
@@ -614,18 +618,18 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'delete_list_member method' do
-    it 'deletes the list member resource with the given address and returns a response object' do
-      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
+    it 'deletes the list member resource with the given address and returns the response object' do
+      stub_request(:delete, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").to_return(@json_response)
 
-      @client.delete_list_member('developers@mailgun.net', @address).must_be_instance_of(Mailgunner::Response)
+      @client.delete_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
     end
   end
 
   describe 'get_list_stats method' do
-    it 'fetches the list stats resource and returns a response object' do
-      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/stats")
+    it 'fetches the list stats resource and returns the response object' do
+      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/stats").to_return(@json_response)
 
-      @client.get_list_stats('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
+      @client.get_list_stats('developers@mailgun.net').must_equal(@json_response_object)
     end
   end
 end

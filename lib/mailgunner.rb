@@ -1,10 +1,11 @@
 require 'net/http'
 require 'json'
 require 'cgi'
-require 'mailgunner/response'
 require 'mailgunner/delivery_method' if defined?(ActionMailer)
 
 module Mailgunner
+  class Error < StandardError; end
+
   class Client
     attr_accessor :domain, :api_key, :http
 
@@ -241,7 +242,25 @@ module Mailgunner
 
       yield message if block_given?
 
-      Response.new(@http.request(message))
+      parse(@http.request(message))
+    end
+
+    def parse(response)
+      if Net::HTTPSuccess === response
+        json?(response) ? JSON.parse(response.body) : response.body
+      else
+        if json?(response)
+          raise Error, "HTTP #{response.code}: #{JSON.parse(response.body).fetch('message')}"
+        else
+          raise Error, "HTTP #{response.code}"
+        end
+      end
+    end
+
+    def json?(response)
+      content_type = response['Content-Type']
+
+      content_type && content_type.split(';').first == 'application/json'
     end
 
     def request_uri(path, params_hash)
