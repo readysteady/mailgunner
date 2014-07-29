@@ -142,6 +142,14 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'delete_domain method' do
+    it 'deletes the domain resource with the given name and returns the response object' do
+      stub_request(:delete, "#@base_url/domains/#@domain").to_return(@json_response)
+
+      @client.delete_domain(@domain).must_equal(@json_response_object)
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns the response object' do
       stub_request(:get, "#@base_url/#@domain/unsubscribes").to_return(@json_response)

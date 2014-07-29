@@ -51,6 +51,10 @@ module Mailgunner
       post('/v2/domains', attributes)
     end
 
+    def delete_domain(name)
+      delete("/v2/domains/#{escape name}")
+    end
+
     def get_unsubscribes(params = {})
       get("/v2/#{escape @domain}/unsubscribes", params)
     end
