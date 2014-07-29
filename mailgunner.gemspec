@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.summary = 'See description'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(README.md mailgunner.gemspec)
   s.add_development_dependency('rake', '~> 10.1')
-  s.add_development_dependency('mocha', '~> 1.1')
   s.add_development_dependency('webmock', '~> 1.18')
   s.add_development_dependency('mail', '~> 2.5')
   s.add_development_dependency('actionmailer', '~> 4.0')
