@@ -23,12 +23,6 @@ mailgun = Mailgunner::Client.new({
 })
 
 response = mailgun.get_stats(limit: 5)
-
-if response.ok?
-  # do something with response.object
-else
-  # handle client/server error
-end
 ```
 
 
