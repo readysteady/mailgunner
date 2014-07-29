@@ -1,9 +1,7 @@
 module Mailgunner
   class Response
-    def initialize(http_response, options = {})
+    def initialize(http_response)
       @http_response = http_response
-
-      @json = options.fetch(:json) { JSON }
     end
 
     def method_missing(name, *args, &block)
@@ -31,7 +29,7 @@ module Mailgunner
     end
 
     def object
-      @object ||= @json.parse(body)
+      @object ||= JSON.parse(body)
     end
   end
 end

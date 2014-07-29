@@ -13,14 +13,6 @@ module Mailgunner
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
-      if options.has_key?(:json)
-        Kernel.warn 'Mailgunner::Client :json option is deprecated'
-
-        @json = options[:json]
-      else
-        @json = JSON
-      end
-
       @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
 
       @http.use_ssl = true
@@ -249,7 +241,7 @@ module Mailgunner
 
       yield message if block_given?
 
-      Response.new(@http.request(message), :json => @json)
+      Response.new(@http.request(message))
     end
 
     def request_uri(path, params_hash)

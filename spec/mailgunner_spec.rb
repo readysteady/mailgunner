@@ -628,12 +628,4 @@ describe 'Mailgunner::Client' do
       @client.get_list_stats('developers@mailgun.net').must_be_instance_of(Mailgunner::Response)
     end
   end
-
-  describe 'when initialized with a different json implementation' do
-    it 'emits a deprecation warning' do
-      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client :json option is deprecated/))
-
-      Mailgunner::Client.new(domain: @domain, api_key: @api_key, json: stub)
-    end
-  end
 end
