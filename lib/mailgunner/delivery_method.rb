@@ -7,13 +7,7 @@ module Mailgunner
     attr_accessor :settings
 
     def initialize(values)
-      @settings = values
-
-      @client = if @settings.has_key?(:domain)
-        Client.new(domain: @settings[:domain])
-      else
-        Client.new
-      end
+      @client = Client.new(values)
     end
 
     def deliver!(mail)
