@@ -56,4 +56,16 @@ describe 'Mailgunner::DeliveryMethod' do
 
     ActionMailer::Base.mailgun_settings = {}
   end
+
+  it 'allows the api key to be specified via mailgun settings' do
+    ENV['MAILGUN_API_KEY'] = nil
+
+    stub_request(:post, "#@base_url/#@domain/messages.mime")
+
+    ActionMailer::Base.mailgun_settings = {api_key: 'xxx'}
+
+    ExampleMailer.registration_confirmation(email: @address).deliver
+
+    ActionMailer::Base.mailgun_settings = {}
+  end
 end
