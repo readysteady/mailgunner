@@ -51,6 +51,18 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe "'@domain' NOT set" do
+    before do
+      ENV.delete('MAILGUN_SMTP_LOGIN')
+      @client = Mailgunner::Client.new(api_key: @api_key)
+      @client.domain.must_be_nil
+    end
+
+    it "raises an 'InvalidDomainError' when calling a method requiring '@domain'" do
+      proc { @client.get_credentials }.must_raise Mailgunner::InvalidDomainError
+    end
+  end
+
   describe 'api_key method' do
     it 'returns the value passed to the constructor' do
       @client.api_key.must_equal(@api_key)

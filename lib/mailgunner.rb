@@ -5,6 +5,7 @@ require 'mailgunner/delivery_method' if defined?(ActionMailer)
 
 module Mailgunner
   class Error < StandardError; end
+  class InvalidDomainError < Error; end
 
   class Client
     attr_accessor :domain, :api_key, :http
@@ -28,15 +29,15 @@ module Mailgunner
     end
 
     def send_message(attributes = {})
-      post("/v2/#{escape @domain}/messages", attributes)
+      post(v2_domain("messages"), attributes)
     end
 
     def send_mime(mail)
       to = ['to', Array(mail.to).join(',')]
 
-      message = ['message', mail.encoded, {filename: 'message.mime'}]
+      message = ['message', mail.encoded, { filename: 'message.mime' }]
 
-      multipart_post("/v2/#{escape @domain}/messages.mime", [to, message])
+      multipart_post(v2_domain("messages.mime"), [to, message])
     end
 
     def get_domains(params = {})
@@ -56,75 +57,75 @@ module Mailgunner
     end
 
     def get_credentials
-      get("/v2/domains/#{escape @domain}/credentials")
+      get(v2_domains_domain("credentials"))
     end
 
     def add_credentials(attributes)
-      post("/v2/domains/#{escape @domain}/credentials", attributes)
+      post(v2_domains_domain("credentials"), attributes)
     end
 
     def update_credentials(login, attributes)
-      put("/v2/domains/#{escape @domain}/credentials/#{escape login}", attributes)
+      put(v2_domains_domain("credentials/#{escape login}"), attributes)
     end
 
     def delete_credentials(login)
-      delete("/v2/domains/#{escape @domain}/credentials/#{escape login}")
+      delete(v2_domains_domain("credentials/#{escape login}"))
     end
 
     def get_unsubscribes(params = {})
-      get("/v2/#{escape @domain}/unsubscribes", params)
+      get(v2_domain("unsubscribes"), params)
     end
 
     def get_unsubscribe(address)
-      get("/v2/#{escape @domain}/unsubscribes/#{escape address}")
+      get(v2_domain("unsubscribes/#{escape address}"))
     end
 
     def delete_unsubscribe(address_or_id)
-      delete("/v2/#{escape @domain}/unsubscribes/#{escape address_or_id}")
+      delete(v2_domain("unsubscribes/#{escape address_or_id}"))
     end
 
     def add_unsubscribe(attributes = {})
-      post("/v2/#{escape @domain}/unsubscribes", attributes)
+      post(v2_domain("unsubscribes"), attributes)
     end
 
     def get_complaints(params = {})
-      get("/v2/#{escape @domain}/complaints", params)
+      get(v2_domain("complaints"), params)
     end
 
     def get_complaint(address)
-      get("/v2/#{escape @domain}/complaints/#{escape address}")
+      get(v2_domain("complaints/#{escape address}"))
     end
 
     def add_complaint(attributes = {})
-      post("/v2/#{escape @domain}/complaints", attributes)
+      post(v2_domain("complaints"), attributes)
     end
 
     def delete_complaint(address)
-      delete("/v2/#{escape @domain}/complaints/#{escape address}")
+      delete(v2_domain("complaints/#{escape address}"))
     end
 
     def get_bounces(params = {})
-      get("/v2/#{escape @domain}/bounces", params)
+      get(v2_domain("bounces"), params)
     end
 
     def get_bounce(address)
-      get("/v2/#{escape @domain}/bounces/#{escape address}")
+      get(v2_domain("bounces/#{escape address}"))
     end
 
     def add_bounce(attributes = {})
-      post("/v2/#{escape @domain}/bounces", attributes)
+      post(v2_domain("bounces"), attributes)
     end
 
     def delete_bounce(address)
-      delete("/v2/#{escape @domain}/bounces/#{escape address}")
+      delete(v2_domain("bounces/#{escape address}"))
     end
 
     def get_stats(params = {})
-      get("/v2/#{escape @domain}/stats", params)
+      get(v2_domain("stats"), params)
     end
 
     def get_events(params = {})
-      get("/v2/#{escape @domain}/events", params)
+      get(v2_domain("events"), params)
     end
 
     def get_routes(params = {})
@@ -148,47 +149,47 @@ module Mailgunner
     end
 
     def get_campaigns(params = {})
-      get("/v2/#{escape @domain}/campaigns", params)
+      get(v2_domain("campaigns"), params)
     end
 
     def get_campaign(id)
-      get("/v2/#{escape @domain}/campaigns/#{escape id}")
+      get(v2_domain("campaigns/#{escape id}"))
     end
 
     def add_campaign(attributes = {})
-      post("/v2/#{escape @domain}/campaigns", attributes)
+      post(v2_domain("campaigns"), attributes)
     end
 
     def update_campaign(id, attributes = {})
-      put("/v2/#{escape @domain}/campaigns/#{escape id}", attributes)
+      put(v2_domain("campaigns/#{escape id}"), attributes)
     end
 
     def delete_campaign(id)
-      delete("/v2/#{escape @domain}/campaigns/#{escape id}")
+      delete(v2_domain("campaigns/#{escape id}"))
     end
 
     def get_campaign_events(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/events", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/events"), params)
     end
 
     def get_campaign_stats(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/stats", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/stats"), params)
     end
 
     def get_campaign_clicks(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/clicks", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/clicks"), params)
     end
 
     def get_campaign_opens(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/opens", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/opens"), params)
     end
 
     def get_campaign_unsubscribes(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/unsubscribes", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/unsubscribes"), params)
     end
 
     def get_campaign_complaints(campaign_id, params = {})
-      get("/v2/#{escape @domain}/campaigns/#{escape campaign_id}/complaints", params)
+      get(v2_domain("campaigns/#{escape campaign_id}/complaints"), params)
     end
 
     def get_lists(params = {})
@@ -233,6 +234,19 @@ module Mailgunner
 
     def get_list_stats(list_address)
       get("/v2/lists/#{escape list_address}/stats")
+    end
+
+    def e_domain
+      raise InvalidDomainError, "'domain' is invalid. value: '#{@domain}'" unless @domain
+      escape @domain
+    end
+
+    def v2_domains_domain(url)
+      "/v2/domains/#{e_domain}/#{url}"
+    end
+
+    def v2_domain(url)
+      "/v2/#{e_domain}/#{url}"
     end
 
     private
