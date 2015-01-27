@@ -42,12 +42,8 @@ describe 'Mailgunner::Client' do
       ENV['MAILGUN_SMTP_LOGIN'] = 'postmaster@samples.mailgun.org'
 
       Mailgunner::Client.new(api_key: @api_key).domain.must_equal(@domain)
-    end
 
-    it 'defaults to nil if the MAILGUN_SMTP_LOGIN environment variable does not exist' do
       ENV.delete('MAILGUN_SMTP_LOGIN')
-
-      Mailgunner::Client.new(api_key: @api_key).domain.must_be_nil
     end
   end
 
@@ -60,6 +56,8 @@ describe 'Mailgunner::Client' do
       ENV['MAILGUN_API_KEY'] = @api_key
 
       Mailgunner::Client.new(domain: @domain).api_key.must_equal(@api_key)
+
+      ENV.delete('MAILGUN_API_KEY')
     end
   end
 
@@ -90,6 +88,13 @@ describe 'Mailgunner::Client' do
       stub_request(:post, "#@base_url/#@domain/messages").with(body: "to=#@encoded_address")
 
       @client.send_message({to: @address})
+    end
+
+    it 'raises an exception if the domain is not provided' do
+      @client = Mailgunner::Client.new(api_key: @api_key)
+
+      exception = proc { @client.send_message({}) }.must_raise(Mailgunner::Error)
+      exception.message.must_include('No domain provided')
     end
 
     it 'encodes the message attributes as multipart form data when sending attachments' do

@@ -6,11 +6,23 @@ require 'mailgunner/delivery_method' if defined?(ActionMailer)
 module Mailgunner
   class Error < StandardError; end
 
+  module NoDomainProvided
+    def self.to_s
+      raise Error, 'No domain provided'
+    end
+  end
+
   class Client
     attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
-      @domain = options.fetch(:domain) { ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last }
+      @domain = if options.key?(:domain)
+        options.fetch(:domain)
+      elsif ENV.key?('MAILGUN_SMTP_LOGIN')
+        ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
+      else
+        NoDomainProvided
+      end
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
