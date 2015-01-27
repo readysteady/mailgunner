@@ -17,5 +17,7 @@ module Mailgunner
     end
   end
 
-  ActionMailer::Base.add_delivery_method :mailgun, DeliveryMethod
+  if defined?(ActionMailer)
+    ActionMailer::Base.add_delivery_method :mailgun, DeliveryMethod
+  end
 end

@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 require 'cgi'
-require 'mailgunner/delivery_method' if defined?(ActionMailer)
+require 'mailgunner/delivery_method' if defined?(Mail)
 
 module Mailgunner
   class Error < StandardError; end
