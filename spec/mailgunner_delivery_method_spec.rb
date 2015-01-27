@@ -24,9 +24,7 @@ describe 'Mailgunner::DeliveryMethod' do
 
     ActionMailer::Base.delivery_method = :mailgun
 
-    ENV['MAILGUN_API_KEY'] = @api_key
-
-    ENV['MAILGUN_SMTP_LOGIN'] = "postmaster@#@domain"
+    ActionMailer::Base.mailgun_settings = {api_key: @api_key, domain: @domain}
   end
 
   it 'delivers the mail to mailgun in mime format' do
@@ -45,27 +43,5 @@ describe 'Mailgunner::DeliveryMethod' do
     exception = proc { ExampleMailer.registration_confirmation(email: @address).deliver }.must_raise(Mailgunner::Error)
 
     exception.message.must_include('Invalid API key')
-  end
-
-  it 'allows the domain to be specified explicitly via the delivery method settings' do
-    stub_request(:post, "#@base_url/app123.mailgun.org/messages.mime")
-
-    ActionMailer::Base.mailgun_settings = {domain: 'app123.mailgun.org'}
-
-    ExampleMailer.registration_confirmation(email: @address).deliver
-
-    ActionMailer::Base.mailgun_settings = {}
-  end
-
-  it 'allows the api key to be specified via mailgun settings' do
-    ENV['MAILGUN_API_KEY'] = nil
-
-    stub_request(:post, "#@base_url/#@domain/messages.mime")
-
-    ActionMailer::Base.mailgun_settings = {api_key: 'xxx'}
-
-    ExampleMailer.registration_confirmation(email: @address).deliver
-
-    ActionMailer::Base.mailgun_settings = {}
   end
 end
