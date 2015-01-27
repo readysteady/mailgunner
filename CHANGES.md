@@ -1,3 +1,11 @@
+# [v2.1.0](https://github.com/timcraft/mailgunner/tree/v2.1.0) (2015-01-27)
+
+  * Mailgunner::DeliveryMethod can now be used with Mail directly
+
+  * An exception is now raised when calling domain methods if the domain is not provided
+
+  * The api_key option can now be specified in ActionMailer::Base.mailgun_settings
+
 # [v2.0.0](https://github.com/timcraft/mailgunner/tree/v2.0.0) (2014-07-29)
 
   * Removed deprecated :json option
