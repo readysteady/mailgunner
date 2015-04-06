@@ -39,6 +39,14 @@ module Mailgunner
       get('/v3/address/parse', addresses: Array(values).join(','))
     end
 
+    def get_message(key)
+      get("/v3/domains/#{escape @domain}/messages/#{escape key}")
+    end
+
+    def get_mime_message(key)
+      get("/v3/domains/#{escape @domain}/messages/#{escape key}", {}, {'Accept' => 'message/rfc2822'})
+    end
+
     def send_message(attributes = {})
       post("/v3/#{escape @domain}/messages", attributes)
     end
@@ -49,6 +57,10 @@ module Mailgunner
       message = ['message', mail.encoded, {filename: 'message.mime'}]
 
       multipart_post("/v3/#{escape @domain}/messages.mime", [to, message])
+    end
+
+    def delete_message(key)
+      delete("/v3/domains/#{escape @domain}/messages/#{escape key}")
     end
 
     def get_domains(params = {})
@@ -249,8 +261,12 @@ module Mailgunner
 
     private
 
-    def get(path, params = {})
-      transmit(Net::HTTP::Get.new(request_uri(path, params)))
+    def get(path, params = {}, headers = {})
+      request = Net::HTTP::Get.new(request_uri(path, params))
+
+      headers.each { |k, v| request[k] = v }
+
+      transmit(request)
     end
 
     def post(path, attributes = {})

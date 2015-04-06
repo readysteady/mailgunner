@@ -77,6 +77,27 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_message method' do
+    it 'fetches the domain message resource with the given key and returns the response object' do
+      key = 'WyIzMmkey'
+
+      stub_request(:get, "#@base_url/domains/#@domain/messages/#{key}").to_return(@json_response)
+
+      @client.get_message(key).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_mime_message method' do
+    it 'fetches the domain message resource with the given key and returns the response object' do
+      key = 'WyIzMmkey'
+
+      stub_request(:get, "#@base_url/domains/#@domain/messages/#{key}").
+        with(headers: {'Accept' => 'message/rfc2822'}).to_return(@json_response)
+
+      @client.get_mime_message(key).must_equal(@json_response_object)
+    end
+  end
+
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns the response object' do
       stub_request(:post, "#@base_url/#@domain/messages").to_return(@json_response)
@@ -116,6 +137,16 @@ describe 'Mailgunner::Client' do
       stub_request(:post, "#@base_url/#@domain/messages.mime").to_return(@json_response)
 
       @client.send_mime(@mail).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'delete_message method' do
+    it 'deletes the domain message resource with the given key and returns the response object' do
+      key = 'WyIzMmkey'
+
+      stub_request(:delete, "#@base_url/domains/#@domain/messages/#{key}").to_return(@json_response)
+
+      @client.delete_message(key)
     end
   end
 
