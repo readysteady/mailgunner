@@ -10,7 +10,7 @@ describe 'Mailgunner::Client' do
 
     @api_key = 'xxx'
 
-    @base_url = "https://api:#{@api_key}@api.mailgun.net/v2"
+    @base_url = "https://api:#{@api_key}@api.mailgun.net/v3"
 
     @json_response = {headers: {'Content-Type' => 'application/json;charset=utf-8'}, body: '{"key":"value"}'}
 

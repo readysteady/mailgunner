@@ -18,7 +18,7 @@ describe 'Mailgunner::DeliveryMethod' do
 
     @domain = 'samples.mailgun.org'
 
-    @base_url = "https://api:#@api_key@api.mailgun.net/v2"
+    @base_url = "https://api:#@api_key@api.mailgun.net/v3"
 
     @address = 'user@example.com'
 
