@@ -30,7 +30,7 @@ describe 'Mailgunner::DeliveryMethod' do
   it 'delivers the mail to mailgun in mime format' do
     stub_request(:post, "#@base_url/#@domain/messages.mime")
 
-    ExampleMailer.registration_confirmation(email: @address).deliver
+    ExampleMailer.registration_confirmation(email: @address).deliver_now
   end
 
   it 'raises an exception if the api returns an error' do
@@ -40,7 +40,7 @@ describe 'Mailgunner::DeliveryMethod' do
       body: '{"message": "Invalid API key"}'
     })
 
-    exception = proc { ExampleMailer.registration_confirmation(email: @address).deliver }.must_raise(Mailgunner::Error)
+    exception = proc { ExampleMailer.registration_confirmation(email: @address).deliver_now }.must_raise(Mailgunner::Error)
 
     exception.message.must_include('Invalid API key')
   end
