@@ -1,3 +1,13 @@
+# [v2.2.0](https://github.com/timcraft/mailgunner/tree/v2.2.0) (2015-04-06)
+
+  * Added Mailgunner::Client#get_message method
+
+  * Added Mailgunner::Client#get_mime_message method
+
+  * Added Mailgunner::Client#delete_message method
+
+  * Updated API version prefix from v2 to v3
+
 # [v2.1.0](https://github.com/timcraft/mailgunner/tree/v2.1.0) (2015-01-27)
 
   * Mailgunner::DeliveryMethod can now be used with Mail directly
