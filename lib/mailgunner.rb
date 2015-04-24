@@ -104,6 +104,18 @@ module Mailgunner
     def update_connection_settings(attributes)
       put("/v3/domains/#{escape @domain}/connection", attributes)
     end
+    
+    def add_webhook(domain, webhook_type, webhook_url)
+      post("/v3/domains/#{escape domain}/webhooks", {id: webhook_type, url: webhook_url})
+    end
+    
+    def update_webhook(domain, webhook_type, webhook_url)
+      put("/v3/domains/#{escape domain}/webhooks/#{escape webhook_type}", {url: webhook_url})
+    end
+    
+    def delete_webhook(domain, webhook_type)
+      delete("/v3/domains/#{escape domain}/webhooks/#{escape webhook_type}")
+    end
 
     def get_unsubscribes(params = {})
       get("/v3/#{escape @domain}/unsubscribes", params)
