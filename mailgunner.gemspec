@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'mailgunner'
-  s.version = '2.2.0'
+  s.version = '2.2.1'
   s.license = 'LGPL-3.0'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
