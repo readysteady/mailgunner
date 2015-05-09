@@ -2,6 +2,7 @@ require 'net/http'
 require 'json'
 require 'cgi'
 require 'mailgunner/delivery_method' if defined?(Mail)
+require 'mailgunner/railtie' if defined?(Rails)
 
 module Mailgunner
   class Error < StandardError; end
