@@ -1,3 +1,11 @@
+# [v2.2.2](https://github.com/timcraft/mailgunner/tree/v2.2.2) (2016-01-20)
+
+  * Fixed cc and bcc recipients not included in multipart sends (#9)
+
+# [v2.2.1](https://github.com/timcraft/mailgunner/tree/v2.2.1) (2015-05-09)
+
+  * Fixed Rails load order issue (#8)
+
 # [v2.2.0](https://github.com/timcraft/mailgunner/tree/v2.2.0) (2015-04-06)
 
   * Added Mailgunner::Client#get_message method
