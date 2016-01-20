@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'webmock/minitest'
+require 'mocha/setup'
 require 'mailgunner'
 require 'json'
 require 'mail'
@@ -137,6 +138,19 @@ describe 'Mailgunner::Client' do
       stub_request(:post, "#@base_url/#@domain/messages.mime").to_return(@json_response)
 
       @client.send_mime(@mail).must_equal(@json_response_object)
+    end
+
+    it 'includes all recipients of the message' do
+      @mail.cc = 'carol@example.com'
+      @mail.bcc = 'dave@example.com'
+
+      stub_request(:post, "#@base_url/#@domain/messages.mime")
+
+      recipients = 'alice@example.com,carol@example.com,dave@example.com'
+
+      Net::HTTP::Post.any_instance.expects(:set_form).with(includes(['to', recipients]), 'multipart/form-data')
+
+      @client.send_mime(@mail)
     end
   end
 

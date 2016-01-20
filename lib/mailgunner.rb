@@ -53,7 +53,7 @@ module Mailgunner
     end
 
     def send_mime(mail)
-      to = ['to', Array(mail.to).join(',')]
+      to = ['to', Array(mail.destinations).join(',')]
 
       message = ['message', mail.encoded, {filename: 'message.mime'}]
 
