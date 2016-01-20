@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.authors = ['Tim Craft']
   s.email = ['mail@timcraft.com']
   s.homepage = 'http://github.com/timcraft/mailgunner'
-  s.description = 'A Ruby wrapper for the Mailgun API'
-  s.summary = 'See description'
+  s.description = 'Ruby client for the Mailgun API'
+  s.summary = 'Ruby client for the Mailgun API'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(LICENSE.txt README.md mailgunner.gemspec)
   s.required_ruby_version = '>= 1.9.3'
   s.add_development_dependency('rake', '~> 10.1')

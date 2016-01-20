@@ -2,7 +2,7 @@ mailgunner
 ==========
 
 
-A Ruby wrapper for the [Mailgun API](http://documentation.mailgun.net/api_reference.html).
+Ruby client for the [Mailgun API](http://documentation.mailgun.net/api_reference.html).
 
 
 Installation
