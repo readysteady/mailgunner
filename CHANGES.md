@@ -1,3 +1,11 @@
+# [v2.3.0](https://github.com/timcraft/mailgunner/tree/v2.3.0) (2016-02-28)
+
+  * Added Mailgunner::Client#get_total_stats method
+
+  * Deprecated Mailgunner::Client#get_stats method
+
+  * Removed Mailgunner::Client#get_list_stats method
+
 # [v2.2.2](https://github.com/timcraft/mailgunner/tree/v2.2.2) (2016-01-20)
 
   * Fixed cc and bcc recipients not included in multipart sends (#9)
