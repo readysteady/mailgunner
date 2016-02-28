@@ -262,10 +262,6 @@ module Mailgunner
       delete("/v3/lists/#{escape list_address}/members/#{escape member_address}")
     end
 
-    def get_list_stats(list_address)
-      get("/v3/lists/#{escape list_address}/stats")
-    end
-
     private
 
     def get(path, params = {}, headers = {})

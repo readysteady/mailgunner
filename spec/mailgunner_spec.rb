@@ -755,12 +755,4 @@ describe 'Mailgunner::Client' do
       @client.delete_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
     end
   end
-
-  describe 'get_list_stats method' do
-    it 'fetches the list stats resource and returns the response object' do
-      stub_request(:get, "#@base_url/lists/developers%40mailgun.net/stats").to_return(@json_response)
-
-      @client.get_list_stats('developers@mailgun.net').must_equal(@json_response_object)
-    end
-  end
 end
