@@ -5,6 +5,8 @@ require 'mailgunner'
 require 'json'
 require 'mail'
 
+WebMock::Config.instance.query_values_notation = :flat_array
+
 describe 'Mailgunner::Client' do
   before do
     @domain = 'samples.mailgun.org'
@@ -386,7 +388,7 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes an event parameter with multiple values' do
-      stub_request(:get, "#@base_url/#@domain/stats?event=sent&event=opened")
+      stub_request(:get, "#@base_url/#@domain/stats?event=opened&event=sent")
 
       @client.get_stats(event: %w(sent opened))
     end
