@@ -145,6 +145,8 @@ module Mailgunner
     end
 
     def get_stats(params = {})
+      Kernel.warn 'Mailgunner::Client#get_stats is deprecated'
+
       get("/v3/#{escape @domain}/stats", params)
     end
 

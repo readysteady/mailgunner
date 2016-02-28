@@ -375,6 +375,10 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_stats method' do
+    before do
+      Kernel.stubs(:warn)
+    end
+
     it 'fetches the domain stats resource and returns the response object' do
       stub_request(:get, "#@base_url/#@domain/stats").to_return(@json_response)
 
@@ -391,6 +395,14 @@ describe 'Mailgunner::Client' do
       stub_request(:get, "#@base_url/#@domain/stats?event=opened&event=sent")
 
       @client.get_stats(event: %w(sent opened))
+    end
+
+    it 'emits a deprecation warning' do
+      stub_request(:get, "#@base_url/#@domain/stats")
+
+      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#get_stats is deprecated/))
+
+      @client.get_stats
     end
   end
 
