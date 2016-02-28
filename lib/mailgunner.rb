@@ -148,6 +148,10 @@ module Mailgunner
       get("/v3/#{escape @domain}/stats", params)
     end
 
+    def get_total_stats(params = {})
+      get("/v3/#{escape @domain}/stats/total", params)
+    end
+
     def get_events(params = {})
       get("/v3/#{escape @domain}/events", params)
     end

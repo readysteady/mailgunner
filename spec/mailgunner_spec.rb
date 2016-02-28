@@ -394,6 +394,26 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_total_stats method' do
+    it 'fetches the domain total stats resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/stats/total?event=delivered").to_return(@json_response)
+
+      @client.get_total_stats(event: 'delivered').must_equal(@json_response_object)
+    end
+
+    it 'encodes optional parameters' do
+      stub_request(:get, "#@base_url/#@domain/stats/total?event=delivered&resolution=hour")
+
+      @client.get_total_stats(event: 'delivered', resolution: 'hour')
+    end
+
+    it 'encodes multiple event values' do
+      stub_request(:get, "#@base_url/#@domain/stats/total?event=delivered&event=accepted")
+
+      @client.get_total_stats(event: %w(accepted delivered))
+    end
+  end
+
   describe 'get_events method' do
     it 'fetches the domain events resource and returns the response object' do
       stub_request(:get, "#@base_url/#@domain/events").to_return(@json_response)
