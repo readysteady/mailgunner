@@ -83,23 +83,19 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'get_message method' do
-    it 'fetches the domain message resource with the given key and returns the response object' do
-      key = 'WyIzMmkey'
+    it 'fetches the domain message resource with the given id and returns the response object' do
+      stub_request(:get, "#@base_url/domains/#@domain/messages/#@id").to_return(@json_response)
 
-      stub_request(:get, "#@base_url/domains/#@domain/messages/#{key}").to_return(@json_response)
-
-      @client.get_message(key).must_equal(@json_response_object)
+      @client.get_message(@id).must_equal(@json_response_object)
     end
   end
 
   describe 'get_mime_message method' do
     it 'fetches the domain message resource with the given key and returns the response object' do
-      key = 'WyIzMmkey'
-
-      stub_request(:get, "#@base_url/domains/#@domain/messages/#{key}").
+      stub_request(:get, "#@base_url/domains/#@domain/messages/#@id").
         with(headers: {'Accept' => 'message/rfc2822'}).to_return(@json_response)
 
-      @client.get_mime_message(key).must_equal(@json_response_object)
+      @client.get_mime_message(@id).must_equal(@json_response_object)
     end
   end
 
@@ -160,11 +156,9 @@ describe 'Mailgunner::Client' do
 
   describe 'delete_message method' do
     it 'deletes the domain message resource with the given key and returns the response object' do
-      key = 'WyIzMmkey'
+      stub_request(:delete, "#@base_url/domains/#@domain/messages/#@id").to_return(@json_response)
 
-      stub_request(:delete, "#@base_url/domains/#@domain/messages/#{key}").to_return(@json_response)
-
-      @client.delete_message(key)
+      @client.delete_message(@id).must_equal(@json_response_object)
     end
   end
 
@@ -532,9 +526,9 @@ describe 'Mailgunner::Client' do
 
   describe 'get_route method' do
     it 'fetches the route resource with the given id and returns the response object' do
-      stub_request(:get, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
+      stub_request(:get, "#@base_url/routes/#@id").to_return(@json_response)
 
-      @client.get_route('4f3bad2335335426750048c6').must_equal(@json_response_object)
+      @client.get_route(@id).must_equal(@json_response_object)
     end
   end
 
@@ -554,23 +548,23 @@ describe 'Mailgunner::Client' do
 
   describe 'update_route method' do
     it 'updates the route resource with the given id and returns the response object' do
-      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
+      stub_request(:put, "#@base_url/routes/#@id").to_return(@json_response)
 
-      @client.update_route('4f3bad2335335426750048c6', {}).must_equal(@json_response_object)
+      @client.update_route(@id, {}).must_equal(@json_response_object)
     end
 
     it 'encodes the route attributes' do
-      stub_request(:put, "#@base_url/routes/4f3bad2335335426750048c6").with(body: 'priority=10')
+      stub_request(:put, "#@base_url/routes/#@id").with(body: 'priority=10')
 
-      @client.update_route('4f3bad2335335426750048c6', {priority: 10})
+      @client.update_route(@id, {priority: 10})
     end
   end
 
   describe 'delete_route method' do
     it 'deletes the route resource with the given id and returns the response object' do
-      stub_request(:delete, "#@base_url/routes/4f3bad2335335426750048c6").to_return(@json_response)
+      stub_request(:delete, "#@base_url/routes/#@id").to_return(@json_response)
 
-      @client.delete_route('4f3bad2335335426750048c6').must_equal(@json_response_object)
+      @client.delete_route(@id).must_equal(@json_response_object)
     end
   end
 
@@ -590,9 +584,9 @@ describe 'Mailgunner::Client' do
 
   describe 'get_campaign method' do
     it 'fetches the campaign resource with the given id and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id").to_return(@json_response)
 
-      @client.get_campaign('id').must_equal(@json_response_object)
+      @client.get_campaign(@id).must_equal(@json_response_object)
     end
   end
 
@@ -604,115 +598,115 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes the campaign attributes' do
-      stub_request(:post, "#@base_url/#@domain/campaigns").with(body: 'id=id')
+      stub_request(:post, "#@base_url/#@domain/campaigns").with(body: "id=#@id")
 
-      @client.add_campaign({id: 'id'})
+      @client.add_campaign({id: @id})
     end
   end
 
   describe 'update_campaign method' do
     it 'updates the campaign resource and returns the response object' do
-      stub_request(:put, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
+      stub_request(:put, "#@base_url/#@domain/campaigns/#@id").to_return(@json_response)
 
-      @client.update_campaign('id', {}).must_equal(@json_response_object)
+      @client.update_campaign(@id, {}).must_equal(@json_response_object)
     end
 
     it 'encodes the campaign attributes' do
-      stub_request(:put, "#@base_url/#@domain/campaigns/id").with(body: 'name=Example+Campaign')
+      stub_request(:put, "#@base_url/#@domain/campaigns/#@id").with(body: 'name=Example+Campaign')
 
-      @client.update_campaign('id', {name: 'Example Campaign'})
+      @client.update_campaign(@id, {name: 'Example Campaign'})
     end
   end
 
   describe 'delete_campaign method' do
     it 'deletes the domain campaign resource with the given id and returns the response object' do
-      stub_request(:delete, "#@base_url/#@domain/campaigns/id").to_return(@json_response)
+      stub_request(:delete, "#@base_url/#@domain/campaigns/#@id").to_return(@json_response)
 
-      @client.delete_campaign('id').must_equal(@json_response_object)
+      @client.delete_campaign(@id).must_equal(@json_response_object)
     end
   end
 
   describe 'get_campaign_events method' do
     it 'fetches the domain campaign events resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/events").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/events").to_return(@json_response)
 
-      @client.get_campaign_events('id').must_equal(@json_response_object)
+      @client.get_campaign_events(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/events?country=US&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/events?country=US&limit=100")
 
-      @client.get_campaign_events('id', country: 'US', limit: 100)
+      @client.get_campaign_events(@id, country: 'US', limit: 100)
     end
   end
 
   describe 'get_campaign_stats method' do
     it 'fetches the domain campaign stats resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/stats").to_return(@json_response)
 
-      @client.get_campaign_stats('id').must_equal(@json_response_object)
+      @client.get_campaign_stats(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/stats?groupby=dailyhour")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/stats?groupby=dailyhour")
 
-      @client.get_campaign_stats('id', groupby: 'dailyhour')
+      @client.get_campaign_stats(@id, groupby: 'dailyhour')
     end
   end
 
   describe 'get_campaign_clicks method' do
     it 'fetches the domain campaign clicks resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/clicks").to_return(@json_response)
 
-      @client.get_campaign_clicks('id').must_equal(@json_response_object)
+      @client.get_campaign_clicks(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/clicks?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/clicks?groupby=month&limit=100")
 
-      @client.get_campaign_clicks('id', groupby: 'month', limit: 100)
+      @client.get_campaign_clicks(@id, groupby: 'month', limit: 100)
     end
   end
 
   describe 'get_campaign_opens method' do
     it 'fetches the domain campaign opens resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/opens").to_return(@json_response)
 
-      @client.get_campaign_opens('id').must_equal(@json_response_object)
+      @client.get_campaign_opens(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/opens?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/opens?groupby=month&limit=100")
 
-      @client.get_campaign_opens('id', groupby: 'month', limit: 100)
+      @client.get_campaign_opens(@id, groupby: 'month', limit: 100)
     end
   end
 
   describe 'get_campaign_unsubscribes method' do
     it 'fetches the domain campaign unsubscribes resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/unsubscribes").to_return(@json_response)
 
-      @client.get_campaign_unsubscribes('id').must_equal(@json_response_object)
+      @client.get_campaign_unsubscribes(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/unsubscribes?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/unsubscribes?groupby=month&limit=100")
 
-      @client.get_campaign_unsubscribes('id', groupby: 'month', limit: 100)
+      @client.get_campaign_unsubscribes(@id, groupby: 'month', limit: 100)
     end
   end
 
   describe 'get_campaign_complaints method' do
     it 'fetches the domain campaign complaints resource and returns the response object' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints").to_return(@json_response)
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/complaints").to_return(@json_response)
 
-      @client.get_campaign_complaints('id').must_equal(@json_response_object)
+      @client.get_campaign_complaints(@id).must_equal(@json_response_object)
     end
 
     it 'encodes the optional parameters' do
-      stub_request(:get, "#@base_url/#@domain/campaigns/id/complaints?groupby=month&limit=100")
+      stub_request(:get, "#@base_url/#@domain/campaigns/#@id/complaints?groupby=month&limit=100")
 
-      @client.get_campaign_complaints('id', groupby: 'month', limit: 100)
+      @client.get_campaign_complaints(@id, groupby: 'month', limit: 100)
     end
   end
 
