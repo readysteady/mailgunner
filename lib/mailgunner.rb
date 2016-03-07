@@ -152,6 +152,10 @@ module Mailgunner
       delete("/v3/#{escape @domain}/bounces/#{escape address}")
     end
 
+    def delete_bounces
+      delete("/v3/#{escape @domain}/bounces")
+    end
+
     def get_stats(params = {})
       Kernel.warn 'Mailgunner::Client#get_stats is deprecated'
 

@@ -350,6 +350,14 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'delete_bounces method' do
+    it 'deletes the domain bounces resource and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/bounces").to_return(@json_response)
+
+      @client.delete_bounces.must_equal(@json_response_object)
+    end
+  end
+
   describe 'get_stats method' do
     before do
       Kernel.stubs(:warn)
