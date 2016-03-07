@@ -96,6 +96,14 @@ module Mailgunner
       delete("/v3/domains/#{escape @domain}/credentials/#{escape login}")
     end
 
+    def get_connection_settings
+      get("/v3/domains/#{escape @domain}/connection")
+    end
+
+    def update_connection_settings(attributes)
+      put("/v3/domains/#{escape @domain}/connection", attributes)
+    end
+
     def get_unsubscribes(params = {})
       get("/v3/#{escape @domain}/unsubscribes", params)
     end

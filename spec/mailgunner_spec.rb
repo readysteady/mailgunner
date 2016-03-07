@@ -242,6 +242,28 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_connection_settings method' do
+    it 'fetches the domain connection settings resource and returns the response object' do
+      stub_request(:get, "#@base_url/domains/#@domain/connection").to_return(@json_response)
+
+      @client.get_connection_settings.must_equal(@json_response_object)
+    end
+  end
+
+  describe 'update_connection_settings method' do
+    it 'updates the domain connection settings resource and returns the response object' do
+      stub_request(:put, "#@base_url/domains/#@domain/connection").to_return(@json_response)
+
+      @client.update_connection_settings({}).must_equal(@json_response_object)
+    end
+
+    it 'encodes the connection settings attributes' do
+      stub_request(:put, "#@base_url/domains/#@domain/connection").with(body: 'require_tls=true')
+
+      @client.update_connection_settings(require_tls: true)
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns the response object' do
       stub_request(:get, "#@base_url/#@domain/unsubscribes").to_return(@json_response)
