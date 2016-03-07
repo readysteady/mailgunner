@@ -26,6 +26,8 @@ describe 'Mailgunner::Client' do
     @encoded_address = 'user%40example.com'
 
     @login = 'bob.bar'
+
+    @id = 'idxxx'
   end
 
   describe 'http method' do
@@ -459,6 +461,58 @@ describe 'Mailgunner::Client' do
       stub_request(:get, "#@base_url/#@domain/events?event=accepted&limit=10")
 
       @client.get_events(event: 'accepted', limit: 10)
+    end
+  end
+
+  describe 'get_tags method' do
+    it 'fetches the domain tags resource and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/tags").to_return(@json_response)
+
+      @client.get_tags.must_equal(@json_response_object)
+    end
+
+    it 'encodes optional limit parameter' do
+      stub_request(:get, "#@base_url/#@domain/tags?limit=2")
+
+      @client.get_tags(limit: 2)
+    end
+  end
+
+  describe 'get_tag method' do
+    it 'fetches the domain tag resource with the given id and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/tags/#@id").to_return(@json_response)
+
+      @client.get_tag(@id).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'update_tag method' do
+    it 'updates the domain tag resource with the given id and returns the response object' do
+      stub_request(:put, "#@base_url/#@domain/tags/#@id").to_return(@json_response)
+
+      @client.update_tag(@id, {}).must_equal(@json_response_object)
+    end
+
+    it 'encodes the tag attributes' do
+      stub_request(:put, "#@base_url/#@domain/tags/#@id").with(body: 'description=Tag+description')
+
+      @client.update_tag(@id, description: 'Tag description')
+    end
+  end
+
+  describe 'get_tag_stats method' do
+    it 'fetches the domain tag stats resource with the given id and returns the response object' do
+      stub_request(:get, "#@base_url/#@domain/tags/#@id/stats?event=accepted").to_return(@json_response)
+
+      @client.get_tag_stats(@id, event: 'accepted').must_equal(@json_response_object)
+    end
+  end
+
+  describe 'delete_tag method' do
+    it 'deletes the domain tag resource with the given id and returns the response object' do
+      stub_request(:delete, "#@base_url/#@domain/tags/#@id").to_return(@json_response)
+
+      @client.delete_tag(@id).must_equal(@json_response_object)
     end
   end
 
