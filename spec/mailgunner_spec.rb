@@ -101,15 +101,9 @@ describe 'Mailgunner::Client' do
 
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns the response object' do
-      stub_request(:post, "#@base_url/#@domain/messages").to_return(@json_response)
+      stub_request(:post, "#@base_url/#@domain/messages").with(body: "to=#@encoded_address").to_return(@json_response)
 
-      @client.send_message({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the message attributes' do
-      stub_request(:post, "#@base_url/#@domain/messages").with(body: "to=#@encoded_address")
-
-      @client.send_message({to: @address})
+      @client.send_message({to: @address}).must_equal(@json_response_object)
     end
 
     it 'raises an exception if the domain is not provided' do
@@ -180,15 +174,9 @@ describe 'Mailgunner::Client' do
 
   describe 'add_domain method' do
     it 'posts to the domains resource and returns the response object' do
-      stub_request(:post, "#@base_url/domains").to_return(@json_response)
+      stub_request(:post, "#@base_url/domains").with(body: "name=#@domain").to_return(@json_response)
 
-      @client.add_domain({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the domain attributes' do
-      stub_request(:post, "#@base_url/domains").with(body: "name=#@domain")
-
-      @client.add_domain({name: @domain})
+      @client.add_domain({name: @domain}).must_equal(@json_response_object)
     end
   end
 
@@ -218,15 +206,9 @@ describe 'Mailgunner::Client' do
 
   describe 'update_credentials method' do
     it 'updates the domain credentials resource with the given login and returns the response object' do
-      stub_request(:put, "#@base_url/domains/#@domain/credentials/#@login").to_return(@json_response)
+      stub_request(:put, "#@base_url/domains/#@domain/credentials/#@login").with(body: 'password=secret').to_return(@json_response)
 
-      @client.update_credentials(@login, {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the password attribute' do
-      stub_request(:put, "#@base_url/domains/#@domain/credentials/#@login").with(body: 'password=secret')
-
-      @client.update_credentials(@login, password: 'secret')
+      @client.update_credentials(@login, {password: 'secret'}).must_equal(@json_response_object)
     end
   end
 
@@ -248,15 +230,9 @@ describe 'Mailgunner::Client' do
 
   describe 'update_connection_settings method' do
     it 'updates the domain connection settings resource and returns the response object' do
-      stub_request(:put, "#@base_url/domains/#@domain/connection").to_return(@json_response)
+      stub_request(:put, "#@base_url/domains/#@domain/connection").with(body: 'require_tls=true').to_return(@json_response)
 
-      @client.update_connection_settings({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the connection settings attributes' do
-      stub_request(:put, "#@base_url/domains/#@domain/connection").with(body: 'require_tls=true')
-
-      @client.update_connection_settings(require_tls: true)
+      @client.update_connection_settings({require_tls: true}).must_equal(@json_response_object)
     end
   end
 
@@ -292,15 +268,9 @@ describe 'Mailgunner::Client' do
 
   describe 'add_unsubscribe method' do
     it 'posts to the domain unsubscribes resource and returns the response object' do
-      stub_request(:post, "#@base_url/#@domain/unsubscribes").to_return(@json_response)
+      stub_request(:post, "#@base_url/#@domain/unsubscribes").with(body: "address=#@encoded_address").to_return(@json_response)
 
-      @client.add_unsubscribe({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the unsubscribe attributes' do
-      stub_request(:post, "#@base_url/#@domain/unsubscribes").with(body: "address=#@encoded_address")
-
-      @client.add_unsubscribe({address: @address})
+      @client.add_unsubscribe({address: @address}).must_equal(@json_response_object)
     end
   end
 
@@ -328,15 +298,9 @@ describe 'Mailgunner::Client' do
 
   describe 'add_complaint method' do
     it 'posts to the domain complaints resource and returns the response object' do
-      stub_request(:post, "#@base_url/#@domain/complaints").to_return(@json_response)
+      stub_request(:post, "#@base_url/#@domain/complaints").with(body: "address=#@encoded_address").to_return(@json_response)
 
-      @client.add_complaint({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the complaint attributes' do
-      stub_request(:post, "#@base_url/#@domain/complaints").with(body: "address=#@encoded_address")
-
-      @client.add_complaint({address: @address})
+      @client.add_complaint({address: @address}).must_equal(@json_response_object)
     end
   end
 
@@ -372,15 +336,9 @@ describe 'Mailgunner::Client' do
 
   describe 'add_bounce method' do
     it 'posts to the domain bounces resource and returns the response object' do
-      stub_request(:post, "#@base_url/#@domain/bounces").to_return(@json_response)
+      stub_request(:post, "#@base_url/#@domain/bounces").with(body: "address=#@encoded_address").to_return(@json_response)
 
-      @client.add_bounce({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the bounce attributes' do
-      stub_request(:post, "#@base_url/#@domain/bounces").with(body: "address=#@encoded_address")
-
-      @client.add_bounce({address: @address})
+      @client.add_bounce({address: @address}).must_equal(@json_response_object)
     end
   end
 
@@ -482,15 +440,9 @@ describe 'Mailgunner::Client' do
 
   describe 'update_tag method' do
     it 'updates the domain tag resource with the given id and returns the response object' do
-      stub_request(:put, "#@base_url/#@domain/tags/#@id").to_return(@json_response)
+      stub_request(:put, "#@base_url/#@domain/tags/#@id").with(body: 'description=Tag+description').to_return(@json_response)
 
-      @client.update_tag(@id, {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the tag attributes' do
-      stub_request(:put, "#@base_url/#@domain/tags/#@id").with(body: 'description=Tag+description')
-
-      @client.update_tag(@id, description: 'Tag description')
+      @client.update_tag(@id, {description: 'Tag description'}).must_equal(@json_response_object)
     end
   end
 
@@ -534,29 +486,17 @@ describe 'Mailgunner::Client' do
 
   describe 'add_route method' do
     it 'posts to the routes resource and returns the response object' do
-      stub_request(:post, "#@base_url/routes").to_return(@json_response)
+      stub_request(:post, "#@base_url/routes").with(body: 'description=Example+route&priority=1').to_return(@json_response)
 
-      @client.add_route({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the route attributes' do
-      stub_request(:post, "#@base_url/routes").with(body: 'description=Example+route&priority=1')
-
-      @client.add_route({description: 'Example route', priority: 1})
+      @client.add_route({description: 'Example route', priority: 1}).must_equal(@json_response_object)
     end
   end
 
   describe 'update_route method' do
     it 'updates the route resource with the given id and returns the response object' do
-      stub_request(:put, "#@base_url/routes/#@id").to_return(@json_response)
+      stub_request(:put, "#@base_url/routes/#@id").with(body: 'priority=10').to_return(@json_response)
 
-      @client.update_route(@id, {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the route attributes' do
-      stub_request(:put, "#@base_url/routes/#@id").with(body: 'priority=10')
-
-      @client.update_route(@id, {priority: 10})
+      @client.update_route(@id, {priority: 10}).must_equal(@json_response_object)
     end
   end
 
@@ -592,29 +532,17 @@ describe 'Mailgunner::Client' do
 
   describe 'add_campaign method' do
     it 'posts to the domain campaigns resource and returns the response object' do
-      stub_request(:post, "#@base_url/#@domain/campaigns").to_return(@json_response)
+      stub_request(:post, "#@base_url/#@domain/campaigns").with(body: "id=#@id").to_return(@json_response)
 
-      @client.add_campaign({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the campaign attributes' do
-      stub_request(:post, "#@base_url/#@domain/campaigns").with(body: "id=#@id")
-
-      @client.add_campaign({id: @id})
+      @client.add_campaign({id: @id}).must_equal(@json_response_object)
     end
   end
 
   describe 'update_campaign method' do
     it 'updates the campaign resource and returns the response object' do
-      stub_request(:put, "#@base_url/#@domain/campaigns/#@id").to_return(@json_response)
+      stub_request(:put, "#@base_url/#@domain/campaigns/#@id").with(body: 'name=Example+Campaign').to_return(@json_response)
 
-      @client.update_campaign(@id, {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the campaign attributes' do
-      stub_request(:put, "#@base_url/#@domain/campaigns/#@id").with(body: 'name=Example+Campaign')
-
-      @client.update_campaign(@id, {name: 'Example Campaign'})
+      @client.update_campaign(@id, {name: 'Example Campaign'}).must_equal(@json_response_object)
     end
   end
 
@@ -734,29 +662,17 @@ describe 'Mailgunner::Client' do
 
   describe 'add_list method' do
     it 'posts to the lists resource and returns the response object' do
-      stub_request(:post, "#@base_url/lists").to_return(@json_response)
+      stub_request(:post, "#@base_url/lists").with(body: 'address=developers%40mailgun.net').to_return(@json_response)
 
-      @client.add_list({}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the list attributes' do
-      stub_request(:post, "#@base_url/lists").with(body: 'address=developers%40mailgun.net')
-
-      @client.add_list({address: 'developers@mailgun.net'})
+      @client.add_list({address: 'developers@mailgun.net'}).must_equal(@json_response_object)
     end
   end
 
   describe 'update_list method' do
     it 'updates the list resource and returns the response object' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net").to_return(@json_response)
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net").with(body: 'name=Example+list').to_return(@json_response)
 
-      @client.update_list('developers@mailgun.net', {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the list attributes' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net").with(body: 'name=Example+list')
-
-      @client.update_list('developers@mailgun.net', {name: 'Example list'})
+      @client.update_list('developers@mailgun.net', {name: 'Example list'}).must_equal(@json_response_object)
     end
   end
 
@@ -792,29 +708,17 @@ describe 'Mailgunner::Client' do
 
   describe 'add_list_member method' do
     it 'posts to the list members resource and returns the response object' do
-      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members").to_return(@json_response)
+      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members").with(body: "address=#@encoded_address").to_return(@json_response)
 
-      @client.add_list_member('developers@mailgun.net', {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the list attributes' do
-      stub_request(:post, "#@base_url/lists/developers%40mailgun.net/members").with(body: "address=#@encoded_address")
-
-      @client.add_list_member('developers@mailgun.net', {address: @address})
+      @client.add_list_member('developers@mailgun.net', {address: @address}).must_equal(@json_response_object)
     end
   end
 
   describe 'update_list_member method' do
     it 'updates the list member resource with the given address and returns the response object' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").to_return(@json_response)
+      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").with(body: 'subscribed=no').to_return(@json_response)
 
-      @client.update_list_member('developers@mailgun.net', @address, {}).must_equal(@json_response_object)
-    end
-
-    it 'encodes the list member attributes' do
-      stub_request(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address").with(body: 'subscribed=no')
-
-      @client.update_list_member('developers@mailgun.net', @address, {subscribed: 'no'})
+      @client.update_list_member('developers@mailgun.net', @address, {subscribed: 'no'}).must_equal(@json_response_object)
     end
   end
 
