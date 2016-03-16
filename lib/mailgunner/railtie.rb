@@ -1,6 +1,6 @@
 module Mailgunner
   class Railtie < Rails::Railtie
-    initializer 'mailgunner' do
+    initializer 'mailgunner', before: 'action_mailer.set_configs' do
       ActiveSupport.on_load(:action_mailer) do
         require 'mailgunner/delivery_method'
       end
