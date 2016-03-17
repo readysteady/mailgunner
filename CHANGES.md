@@ -1,3 +1,23 @@
+# [v2.4.0](https://github.com/timcraft/mailgunner/tree/v2.4.0) (2016-03-17)
+
+  * Fixed Rails load order issue when specifying mailgun_settings (#10)
+
+  * Added Mailgunner::Client#get_connection_settings method
+
+  * Added Mailgunner::Client#update_connection_settings method
+
+  * Added Mailgunner::Client#get_tags method
+
+  * Added Mailgunner::Client#get_tag method
+
+  * Added Mailgunner::Client#update_tag method
+
+  * Added Mailgunner::Client#get_tag_stats method
+
+  * Added Mailgunner::Client#delete_tag method
+
+  * Added Mailgunner::Client#delete_bounces method
+
 # [v2.3.0](https://github.com/timcraft/mailgunner/tree/v2.3.0) (2016-02-28)
 
   * Added Mailgunner::Client#get_total_stats method

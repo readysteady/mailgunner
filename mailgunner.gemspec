@@ -1,6 +1,8 @@
+require_relative './lib/mailgunner/version'
+
 Gem::Specification.new do |s|
   s.name = 'mailgunner'
-  s.version = '2.3.0'
+  s.version = Mailgunner::VERSION
   s.license = 'LGPL-3.0'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
