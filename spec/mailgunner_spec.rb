@@ -737,4 +737,12 @@ describe 'Mailgunner::Client' do
       @client.delete_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
     end
   end
+
+  it 'sets the user agent header' do
+    headers = {'User-Agent' => /\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/}
+
+    stub_request(:get, "#@base_url/domains/#@domain/messages/#@id").with(headers: headers)
+
+    @client.get_message(@id)
+  end
 end

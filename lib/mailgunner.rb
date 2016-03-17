@@ -1,6 +1,7 @@
 require 'net/http'
 require 'json'
 require 'cgi'
+require 'mailgunner/version'
 require 'mailgunner/delivery_method' if defined?(Mail)
 require 'mailgunner/railtie' if defined?(Rails)
 
@@ -320,8 +321,11 @@ module Mailgunner
       transmit(Net::HTTP::Delete.new(path))
     end
 
+    USER_AGENT = "Ruby/#{RUBY_VERSION} Mailgunner/#{VERSION}"
+
     def transmit(message)
       message.basic_auth('api', @api_key)
+      message['User-Agent'] = USER_AGENT
 
       yield message if block_given?
 
