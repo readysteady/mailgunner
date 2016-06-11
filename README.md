@@ -47,6 +47,17 @@ the following line to `config/environments/production.rb`:
 config.action_mailer.delivery_method = :mailgun
 ````
 
+If for some reason you can't set the required ENV variables, you can configure Mailgunner
+through ActionMailer settings:
+
+```ruby
+config.action_mailer.mailgun_settings = {
+  domain: 'test.com'
+  api_key: 'your-api-key'
+}
+
+```
+
 Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
 
 
