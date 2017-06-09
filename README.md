@@ -1,5 +1,7 @@
 # mailgunner
 
+[![Gem Version](https://badge.fury.io/rb/mailgunner.svg)](https://badge.fury.io/rb/mailgunner) [![Build Status](https://api.travis-ci.org/timcraft/mailgunner.svg?branch=master)](https://travis-ci.org/timcraft/mailgunner)
+
 
 Ruby client for the [Mailgun API](http://documentation.mailgun.net/api_reference.html).
 
