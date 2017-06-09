@@ -1,18 +1,15 @@
-mailgunner
-==========
+# mailgunner
 
 
 Ruby client for the [Mailgun API](http://documentation.mailgun.net/api_reference.html).
 
 
-Installation
-------------
+## Installation
 
     $ gem install mailgunner
 
 
-Quick start
------------
+## Quick start
 
 ```ruby
 require 'mailgunner'
@@ -26,8 +23,7 @@ response = mailgun.get_stats(limit: 5)
 ```
 
 
-Storing the API key
--------------------
+## Storing the API key
 
 Best practice for storing credentials for external services is to use environment
 variables, as described by [12factor.net/config](http://www.12factor.net/config).
@@ -36,8 +32,7 @@ from the MAILGUN_API_KEY and MAILGUN_SMTP_LOGIN environment variables. These wil
 exist if you are using Mailgun on Heroku, or you can set them manually.
 
 
-ActionMailer integration
-------------------------
+## ActionMailer integration
 
 Mailgunner integrates with [ActionMailer](https://rubygems.org/gems/actionmailer).
 If you are using Rails, you can use Mailgunner to send mail via Mailgun by adding
@@ -61,8 +56,7 @@ config.action_mailer.mailgun_settings = {
 Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
 
 
-Email validation
-----------------
+## Email validation
 
 If you only need to use Mailgun's [email address validation service](http://documentation.mailgun.com/api-email-validation.html),
 you can instead use your Mailgun public key to authenticate like this:
