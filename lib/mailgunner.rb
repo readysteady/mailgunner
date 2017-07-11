@@ -15,7 +15,7 @@ module Mailgunner
   end
 
   class Client
-    attr_accessor :domain, :api_key, :http
+    attr_accessor :domain, :api_key, :public_key, :http
 
     def initialize(options = {})
       @domain = if options.key?(:domain)
@@ -28,13 +28,15 @@ module Mailgunner
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
+      @public_key = options.fetch(:public_key) { ENV.fetch('MAILGUN_PUBLIC_KEY') }
+
       @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
 
       @http.use_ssl = true
     end
 
     def validate_address(value)
-      get('/v3/address/validate', address: value)
+      get('/v3/address/validate', {address: value}, {}, :public_key)
     end
 
     def parse_addresses(values)
@@ -297,34 +299,34 @@ module Mailgunner
 
     private
 
-    def get(path, params = {}, headers = {})
+    def get(path, params = {}, headers = {}, auth = :api_key)
       request = Net::HTTP::Get.new(request_uri(path, params))
 
       headers.each { |k, v| request[k] = v }
 
-      transmit(request)
+      transmit(request, auth)
     end
 
-    def post(path, attributes = {})
-      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form_data(attributes) }
+    def post(path, attributes = {}, auth = :api_key)
+      transmit(Net::HTTP::Post.new(path), auth) { |message| message.set_form_data(attributes) }
     end
 
-    def multipart_post(path, data)
-      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form(data, 'multipart/form-data') }
+    def multipart_post(path, data, auth = :api_key)
+      transmit(Net::HTTP::Post.new(path), auth) { |message| message.set_form(data, 'multipart/form-data') }
     end
 
-    def put(path, attributes = {})
-      transmit(Net::HTTP::Put.new(path)) { |message| message.set_form_data(attributes) }
+    def put(path, attributes = {}, auth = :api_key)
+      transmit(Net::HTTP::Put.new(path), auth) { |message| message.set_form_data(attributes) }
     end
 
-    def delete(path)
-      transmit(Net::HTTP::Delete.new(path))
+    def delete(path, auth = :api_key)
+      transmit(Net::HTTP::Delete.new(path), auth)
     end
 
     USER_AGENT = "Ruby/#{RUBY_VERSION} Mailgunner/#{VERSION}"
 
-    def transmit(message)
-      message.basic_auth('api', @api_key)
+    def transmit(message, auth = :api_key)
+      message.basic_auth('api', ((auth == :api_key) ? @api_key : @public_key))
       message['User-Agent'] = USER_AGENT
 
       yield message if block_given?
