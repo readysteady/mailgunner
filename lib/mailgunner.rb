@@ -347,7 +347,7 @@ module Mailgunner
     def json?(response)
       content_type = response['Content-Type']
 
-      content_type && content_type.split(';').first == 'application/json'
+      !response.body.empty? && content_type && content_type.split(';').first == 'application/json'
     end
 
     def request_uri(path, hash)
