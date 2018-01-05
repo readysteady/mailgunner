@@ -350,14 +350,10 @@ module Mailgunner
       content_type && content_type.split(';').first == 'application/json'
     end
 
-    def request_uri(path, hash)
-      return path if hash.empty?
+    def request_uri(path, params)
+      return path if params.empty?
 
-      query_params = hash.map do |key, values|
-        Array(values).map { |value| "#{escape(key)}=#{escape(value)}" }
-      end
-
-      path + '?' + query_params.flatten.join('&')
+      path + '?' + params.flat_map { |k, vs| Array(vs).map { |v| "#{escape(k)}=#{escape(v)}" } }.join('&')
     end
 
     def escape(component)
