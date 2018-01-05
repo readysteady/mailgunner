@@ -27,8 +27,11 @@ describe 'Mailgunner::Client' do
   end
 
   def stub(http_method, url, body: nil, headers: nil)
+    headers ||= {}
+    headers['User-Agent'] = /\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/
+
     params = {basic_auth: ['api', @api_key]}
-    params[:headers] = headers if headers
+    params[:headers] = headers
     params[:body] = body if body
 
     response_headers = {'Content-Type' => 'application/json;charset=utf-8'}
@@ -796,11 +799,21 @@ describe 'Mailgunner::Client' do
     end
   end
 
-  it 'sets the user agent header' do
-    headers = {'User-Agent' => /\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/}
+  it 'raises an exception for authentication errors' do
+    stub_request(:any, /api\.mailgun\.net/).to_return(status: 401)
 
-    stub(:get, "#@base_url/domains/#@domain/messages/#@id", headers: headers)
+    proc { @client.get_message(@id) }.must_raise(Mailgunner::AuthenticationError)
+  end
 
-    @client.get_message(@id)
+  it 'raises an exception for client errors' do
+    stub_request(:any, /api\.mailgun\.net/).to_return(status: 400)
+
+    proc { @client.get_message(@id) }.must_raise(Mailgunner::ClientError)
+  end
+
+  it 'raises an exception for server errors' do
+    stub_request(:any, /api\.mailgun\.net/).to_return(status: 500)
+
+    proc { @client.get_message(@id) }.must_raise(Mailgunner::ServerError)
   end
 end

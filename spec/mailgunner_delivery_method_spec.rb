@@ -34,16 +34,4 @@ describe 'Mailgunner::DeliveryMethod' do
 
     ExampleMailer.registration_confirmation(email: @address).deliver_now
   end
-
-  it 'raises an exception if the api returns an error' do
-    stub_request(:post, "#@base_url/#@domain/messages.mime").with(basic_auth: @auth).to_return({
-      status: 403,
-      headers: {'Content-Type' => 'application/json'},
-      body: '{"message": "Invalid API key"}'
-    })
-
-    exception = proc { ExampleMailer.registration_confirmation(email: @address).deliver_now }.must_raise(Mailgunner::Error)
-
-    exception.message.must_include('Invalid API key')
-  end
 end

@@ -2,18 +2,11 @@ require 'net/http'
 require 'json'
 require 'cgi'
 require 'mailgunner/version'
+require 'mailgunner/errors'
 require 'mailgunner/delivery_method' if defined?(Mail)
 require 'mailgunner/railtie' if defined?(Rails)
 
 module Mailgunner
-  class Error < StandardError; end
-
-  module NoDomainProvided
-    def self.to_s
-      raise Error, 'No domain provided'
-    end
-  end
-
   class Client
     attr_accessor :domain, :api_key, :http
 
@@ -353,15 +346,24 @@ module Mailgunner
     end
 
     def parse(response)
-      if Net::HTTPSuccess === response
-        json?(response) ? JSON.parse(response.body) : response.body
+      case response
+      when Net::HTTPSuccess
+        parse_success(response)
+      when Net::HTTPUnauthorized
+        raise AuthenticationError, "HTTP #{response.code}"
+      when Net::HTTPClientError
+        raise ClientError, "HTTP #{response.code}"
+      when Net::HTTPServerError
+        raise ServerError, "HTTP #{response.code}"
       else
-        if json?(response)
-          raise Error, "HTTP #{response.code}: #{JSON.parse(response.body).fetch('message')}"
-        else
-          raise Error, "HTTP #{response.code}"
-        end
+        raise Error, "HTTP #{response.code}"
       end
+    end
+
+    def parse_success(response)
+      return JSON.parse(response.body) if json?(response)
+
+      response.body
     end
 
     def json?(response)
