@@ -5,8 +5,6 @@ require 'mailgunner'
 require 'json'
 require 'mail'
 
-WebMock::Config.instance.query_values_notation = :flat_array
-
 describe 'Mailgunner::Client' do
   before do
     @domain = 'samples.mailgun.org'
@@ -384,9 +382,13 @@ describe 'Mailgunner::Client' do
     end
 
     it 'encodes an event parameter with multiple values' do
+      WebMock::Config.instance.query_values_notation = :flat_array
+
       stub(:get, "#@base_url/#@domain/stats?event=opened&event=sent")
 
       @client.get_stats(event: %w(sent opened))
+
+      WebMock::Config.instance.query_values_notation = nil
     end
 
     it 'emits a deprecation warning' do
@@ -411,10 +413,14 @@ describe 'Mailgunner::Client' do
       @client.get_total_stats(event: 'delivered', resolution: 'hour')
     end
 
-    it 'encodes multiple event values' do
+    it 'encodes an event parameter with multiple values' do
+      WebMock::Config.instance.query_values_notation = :flat_array
+
       stub(:get, "#@base_url/#@domain/stats/total?event=delivered&event=accepted")
 
       @client.get_total_stats(event: %w(accepted delivered))
+
+      WebMock::Config.instance.query_values_notation = nil
     end
   end
 
@@ -521,6 +527,50 @@ describe 'Mailgunner::Client' do
       stub(:delete, "#@base_url/routes/#@id")
 
       @client.delete_route(@id).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_webhooks method' do
+    it 'fetches the domain webhooks resource and returns the response object' do
+      stub(:get, "#@base_url/domains/#@domain/webhooks")
+
+      @client.get_webhooks.must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_webhook method' do
+    it 'fetches the domain webhook resource with the given id and returns the response object' do
+      stub(:get, "#@base_url/domains/#@domain/webhooks/#@id")
+
+      @client.get_webhook(@id).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'add_webhook method' do
+    it 'posts to the domain webhooks resource and returns the response object' do
+      attributes = {id: @id, url: 'http://example.com/webhook'}
+
+      stub(:post, "#@base_url/domains/#@domain/webhooks", body: attributes)
+
+      @client.add_webhook(attributes).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'update_webhook method' do
+    it 'updates the domain webhook resource with the given id and returns the response object' do
+      attributes = {url: 'http://example.com/webhook'}
+
+      stub(:put, "#@base_url/domains/#@domain/webhooks/#@id", body: attributes)
+
+      @client.update_webhook(@id, attributes).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'delete_webhook method' do
+    it 'deletes the domain webhook resource with the given address and returns the response object' do
+      stub(:delete, "#@base_url/domains/#@domain/webhooks/#@id")
+
+      @client.delete_webhook(@id).must_equal(@json_response_object)
     end
   end
 

@@ -211,6 +211,26 @@ module Mailgunner
       delete("/v3/routes/#{escape id}")
     end
 
+    def get_webhooks
+      get("/v3/domains/#{escape @domain}/webhooks")
+    end
+
+    def get_webhook(id)
+      get("/v3/domains/#{escape @domain}/webhooks/#{escape id}")
+    end
+
+    def add_webhook(attributes = {})
+      post("/v3/domains/#{escape @domain}/webhooks", attributes)
+    end
+
+    def update_webhook(id, attributes = {})
+      put("/v3/domains/#{escape @domain}/webhooks/#{escape id}", attributes)
+    end
+
+    def delete_webhook(id)
+      delete("/v3/domains/#{escape @domain}/webhooks/#{escape id}")
+    end
+
     def get_campaigns(params = {})
       get("/v3/#{escape @domain}/campaigns", params)
     end
