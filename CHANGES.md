@@ -1,4 +1,24 @@
-# [v2.4.0](https://github.com/timcraft/mailgunner/tree/v2.4.0) (2016-03-17)
+# 2.5.0
+
+  * Fixed compatibility with mail v2.6.6+ (#13)
+
+  * Added Mailgunner::Client#get_webhooks method
+
+  * Added Mailgunner::Client#get_webhook method
+
+  * Added Mailgunner::Client#add_webhook method
+
+  * Added Mailgunner::Client#update_webhook method
+
+  * Added Mailgunner::Client#delete_webhook method
+
+  * Added Mailgun::AuthenticationError exception class
+
+  * Added Mailgun::ClientError exception class
+
+  * Added Mailgun::ServerError exception class
+
+# 2.4.0
 
   * Fixed Rails load order issue when specifying mailgun_settings (#10)
 
@@ -18,7 +38,7 @@
 
   * Added Mailgunner::Client#delete_bounces method
 
-# [v2.3.0](https://github.com/timcraft/mailgunner/tree/v2.3.0) (2016-02-28)
+# 2.3.0
 
   * Added Mailgunner::Client#get_total_stats method
 
@@ -26,15 +46,15 @@
 
   * Removed Mailgunner::Client#get_list_stats method
 
-# [v2.2.2](https://github.com/timcraft/mailgunner/tree/v2.2.2) (2016-01-20)
+# 2.2.2
 
   * Fixed cc and bcc recipients not included in multipart sends (#9)
 
-# [v2.2.1](https://github.com/timcraft/mailgunner/tree/v2.2.1) (2015-05-09)
+# 2.2.1
 
   * Fixed Rails load order issue (#8)
 
-# [v2.2.0](https://github.com/timcraft/mailgunner/tree/v2.2.0) (2015-04-06)
+# 2.2.0
 
   * Added Mailgunner::Client#get_message method
 
@@ -44,7 +64,7 @@
 
   * Updated API version prefix from v2 to v3
 
-# [v2.1.0](https://github.com/timcraft/mailgunner/tree/v2.1.0) (2015-01-27)
+# 2.1.0
 
   * Mailgunner::DeliveryMethod can now be used with Mail directly
 
@@ -52,7 +72,7 @@
 
   * The api_key option can now be specified in ActionMailer::Base.mailgun_settings
 
-# [v2.0.0](https://github.com/timcraft/mailgunner/tree/v2.0.0) (2014-07-29)
+# 2.0.0
 
   * Removed deprecated :json option
 
@@ -62,7 +82,7 @@
 
   * Added Mailgunner::Client methods for managing SMTP credentials
 
-# [v1.3.0](https://github.com/timcraft/mailgunner/tree/v1.3.0) (2013-11-03)
+# 1.3.0
 
   * Added [ActionMailer](https://rubygems.org/gems/actionmailer) integration
 
@@ -76,7 +96,7 @@
 
   * Removed deprecated json accessor methods
 
-# [v1.2.0](https://github.com/timcraft/mailgunner/tree/v1.2.0) (2013-09-01)
+# 1.2.0
 
   * Added methods for the new [Email Validation endpoint](http://documentation.mailgun.com/api-email-validation.html)
 
@@ -84,7 +104,7 @@
 
   * Deprecated the Mailgunner::Client#get_log method (use Mailgunner::Client#get_events instead)
 
-# [v1.1.0](https://github.com/timcraft/mailgunner/tree/v1.1.0) (2013-04-01)
+# 1.1.0
 
   * Fixed use of insecure JSON.load
 
@@ -92,6 +112,6 @@
 
   * Deprecated the :json option and associated accessor methods
 
-# [v1.0.0](https://github.com/timcraft/mailgunner/tree/v1.0.0) (2013-01-02)
+# 1.0.0
 
   * First version!
