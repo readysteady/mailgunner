@@ -29,8 +29,8 @@ response = mailgun.get_stats(limit: 5)
 
 Best practice for storing credentials for external services is to use environment
 variables, as described by [12factor.net/config](http://www.12factor.net/config).
-Mailgunner::Client defaults to extracting the domain and api_key values it needs
-from the MAILGUN_API_KEY and MAILGUN_SMTP_LOGIN environment variables. These will
+`Mailgunner::Client` defaults to extracting the domain and api_key values it needs
+from the `MAILGUN_API_KEY` and `MAILGUN_SMTP_LOGIN` environment variables. These will
 exist if you are using Mailgun on Heroku, or you can set them manually.
 
 
@@ -49,7 +49,7 @@ through ActionMailer settings:
 
 ```ruby
 config.action_mailer.mailgun_settings = {
-  domain: 'test.com'
+  domain: 'test.com',
   api_key: 'your-api-key'
 }
 
