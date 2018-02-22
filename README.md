@@ -49,7 +49,7 @@ through ActionMailer settings:
 
 ```ruby
 config.action_mailer.mailgun_settings = {
-  domain: 'test.com'
+  domain: 'test.com',
   api_key: 'your-api-key'
 }
 
