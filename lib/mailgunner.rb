@@ -8,20 +8,29 @@ require 'mailgunner/railtie' if defined?(Rails)
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :http
+    attr_accessor :domain, :api_key, :http, :endpoint
 
     def initialize(options = {})
       @domain = if options.key?(:domain)
-        options.fetch(:domain)
-      elsif ENV.key?('MAILGUN_SMTP_LOGIN')
-        ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
-      else
-        NoDomainProvided
-      end
+                  options.fetch(:domain)
+                elsif ENV.key?('MAILGUN_SMTP_LOGIN')
+                  ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
+                else
+                  NoDomainProvided
+                end
 
-      @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
+      @endpoint = if options.key?(:endpoint)
+                    options.fetch(:endpoint)
+                  elsif ENV.key?('MAILGUN_ENDPOINT')
+                    ENV.fetch('MAILGUN_ENDPOINT')
+                  else
+                    'api.mailgun.net'
+                  end
 
-      @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
+
+      @api_key = options.fetch(:api_key) {ENV.fetch('MAILGUN_API_KEY')}
+
+      @http = Net::HTTP.new(@endpoint, Net::HTTP.https_default_port)
 
       @http.use_ssl = true
     end
@@ -313,21 +322,21 @@ module Mailgunner
     def get(path, params = {}, headers = {})
       request = Net::HTTP::Get.new(request_uri(path, params))
 
-      headers.each { |k, v| request[k] = v }
+      headers.each {|k, v| request[k] = v}
 
       transmit(request)
     end
 
     def post(path, attributes = {})
-      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form_data(attributes) }
+      transmit(Net::HTTP::Post.new(path)) {|message| message.set_form_data(attributes)}
     end
 
     def multipart_post(path, data)
-      transmit(Net::HTTP::Post.new(path)) { |message| message.set_form(data, 'multipart/form-data') }
+      transmit(Net::HTTP::Post.new(path)) {|message| message.set_form(data, 'multipart/form-data')}
     end
 
     def put(path, attributes = {})
-      transmit(Net::HTTP::Put.new(path)) { |message| message.set_form_data(attributes) }
+      transmit(Net::HTTP::Put.new(path)) {|message| message.set_form_data(attributes)}
     end
 
     def delete(path)
@@ -375,7 +384,7 @@ module Mailgunner
     def request_uri(path, params)
       return path if params.empty?
 
-      path + '?' + params.flat_map { |k, vs| Array(vs).map { |v| "#{escape(k)}=#{escape(v)}" } }.join('&')
+      path + '?' + params.flat_map {|k, vs| Array(vs).map {|v| "#{escape(k)}=#{escape(v)}"}}.join('&')
     end
 
     def escape(component)
