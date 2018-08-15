@@ -7,6 +7,8 @@ module Mailgunner
 
   class ServerError < Error; end
 
+  class InvalidRegion < Error; end
+
   module NoDomainProvided
     def self.to_s
       raise Error, 'No domain provided'

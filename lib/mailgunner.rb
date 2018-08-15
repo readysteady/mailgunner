@@ -8,7 +8,7 @@ require 'mailgunner/railtie' if defined?(Rails)
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :http
+    attr_accessor :domain, :api_key, :region, :http
 
     def initialize(options = {})
       @domain = if options.key?(:domain)
@@ -21,7 +21,13 @@ module Mailgunner
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
-      @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
+      # Region can be nil, in which case we'll default to US region
+      @region = (options[:region] || ENV['MAILGUN_REGION'] || 'us').to_s
+      raise InvalidRegion, 'Region must be "eu" or "us"' unless %w(eu us).include?(@region)
+
+      endpoint = @region.to_s == 'eu' ? 'api.eu.mailgun.net' : 'api.mailgun.net'
+
+      @http = Net::HTTP.new(endpoint, Net::HTTP.https_default_port)
 
       @http.use_ssl = true
     end
