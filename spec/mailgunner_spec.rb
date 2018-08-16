@@ -86,7 +86,7 @@ describe 'Mailgunner::Client' do
       client.region.must_equal('eu')
     end
 
-    it 'defaults to the value of MAILGUN_API_KEY environment variable' do
+    it 'defaults to the value of MAILGUN_REGION environment variable' do
       ENV['MAILGUN_REGION'] = 'eu'
 
       client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
