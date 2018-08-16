@@ -76,6 +76,33 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'region method' do
+    it 'defaults to us if nothing was passed along to the constructor' do
+      @client.region.must_equal('us')
+    end
+
+    it 'returns the value passed to the constructor' do
+      client = Mailgunner::Client.new(domain: @domain, api_key: @api_key, region: :eu)
+      client.region.must_equal('eu')
+    end
+
+    it 'defaults to the value of MAILGUN_REGION environment variable' do
+      ENV['MAILGUN_REGION'] = 'eu'
+
+      client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
+      client.region.must_equal('eu')
+
+      ENV.delete('MAILGUN_REGION')
+    end
+
+    it 'raises if region is something else than eu or us' do
+      opts = { domain: @domain, api_key: @api_key, region: :nl }
+
+      exception = proc { Mailgunner::Client.new(opts) }.must_raise(Mailgunner::InvalidRegion)
+      exception.message.must_equal('Region must be "eu" or "us"')
+    end
+  end
+
   describe 'validate_address method' do
     it 'calls the address validate resource with the given email address and returns the response object' do
       stub(:get, "#@base_url/address/validate?address=#@encoded_address")
