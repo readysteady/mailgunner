@@ -33,7 +33,6 @@ variables, as described by [12factor.net/config](http://www.12factor.net/config)
 from the `MAILGUN_API_KEY` and `MAILGUN_SMTP_LOGIN` environment variables. These will
 exist if you are using Mailgun on Heroku, or you can set them manually.
 
-
 ## ActionMailer integration
 
 Mailgunner integrates with [ActionMailer](https://rubygems.org/gems/actionmailer).
@@ -42,7 +41,7 @@ the following line to `config/environments/production.rb`:
 
 ```ruby
 config.action_mailer.delivery_method = :mailgun
-````
+```
 
 If for some reason you can't set the required ENV variables, you can configure Mailgunner
 through ActionMailer settings:
@@ -57,6 +56,28 @@ config.action_mailer.mailgun_settings = {
 
 Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
 
+## Specifying the region
+
+Mailgun offers both a US and EU region to send your e-mail from. Mailgunner uses
+the US region by default. If you wish to use the EU region, set the
+`MAILGUN_REGION` environment variable to `eu`, or add the `region` key to your
+configuration like so:
+
+```ruby
+mailgun = Mailgunner::Client.new({
+  domain: 'eu.samples.mailgun.org',
+  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0',
+  region: 'eu'
+})
+
+# or, with ActionMailer:
+
+config.action_mailer.mailgun_settings = {
+  domain: 'eu.test.com',
+  api_key: 'your-api-key',
+  region: 'eu'
+}
+```
 
 ## Email validation
 
