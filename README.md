@@ -60,6 +60,21 @@ config.action_mailer.mailgun_settings = {
 Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
 
 
+## Specifying the region
+
+Mailgun offers both a US and EU region to send your e-mail from. Mailgunner uses
+the US region by default. If you wish to use the EU region set the `api_host`
+config option like so:
+
+```ruby
+mailgun = Mailgunner::Client.new({
+  domain: 'eu.samples.mailgun.org',
+  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0',
+  api_host: 'api.eu.mailgun.net'
+})
+```
+
+
 ## Email validation
 
 If you only need to use Mailgun's [email address validation service](http://documentation.mailgun.com/api-email-validation.html),
