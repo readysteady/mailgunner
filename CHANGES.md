@@ -1,3 +1,19 @@
+# 2.6.0
+
+  * Added `api_host` option for EU region (thanks @drummerroma and @markoudev)
+
+  * Added Mailgunner::Client#get_all_ips method
+
+  * Added Mailgunner::Client#get_ip method
+
+  * Added Mailgunner::Client#get_ips method
+
+  * Added Mailgunner::Client#add_ip method
+
+  * Added Mailgunner::Client#delete_ip method
+
+  * Removed legacy campaign methods
+
 # 2.5.0
 
   * Fixed compatibility with mail v2.6.6+ (#13)
