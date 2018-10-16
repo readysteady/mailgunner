@@ -224,50 +224,6 @@ module Mailgunner
       delete("/v3/domains/#{escape @domain}/webhooks/#{escape id}")
     end
 
-    def get_campaigns(params = {})
-      get("/v3/#{escape @domain}/campaigns", params)
-    end
-
-    def get_campaign(id)
-      get("/v3/#{escape @domain}/campaigns/#{escape id}")
-    end
-
-    def add_campaign(attributes = {})
-      post("/v3/#{escape @domain}/campaigns", attributes)
-    end
-
-    def update_campaign(id, attributes = {})
-      put("/v3/#{escape @domain}/campaigns/#{escape id}", attributes)
-    end
-
-    def delete_campaign(id)
-      delete("/v3/#{escape @domain}/campaigns/#{escape id}")
-    end
-
-    def get_campaign_events(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/events", params)
-    end
-
-    def get_campaign_stats(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/stats", params)
-    end
-
-    def get_campaign_clicks(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/clicks", params)
-    end
-
-    def get_campaign_opens(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/opens", params)
-    end
-
-    def get_campaign_unsubscribes(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/unsubscribes", params)
-    end
-
-    def get_campaign_complaints(campaign_id, params = {})
-      get("/v3/#{escape @domain}/campaigns/#{escape campaign_id}/complaints", params)
-    end
-
     def get_lists(params = {})
       get('/v3/lists', params)
     end
