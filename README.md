@@ -21,16 +21,19 @@ mailgun = Mailgunner::Client.new({
   api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0'
 })
 
-response = mailgun.get_stats(limit: 5)
+response = mailgun.get_domains
+
+response['items'].each do |item|
+  p item.values_at('id', 'name')
+end
 ```
 
 
 ## Storing the API key
 
-Best practice for storing credentials for external services is to use environment
-variables, as described by [12factor.net/config](http://www.12factor.net/config).
+Best practice for credentials is to [store them in the environment](https://www.12factor.net/config#store_config_in_the_environment).
 `Mailgunner::Client` defaults to extracting the domain and api_key values it needs
-from the `MAILGUN_API_KEY` and `MAILGUN_SMTP_LOGIN` environment variables. These will
+from the `MAILGUN_API_KEY` and `MAILGUN_SMTP_LOGIN` environment variables—these will
 exist if you are using Mailgun on Heroku, or you can set them manually.
 
 
@@ -42,7 +45,7 @@ the following line to `config/environments/production.rb`:
 
 ```ruby
 config.action_mailer.delivery_method = :mailgun
-````
+```
 
 If for some reason you can't set the required ENV variables, you can configure Mailgunner
 through ActionMailer settings:
@@ -52,7 +55,6 @@ config.action_mailer.mailgun_settings = {
   domain: 'test.com',
   api_key: 'your-api-key'
 }
-
 ```
 
 Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
