@@ -18,4 +18,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency('actionmailer', '~> 5')
   s.add_development_dependency('mocha', '~> 1')
   s.require_path = 'lib'
+  s.metadata = {
+    'homepage' => 'https://github.com/readysteady/mailgunner',
+    'source_code_uri' => 'https://github.com/readysteady/mailgunner',
+    'bug_tracker_uri' => 'https://github.com/readysteady/mailgunner/issues',
+    'changelog_uri' => 'https://github.com/readysteady/mailgunner/blob/master/CHANGES.md'
+  }
 end
