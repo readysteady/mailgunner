@@ -15,7 +15,9 @@ module Mailgunner
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
-      @http = Net::HTTP.new('api.mailgun.net', Net::HTTP.https_default_port)
+      @api_host = options.fetch(:api_host) { 'api.mailgun.net' }
+
+      @http = Net::HTTP.new(@api_host, Net::HTTP.https_default_port)
 
       @http.use_ssl = true
     end

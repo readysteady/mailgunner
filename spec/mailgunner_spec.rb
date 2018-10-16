@@ -41,10 +41,22 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'http method' do
-    it 'returns a net http object that uses ssl' do
+    it 'returns a net http object' do
       @client.http.must_be_instance_of(Net::HTTP)
+    end
+  end
 
+  describe 'http object' do
+    it 'uses ssl' do
       @client.http.use_ssl?.must_equal(true)
+    end
+
+    it 'uses the address from the api_host option' do
+      api_host = 'api.eu.mailgun.net'
+
+      @client = Mailgunner::Client.new(api_key: @api_key, api_host: api_host)
+
+      @client.http.address.must_equal(api_host)
     end
   end
 
