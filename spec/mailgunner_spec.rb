@@ -589,6 +589,52 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_all_ips method' do
+    it 'fetches the ips resource and returns the response object' do
+      stub(:get, "#@base_url/ips")
+
+      @client.get_all_ips.must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_ip method' do
+    it 'fetches the ip resource with the given address and returns the response object' do
+      address = '127.0.0.1'
+
+      stub(:get, "#@base_url/ips/#{address}")
+
+      @client.get_ip(address).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'get_ips method' do
+    it 'fetches the domain ips resource and returns the response object' do
+      stub(:get, "#@base_url/domains/#@domain/ips")
+
+      @client.get_ips.must_equal(@json_response_object)
+    end
+  end
+
+  describe 'add_ip method' do
+    it 'posts to the domain ips resource and returns the response object' do
+      address = '127.0.0.1'
+
+      stub(:post, "#@base_url/domains/#@domain/ips", body: {ip: address})
+
+      @client.add_ip(address).must_equal(@json_response_object)
+    end
+  end
+
+  describe 'delete_ip method' do
+    it 'deletes the domain ip resource with the given address and returns the response object' do
+      address = '127.0.0.1'
+
+      stub(:delete, "#@base_url/domains/#@domain/ips/#{address}")
+
+      @client.delete_ip(address).must_equal(@json_response_object)
+    end
+  end
+
   describe 'get_lists method' do
     it 'fetches the lists resource and returns the response object' do
       stub(:get, "#@base_url/lists")
