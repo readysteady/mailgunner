@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mailgunner
   class Client
     def get_webhooks
