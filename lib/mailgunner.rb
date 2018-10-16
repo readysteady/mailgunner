@@ -11,13 +11,7 @@ module Mailgunner
     attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
-      @domain = if options.key?(:domain)
-        options.fetch(:domain)
-      elsif ENV.key?('MAILGUN_SMTP_LOGIN')
-        ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
-      else
-        NoDomainProvided
-      end
+      @domain = options.fetch(:domain) { default_domain }
 
       @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
 
@@ -265,6 +259,12 @@ module Mailgunner
     end
 
     private
+
+    def default_domain
+      return NoDomainProvided unless ENV.key?('MAILGUN_SMTP_LOGIN')
+
+      ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
+    end
 
     def get(path, params = {}, headers = {})
       request = Net::HTTP::Get.new(request_uri(path, params))
