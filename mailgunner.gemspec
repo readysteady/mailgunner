@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
   s.email = ['mail@timcraft.com']
-  s.homepage = 'http://github.com/readysteady/mailgunner'
+  s.homepage = 'https://github.com/readysteady/mailgunner'
   s.description = 'Ruby client for the Mailgun API'
   s.summary = 'Ruby client for the Mailgun API'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(LICENSE.txt README.md mailgunner.gemspec)
