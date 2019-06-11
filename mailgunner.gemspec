@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = 'Ruby client for the Mailgun API'
   s.summary = 'Ruby client for the Mailgun API'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(LICENSE.txt README.md mailgunner.gemspec)
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.5.0'
   s.add_development_dependency('rake', '~> 12')
   s.add_development_dependency('webmock', '~> 3')
   s.add_development_dependency('mail', '~> 2')
