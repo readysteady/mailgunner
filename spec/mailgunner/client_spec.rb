@@ -553,13 +553,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_lists method' do
     it 'fetches the lists resource and returns the response object' do
-      stub(:get, "#@base_url/lists")
+      stub(:get, "#@base_url/lists/pages")
 
       @client.get_lists.must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/lists?skip=1&limit=2")
+      stub(:get, "#@base_url/lists/pages?skip=1&limit=2")
 
       @client.get_lists(skip: 1, limit: 2)
     end
@@ -599,13 +599,13 @@ describe 'Mailgunner::Client' do
 
   describe 'get_list_members method' do
     it 'fetches the list members resource and returns the response object' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net/members")
+      stub(:get, "#@base_url/lists/developers%40mailgun.net/members/pages")
 
       @client.get_list_members('developers@mailgun.net').must_equal(@json_response_object)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net/members?skip=1&limit=2")
+      stub(:get, "#@base_url/lists/developers%40mailgun.net/members/pages?skip=1&limit=2")
 
       @client.get_list_members('developers@mailgun.net', skip: 1, limit: 2)
     end

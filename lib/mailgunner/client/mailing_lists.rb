@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_lists(params = PARAMS)
-      get('/v3/lists', query: params)
+      get('/v3/lists/pages', query: params)
     end
 
     def get_list(address)
@@ -23,7 +23,7 @@ module Mailgunner
     end
 
     def get_list_members(list_address, params = PARAMS)
-      get("/v3/lists/#{escape list_address}/members", query: params)
+      get("/v3/lists/#{escape list_address}/members/pages", query: params)
     end
 
     def get_list_member(list_address, member_address)
