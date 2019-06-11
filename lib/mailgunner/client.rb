@@ -60,7 +60,7 @@ module Mailgunner
       end
 
       if response['Content-Type']&.start_with?('application/json')
-        return JSON.parse(response.body)
+        return JSON.parse(response.body, object_class: Struct)
       end
 
       response.body

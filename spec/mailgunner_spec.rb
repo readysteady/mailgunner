@@ -13,7 +13,7 @@ describe 'Mailgunner::Client' do
 
     @base_url = 'https://@api.mailgun.net/v3'
 
-    @json_response_object = {'key' => 'value'}
+    @json_response_object = Mailgunner::Struct.new('key' => 'value')
 
     @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
 
