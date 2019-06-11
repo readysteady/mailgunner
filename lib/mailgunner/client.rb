@@ -7,11 +7,11 @@ module Mailgunner
     attr_accessor :domain, :api_key, :http
 
     def initialize(options = {})
-      @domain = options.fetch(:domain) { default_domain }
+      @domain = options.fetch(:domain) { Mailgunner.config.domain }
 
-      @api_key = options.fetch(:api_key) { ENV.fetch('MAILGUN_API_KEY') }
+      @api_key = options.fetch(:api_key) { Mailgunner.config.api_key }
 
-      @api_host = options.fetch(:api_host) { 'api.mailgun.net' }
+      @api_host = options.fetch(:api_host) { Mailgunner.config.api_host }
 
       @http = Net::HTTP.new(@api_host, Net::HTTP.https_default_port)
 
@@ -19,12 +19,6 @@ module Mailgunner
     end
 
     private
-
-    def default_domain
-      return NoDomainProvided unless ENV.key?('MAILGUN_SMTP_LOGIN')
-
-      ENV['MAILGUN_SMTP_LOGIN'].to_s.split('@').last
-    end
 
     def get(path, params = {}, headers = {})
       uri = URI(path)
@@ -53,11 +47,9 @@ module Mailgunner
       transmit(Net::HTTP::Delete.new(path))
     end
 
-    USER_AGENT = "Ruby/#{RUBY_VERSION} Mailgunner/#{VERSION}"
-
     def transmit(message)
       message.basic_auth('api', @api_key)
-      message['User-Agent'] = USER_AGENT
+      message['User-Agent'] = Mailgunner.config.user_agent
 
       yield message if block_given?
 
