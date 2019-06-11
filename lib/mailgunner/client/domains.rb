@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_domains(params = {})
-      get('/v3/domains', params)
+      get('/v3/domains', query: params)
     end
 
     def get_domain(name)

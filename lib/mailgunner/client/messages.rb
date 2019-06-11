@@ -7,7 +7,7 @@ module Mailgunner
     end
 
     def get_mime_message(key)
-      get("/v3/domains/#{escape @domain}/messages/#{escape key}", {}, {'Accept' => 'message/rfc2822'})
+      get("/v3/domains/#{escape @domain}/messages/#{escape key}", headers: {'Accept' => 'message/rfc2822'})
     end
 
     def send_message(attributes = {})

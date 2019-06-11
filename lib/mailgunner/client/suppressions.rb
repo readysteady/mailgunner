@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_bounces(params = {})
-      get("/v3/#{escape @domain}/bounces", params)
+      get("/v3/#{escape @domain}/bounces", query: params)
     end
 
     def get_bounce(address)
@@ -23,7 +23,7 @@ module Mailgunner
     end
 
     def get_unsubscribes(params = {})
-      get("/v3/#{escape @domain}/unsubscribes", params)
+      get("/v3/#{escape @domain}/unsubscribes", query: params)
     end
 
     def get_unsubscribe(address)
@@ -39,7 +39,7 @@ module Mailgunner
     end
 
     def get_complaints(params = {})
-      get("/v3/#{escape @domain}/complaints", params)
+      get("/v3/#{escape @domain}/complaints", query: params)
     end
 
     def get_complaint(address)

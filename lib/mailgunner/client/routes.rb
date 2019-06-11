@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_routes(params = {})
-      get('/v3/routes', params)
+      get('/v3/routes', query: params)
     end
 
     def get_route(id)

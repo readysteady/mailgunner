@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_tags(params = {})
-      get("/v3/#{escape @domain}/tags", params)
+      get("/v3/#{escape @domain}/tags", query: params)
     end
 
     def get_tag(id)
@@ -15,7 +15,7 @@ module Mailgunner
     end
 
     def get_tag_stats(id, params)
-      get("/v3/#{escape @domain}/tags/#{escape id}/stats", params)
+      get("/v3/#{escape @domain}/tags/#{escape id}/stats", query: params)
     end
 
     def delete_tag(id)

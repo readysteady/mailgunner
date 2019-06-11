@@ -18,9 +18,9 @@ module Mailgunner
 
     private
 
-    def get(path, params = {}, headers = {})
+    def get(path, query: {}, headers: {})
       uri = URI(path)
-      uri.query = Params.encode(params) unless params.empty?
+      uri.query = Params.encode(query) unless query.empty?
 
       request = Net::HTTP::Get.new(uri.to_s)
 

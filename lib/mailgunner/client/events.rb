@@ -3,7 +3,7 @@
 module Mailgunner
   class Client
     def get_events(params = {})
-      get("/v3/#{escape @domain}/events", params)
+      get("/v3/#{escape @domain}/events", query: params)
     end
   end
 end
