@@ -67,10 +67,6 @@ module Mailgunner
         raise Error.parse(response)
       end
 
-      parse_success(response)
-    end
-
-    def parse_success(response)
       return JSON.parse(response.body) if json?(response)
 
       response.body
