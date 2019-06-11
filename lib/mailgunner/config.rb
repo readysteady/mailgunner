@@ -26,6 +26,14 @@ module Mailgunner
 
     attr_writer :user_agent
 
+    module NoDomainProvided
+      def self.to_s
+        raise Error, 'No domain provided'
+      end
+    end
+
+    private_constant :NoDomainProvided
+
     private
 
     def default_domain

@@ -29,10 +29,4 @@ module Mailgunner
   class AuthenticationError < ClientError; end
 
   class ServerError < Error; end
-
-  module NoDomainProvided
-    def self.to_s
-      raise Error, 'No domain provided'
-    end
-  end
 end
