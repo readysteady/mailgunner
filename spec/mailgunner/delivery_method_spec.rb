@@ -13,25 +13,20 @@ class ExampleMailer < ActionMailer::Base
 end
 
 describe 'Mailgunner::DeliveryMethod' do
+  let(:domain) { 'samples.mailgun.org' }
+  let(:api_key) { 'api_key_xxx' }
+  let(:address) { 'user@example.com' }
+
   before do
-    @api_key = 'xxx'
-
-    @domain = 'samples.mailgun.org'
-
-    @base_url = 'https://api.mailgun.net/v3'
-
-    @auth = ['api', @api_key]
-
-    @address = 'user@example.com'
-
     ActionMailer::Base.delivery_method = :mailgun
-
-    ActionMailer::Base.mailgun_settings = {api_key: @api_key, domain: @domain}
+    ActionMailer::Base.mailgun_settings = {api_key: api_key, domain: domain}
   end
 
   it 'delivers the mail to mailgun in mime format' do
-    stub_request(:post, "#@base_url/#@domain/messages.mime").with(basic_auth: @auth)
+    uri = "https://api.mailgun.net/v3/#{domain}/messages.mime"
 
-    ExampleMailer.registration_confirmation(email: @address).deliver_now
+    stub_request(:post, uri).with(basic_auth: ['api', api_key])
+
+    ExampleMailer.registration_confirmation(email: address).deliver_now
   end
 end

@@ -6,35 +6,23 @@ require 'json'
 require 'mail'
 
 describe 'Mailgunner::Client' do
+  let(:domain) { 'samples.mailgun.org' }
+  let(:api_key) { 'api_key_xxx' }
+  let(:address) { 'user@example.com' }
+  let(:encoded_address) { 'user%40example.com' }
   let(:list_id) { 'list_xxx' }
+  let(:list_address) { 'developers@mailgun.net' }
+  let(:login) { 'bob.bar' }
+  let(:id) { 'id_xxx' }
   let(:base_url) { 'https://api.mailgun.net' }
   let(:response_struct) { Mailgunner::Struct.new('key' => 'value') }
-
-  before do
-    @domain = 'samples.mailgun.org'
-
-    @api_key = 'xxx'
-
-    @base_url = 'https://@api.mailgun.net/v3'
-
-    @json_response_object = response_struct
-
-    @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
-
-    @address = 'user@example.com'
-
-    @encoded_address = 'user%40example.com'
-
-    @login = 'bob.bar'
-
-    @id = 'idxxx'
-  end
+  let(:client) { Mailgunner::Client.new(domain: domain, api_key: api_key) }
 
   def stub(http_method, url, body: nil, headers: nil)
     headers ||= {}
     headers['User-Agent'] = /\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/
 
-    params = {basic_auth: ['api', @api_key]}
+    params = {basic_auth: ['api', api_key]}
     params[:headers] = headers
     params[:body] = body if body
 
@@ -46,9 +34,9 @@ describe 'Mailgunner::Client' do
 
   describe 'validate_address method' do
     it 'returns a response struct' do
-      stub(:get, "#{base_url}/v4/address/validate?address=#{@encoded_address}")
+      stub(:get, "#{base_url}/v4/address/validate?address=#{encoded_address}")
 
-      @client.validate_address(@address).must_equal(response_struct)
+      client.validate_address(address).must_equal(response_struct)
     end
   end
 
@@ -56,7 +44,7 @@ describe 'Mailgunner::Client' do
     it 'returns a response struct' do
       stub(:get, "#{base_url}/v4/address/validate/bulk")
 
-      @client.get_bulk_validations.must_equal(response_struct)
+      client.get_bulk_validations.must_equal(response_struct)
     end
   end
 
@@ -64,7 +52,7 @@ describe 'Mailgunner::Client' do
     it 'returns a response struct' do
       stub(:post, "#{base_url}/v4/address/validate/bulk/#{list_id}")
 
-      @client.create_bulk_validation(list_id).must_equal(response_struct)
+      client.create_bulk_validation(list_id).must_equal(response_struct)
     end
   end
 
@@ -72,7 +60,7 @@ describe 'Mailgunner::Client' do
     it 'returns a response struct' do
       stub(:get, "#{base_url}/v4/address/validate/bulk/#{list_id}")
 
-      @client.get_bulk_validation(list_id).must_equal(response_struct)
+      client.get_bulk_validation(list_id).must_equal(response_struct)
     end
   end
 
@@ -80,37 +68,37 @@ describe 'Mailgunner::Client' do
     it 'returns a response struct' do
       stub(:delete, "#{base_url}/v4/address/validate/bulk/#{list_id}")
 
-      @client.cancel_bulk_validation(list_id).must_equal(response_struct)
+      client.cancel_bulk_validation(list_id).must_equal(response_struct)
     end
   end
 
   describe 'get_message method' do
     it 'fetches the domain message resource with the given id and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/messages/#@id")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/messages/#{id}")
 
-      @client.get_message(@id).must_equal(@json_response_object)
+      client.get_message(id).must_equal(response_struct)
     end
   end
 
   describe 'get_mime_message method' do
     it 'fetches the domain message resource with the given key and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/messages/#@id", headers: {'Accept' => 'message/rfc2822'})
+      stub(:get, "#{base_url}/v3/domains/#{domain}/messages/#{id}", headers: {'Accept' => 'message/rfc2822'})
 
-      @client.get_mime_message(@id).must_equal(@json_response_object)
+      client.get_mime_message(id).must_equal(response_struct)
     end
   end
 
   describe 'send_message method' do
     it 'posts to the domain messages resource and returns the response object' do
-      stub(:post, "#@base_url/#@domain/messages", body: "to=#@encoded_address")
+      stub(:post, "#{base_url}/v3/#{domain}/messages", body: "to=#{encoded_address}")
 
-      @client.send_message({to: @address}).must_equal(@json_response_object)
+      client.send_message(to: address).must_equal(response_struct)
     end
 
     it 'raises an exception if the domain is not provided' do
-      @client = Mailgunner::Client.new(api_key: @api_key)
+      client = Mailgunner::Client.new(api_key: api_key)
 
-      exception = proc { @client.send_message({}) }.must_raise(Mailgunner::Error)
+      exception = proc { client.send_message({}) }.must_raise(Mailgunner::Error)
       exception.message.must_include('No domain provided')
     end
 
@@ -120,328 +108,328 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'send_mime method' do
-    before do
-      @mail = Mail.new({
+    let(:mail) {
+      Mail.new({
         to: 'alice@example.com',
         from: 'bob@example.com',
         subject: 'Test email',
         body: 'This is a test email'
       })
-    end
+    }
 
     it 'posts to the domain messages resource and returns the response object' do
-      stub(:post, "#@base_url/#@domain/messages.mime")
+      stub(:post, "#{base_url}/v3/#{domain}/messages.mime")
 
-      @client.send_mime(@mail).must_equal(@json_response_object)
+      client.send_mime(mail).must_equal(response_struct)
     end
 
     it 'includes all recipients of the message' do
-      @mail.cc = 'carol@example.com'
-      @mail.bcc = 'dave@example.com'
+      mail.cc = 'carol@example.com'
+      mail.bcc = 'dave@example.com'
 
-      stub(:post, "#@base_url/#@domain/messages.mime")
+      stub(:post, "#{base_url}/v3/#{domain}/messages.mime")
 
       recipients = 'alice@example.com,carol@example.com,dave@example.com'
 
       Net::HTTP::Post.any_instance.expects(:set_form).with(includes(['to', recipients]), 'multipart/form-data')
 
-      @client.send_mime(@mail)
+      client.send_mime(mail)
     end
   end
 
   describe 'delete_message method' do
     it 'deletes the domain message resource with the given key and returns the response object' do
-      stub(:delete, "#@base_url/domains/#@domain/messages/#@id")
+      stub(:delete, "#{base_url}/v3/domains/#{domain}/messages/#{id}")
 
-      @client.delete_message(@id).must_equal(@json_response_object)
+      client.delete_message(id).must_equal(response_struct)
     end
   end
 
   describe 'get_domains method' do
     it 'fetches the domains resource and returns the response object' do
-      stub(:get, "#@base_url/domains")
+      stub(:get, "#{base_url}/v3/domains")
 
-      @client.get_domains.must_equal(@json_response_object)
+      client.get_domains.must_equal(response_struct)
     end
   end
 
   describe 'get_domain method' do
     it 'fetches the domain resource and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain")
+      stub(:get, "#{base_url}/v3/domains/#{domain}")
 
-      @client.get_domain(@domain).must_equal(@json_response_object)
+      client.get_domain(domain).must_equal(response_struct)
     end
   end
 
   describe 'add_domain method' do
     it 'posts to the domains resource and returns the response object' do
-      stub(:post, "#@base_url/domains", body: "name=#@domain")
+      stub(:post, "#{base_url}/v3/domains", body: "name=#{domain}")
 
-      @client.add_domain({name: @domain}).must_equal(@json_response_object)
+      client.add_domain(name: domain).must_equal(response_struct)
     end
   end
 
   describe 'delete_domain method' do
     it 'deletes the domain resource with the given name and returns the response object' do
-      stub(:delete, "#@base_url/domains/#@domain")
+      stub(:delete, "#{base_url}/v3/domains/#{domain}")
 
-      @client.delete_domain(@domain).must_equal(@json_response_object)
+      client.delete_domain(domain).must_equal(response_struct)
     end
   end
 
   describe 'get_credentials method' do
     it 'fetches the domain credentials resource and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/credentials")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/credentials")
 
-      @client.get_credentials.must_equal(@json_response_object)
+      client.get_credentials.must_equal(response_struct)
     end
   end
 
   describe 'add_credentials method' do
     it 'posts to the domain credentials resource and returns the response object' do
-      stub(:post, "#@base_url/domains/#@domain/credentials", body: "login=#@login")
+      stub(:post, "#{base_url}/v3/domains/#{domain}/credentials", body: "login=#{login}")
 
-      @client.add_credentials(login: @login).must_equal(@json_response_object)
+      client.add_credentials(login: login).must_equal(response_struct)
     end
   end
 
   describe 'update_credentials method' do
     it 'updates the domain credentials resource with the given login and returns the response object' do
-      stub(:put, "#@base_url/domains/#@domain/credentials/#@login", body: 'password=secret')
+      stub(:put, "#{base_url}/v3/domains/#{domain}/credentials/#{login}", body: 'password=secret')
 
-      @client.update_credentials(@login, {password: 'secret'}).must_equal(@json_response_object)
+      client.update_credentials(login, password: 'secret').must_equal(response_struct)
     end
   end
 
   describe 'delete_credentials method' do
     it 'deletes the domain credentials resource with the given login and returns the response object' do
-      stub(:delete, "#@base_url/domains/#@domain/credentials/#@login")
+      stub(:delete, "#{base_url}/v3/domains/#{domain}/credentials/#{login}")
 
-      @client.delete_credentials(@login).must_equal(@json_response_object)
+      client.delete_credentials(login).must_equal(response_struct)
     end
   end
 
   describe 'get_connection_settings method' do
     it 'fetches the domain connection settings resource and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/connection")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/connection")
 
-      @client.get_connection_settings.must_equal(@json_response_object)
+      client.get_connection_settings.must_equal(response_struct)
     end
   end
 
   describe 'update_connection_settings method' do
     it 'updates the domain connection settings resource and returns the response object' do
-      stub(:put, "#@base_url/domains/#@domain/connection", body: 'require_tls=true')
+      stub(:put, "#{base_url}/v3/domains/#{domain}/connection", body: 'require_tls=true')
 
-      @client.update_connection_settings({require_tls: true}).must_equal(@json_response_object)
+      client.update_connection_settings({require_tls: true}).must_equal(response_struct)
     end
   end
 
   describe 'get_tracking_settings method' do
     it 'returns a response struct' do
-      stub(:get, "#{base_url}/v3/domains/#{@domain}/tracking")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/tracking")
 
-      @client.get_tracking_settings.must_equal(response_struct)
+      client.get_tracking_settings.must_equal(response_struct)
     end
   end
 
   describe 'update_open_tracking_settings method' do
     it 'returns a response struct' do
-      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/open")
+      stub(:put, "#{base_url}/v3/domains/#{domain}/tracking/open")
 
-      @client.update_open_tracking_settings(active: 'yes').must_equal(response_struct)
+      client.update_open_tracking_settings(active: 'yes').must_equal(response_struct)
     end
   end
 
   describe 'update_click_tracking_settings method' do
     it 'returns a response struct' do
-      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/click")
+      stub(:put, "#{base_url}/v3/domains/#{domain}/tracking/click")
 
-      @client.update_click_tracking_settings(active: 'yes').must_equal(response_struct)
+      client.update_click_tracking_settings(active: 'yes').must_equal(response_struct)
     end
   end
 
   describe 'update_unsubscribe_tracking_settings method' do
     it 'returns a response struct' do
-      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/unsubscribe")
+      stub(:put, "#{base_url}/v3/domains/#{domain}/tracking/unsubscribe")
 
-      @client.update_unsubscribe_tracking_settings(active: 'true').must_equal(response_struct)
+      client.update_unsubscribe_tracking_settings(active: 'true').must_equal(response_struct)
     end
   end
 
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/unsubscribes")
+      stub(:get, "#{base_url}/v3/#{domain}/unsubscribes")
 
-      @client.get_unsubscribes.must_equal(@json_response_object)
+      client.get_unsubscribes.must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/#@domain/unsubscribes?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/#{domain}/unsubscribes?skip=1&limit=2")
 
-      @client.get_unsubscribes(skip: 1, limit: 2)
+      client.get_unsubscribes(skip: 1, limit: 2)
     end
   end
 
   describe 'get_unsubscribe method' do
     it 'fetches the unsubscribe resource with the given address and returns the response object' do
-      stub(:get, "#@base_url/#@domain/unsubscribes/#@encoded_address")
+      stub(:get, "#{base_url}/v3/#{domain}/unsubscribes/#{encoded_address}")
 
-      @client.get_unsubscribe(@address).must_equal(@json_response_object)
+      client.get_unsubscribe(address).must_equal(response_struct)
     end
   end
 
   describe 'delete_unsubscribe method' do
     it 'deletes the domain unsubscribe resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/#@domain/unsubscribes/#@encoded_address")
+      stub(:delete, "#{base_url}/v3/#{domain}/unsubscribes/#{encoded_address}")
 
-      @client.delete_unsubscribe(@address).must_equal(@json_response_object)
+      client.delete_unsubscribe(address).must_equal(response_struct)
     end
   end
 
   describe 'add_unsubscribe method' do
     it 'posts to the domain unsubscribes resource and returns the response object' do
-      stub(:post, "#@base_url/#@domain/unsubscribes", body: "address=#@encoded_address")
+      stub(:post, "#{base_url}/v3/#{domain}/unsubscribes", body: "address=#{encoded_address}")
 
-      @client.add_unsubscribe({address: @address}).must_equal(@json_response_object)
+      client.add_unsubscribe(address: address).must_equal(response_struct)
     end
   end
 
   describe 'get_complaints method' do
     it 'fetches the domain complaints resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/complaints")
+      stub(:get, "#{base_url}/v3/#{domain}/complaints")
 
-      @client.get_complaints.must_equal(@json_response_object)
+      client.get_complaints.must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/#@domain/complaints?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/#{domain}/complaints?skip=1&limit=2")
 
-      @client.get_complaints(skip: 1, limit: 2)
+      client.get_complaints(skip: 1, limit: 2)
     end
   end
 
   describe 'get_complaint method' do
     it 'fetches the complaint resource with the given address and returns the response object' do
-      stub(:get, "#@base_url/#@domain/complaints/#@encoded_address")
+      stub(:get, "#{base_url}/v3/#{domain}/complaints/#{encoded_address}")
 
-      @client.get_complaint(@address).must_equal(@json_response_object)
+      client.get_complaint(address).must_equal(response_struct)
     end
   end
 
   describe 'add_complaint method' do
     it 'posts to the domain complaints resource and returns the response object' do
-      stub(:post, "#@base_url/#@domain/complaints", body: "address=#@encoded_address")
+      stub(:post, "#{base_url}/v3/#{domain}/complaints", body: "address=#{encoded_address}")
 
-      @client.add_complaint({address: @address}).must_equal(@json_response_object)
+      client.add_complaint(address: address).must_equal(response_struct)
     end
   end
 
   describe 'delete_complaint method' do
     it 'deletes the domain complaint resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/#@domain/complaints/#@encoded_address")
+      stub(:delete, "#{base_url}/v3/#{domain}/complaints/#{encoded_address}")
 
-      @client.delete_complaint(@address).must_equal(@json_response_object)
+      client.delete_complaint(address).must_equal(response_struct)
     end
   end
 
   describe 'get_bounces method' do
     it 'fetches the domain bounces resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/bounces")
+      stub(:get, "#{base_url}/v3/#{domain}/bounces")
 
-      @client.get_bounces.must_equal(@json_response_object)
+      client.get_bounces.must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/#@domain/bounces?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/#{domain}/bounces?skip=1&limit=2")
 
-      @client.get_bounces(skip: 1, limit: 2)
+      client.get_bounces(skip: 1, limit: 2)
     end
   end
 
   describe 'get_bounce method' do
     it 'fetches the bounce resource with the given address and returns the response object' do
-      stub(:get, "#@base_url/#@domain/bounces/#@encoded_address")
+      stub(:get, "#{base_url}/v3/#{domain}/bounces/#{encoded_address}")
 
-      @client.get_bounce(@address).must_equal(@json_response_object)
+      client.get_bounce(address).must_equal(response_struct)
     end
   end
 
   describe 'add_bounce method' do
     it 'posts to the domain bounces resource and returns the response object' do
-      stub(:post, "#@base_url/#@domain/bounces", body: "address=#@encoded_address")
+      stub(:post, "#{base_url}/v3/#{domain}/bounces", body: "address=#{encoded_address}")
 
-      @client.add_bounce({address: @address}).must_equal(@json_response_object)
+      client.add_bounce(address: address).must_equal(response_struct)
     end
   end
 
   describe 'delete_bounce method' do
     it 'deletes the domain bounce resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/#@domain/bounces/#@encoded_address")
+      stub(:delete, "#{base_url}/v3/#{domain}/bounces/#{encoded_address}")
 
-      @client.delete_bounce(@address).must_equal(@json_response_object)
+      client.delete_bounce(address).must_equal(response_struct)
     end
   end
 
   describe 'delete_bounces method' do
     it 'deletes the domain bounces resource and returns the response object' do
-      stub(:delete, "#@base_url/#@domain/bounces")
+      stub(:delete, "#{base_url}/v3/#{domain}/bounces")
 
-      @client.delete_bounces.must_equal(@json_response_object)
+      client.delete_bounces.must_equal(response_struct)
     end
   end
 
   describe 'get_whitelists method' do
     it 'returns a response struct' do
-      stub(:get, "#{base_url}/v3/#{@domain}/whitelists")
+      stub(:get, "#{base_url}/v3/#{domain}/whitelists")
 
-      @client.get_whitelists.must_equal(response_struct)
+      client.get_whitelists.must_equal(response_struct)
     end
   end
 
   describe 'get_whitelist method' do
     it 'returns a response struct' do
-      stub(:get, "#{base_url}/v3/#{@domain}/whitelists/#{@encoded_address}")
+      stub(:get, "#{base_url}/v3/#{domain}/whitelists/#{encoded_address}")
 
-      @client.get_whitelist(@address).must_equal(response_struct)
+      client.get_whitelist(address).must_equal(response_struct)
     end
   end
 
   describe 'add_whitelist method' do
     it 'returns a response struct' do
-      stub(:post, "#{base_url}/v3/#{@domain}/whitelists", body: "address=#{@encoded_address}")
+      stub(:post, "#{base_url}/v3/#{domain}/whitelists", body: "address=#{encoded_address}")
 
-      @client.add_whitelist(address: @address).must_equal(response_struct)
+      client.add_whitelist(address: address).must_equal(response_struct)
     end
   end
 
   describe 'delete_whitelist method' do
     it 'returns a response struct' do
-      stub(:delete, "#{base_url}/v3/#{@domain}/whitelists/#{@encoded_address}")
+      stub(:delete, "#{base_url}/v3/#{domain}/whitelists/#{encoded_address}")
 
-      @client.delete_whitelist(@address).must_equal(response_struct)
+      client.delete_whitelist(address).must_equal(response_struct)
     end
   end
 
   describe 'get_total_stats method' do
     it 'fetches the domain total stats resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/stats/total?event=delivered")
+      stub(:get, "#{base_url}/v3/#{domain}/stats/total?event=delivered")
 
-      @client.get_total_stats(event: 'delivered').must_equal(@json_response_object)
+      client.get_total_stats(event: 'delivered').must_equal(response_struct)
     end
 
     it 'encodes optional parameters' do
-      stub(:get, "#@base_url/#@domain/stats/total?event=delivered&resolution=hour")
+      stub(:get, "#{base_url}/v3/#{domain}/stats/total?event=delivered&resolution=hour")
 
-      @client.get_total_stats(event: 'delivered', resolution: 'hour')
+      client.get_total_stats(event: 'delivered', resolution: 'hour')
     end
 
     it 'encodes an event parameter with multiple values' do
       WebMock::Config.instance.query_values_notation = :flat_array
 
-      stub(:get, "#@base_url/#@domain/stats/total?event=delivered&event=accepted")
+      stub(:get, "#{base_url}/v3/#{domain}/stats/total?event=delivered&event=accepted")
 
-      @client.get_total_stats(event: %w(accepted delivered))
+      client.get_total_stats(event: %w(accepted delivered))
 
       WebMock::Config.instance.query_values_notation = nil
     end
@@ -449,133 +437,133 @@ describe 'Mailgunner::Client' do
 
   describe 'get_events method' do
     it 'fetches the domain events resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/events")
+      stub(:get, "#{base_url}/v3/#{domain}/events")
 
-      @client.get_events.must_equal(@json_response_object)
+      client.get_events.must_equal(response_struct)
     end
 
     it 'encodes optional parameters' do
-      stub(:get, "#@base_url/#@domain/events?event=accepted&limit=10")
+      stub(:get, "#{base_url}/v3/#{domain}/events?event=accepted&limit=10")
 
-      @client.get_events(event: 'accepted', limit: 10)
+      client.get_events(event: 'accepted', limit: 10)
     end
   end
 
   describe 'get_tags method' do
     it 'fetches the domain tags resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/tags")
+      stub(:get, "#{base_url}/v3/#{domain}/tags")
 
-      @client.get_tags.must_equal(@json_response_object)
+      client.get_tags.must_equal(response_struct)
     end
 
     it 'encodes optional limit parameter' do
-      stub(:get, "#@base_url/#@domain/tags?limit=2")
+      stub(:get, "#{base_url}/v3/#{domain}/tags?limit=2")
 
-      @client.get_tags(limit: 2)
+      client.get_tags(limit: 2)
     end
   end
 
   describe 'get_tag method' do
     it 'fetches the domain tag resource with the given id and returns the response object' do
-      stub(:get, "#@base_url/#@domain/tags/#@id")
+      stub(:get, "#{base_url}/v3/#{domain}/tags/#{id}")
 
-      @client.get_tag(@id).must_equal(@json_response_object)
+      client.get_tag(id).must_equal(response_struct)
     end
   end
 
   describe 'update_tag method' do
     it 'updates the domain tag resource with the given id and returns the response object' do
-      stub(:put, "#@base_url/#@domain/tags/#@id", body: 'description=Tag+description')
+      stub(:put, "#{base_url}/v3/#{domain}/tags/#{id}", body: 'description=Tag+description')
 
-      @client.update_tag(@id, {description: 'Tag description'}).must_equal(@json_response_object)
+      client.update_tag(id, {description: 'Tag description'}).must_equal(response_struct)
     end
   end
 
   describe 'get_tag_stats method' do
     it 'fetches the domain tag stats resource with the given id and returns the response object' do
-      stub(:get, "#@base_url/#@domain/tags/#@id/stats?event=accepted")
+      stub(:get, "#{base_url}/v3/#{domain}/tags/#{id}/stats?event=accepted")
 
-      @client.get_tag_stats(@id, event: 'accepted').must_equal(@json_response_object)
+      client.get_tag_stats(id, event: 'accepted').must_equal(response_struct)
     end
   end
 
   describe 'delete_tag method' do
     it 'deletes the domain tag resource with the given id and returns the response object' do
-      stub(:delete, "#@base_url/#@domain/tags/#@id")
+      stub(:delete, "#{base_url}/v3/#{domain}/tags/#{id}")
 
-      @client.delete_tag(@id).must_equal(@json_response_object)
+      client.delete_tag(id).must_equal(response_struct)
     end
   end
 
   describe 'get_routes method' do
     it 'fetches the routes resource and returns the response object' do
-      stub(:get, "#@base_url/routes")
+      stub(:get, "#{base_url}/v3/routes")
 
-      @client.get_routes.must_equal(@json_response_object)
+      client.get_routes.must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/routes?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/routes?skip=1&limit=2")
 
-      @client.get_routes(skip: 1, limit: 2)
+      client.get_routes(skip: 1, limit: 2)
     end
   end
 
   describe 'get_route method' do
     it 'fetches the route resource with the given id and returns the response object' do
-      stub(:get, "#@base_url/routes/#@id")
+      stub(:get, "#{base_url}/v3/routes/#{id}")
 
-      @client.get_route(@id).must_equal(@json_response_object)
+      client.get_route(id).must_equal(response_struct)
     end
   end
 
   describe 'add_route method' do
     it 'posts to the routes resource and returns the response object' do
-      stub(:post, "#@base_url/routes", body: 'description=Example+route&priority=1')
+      stub(:post, "#{base_url}/v3/routes", body: 'description=Example+route&priority=1')
 
-      @client.add_route({description: 'Example route', priority: 1}).must_equal(@json_response_object)
+      client.add_route({description: 'Example route', priority: 1}).must_equal(response_struct)
     end
   end
 
   describe 'update_route method' do
     it 'updates the route resource with the given id and returns the response object' do
-      stub(:put, "#@base_url/routes/#@id", body: 'priority=10')
+      stub(:put, "#{base_url}/v3/routes/#{id}", body: 'priority=10')
 
-      @client.update_route(@id, {priority: 10}).must_equal(@json_response_object)
+      client.update_route(id, {priority: 10}).must_equal(response_struct)
     end
   end
 
   describe 'delete_route method' do
     it 'deletes the route resource with the given id and returns the response object' do
-      stub(:delete, "#@base_url/routes/#@id")
+      stub(:delete, "#{base_url}/v3/routes/#{id}")
 
-      @client.delete_route(@id).must_equal(@json_response_object)
+      client.delete_route(id).must_equal(response_struct)
     end
   end
 
   describe 'get_webhooks method' do
     it 'fetches the domain webhooks resource and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/webhooks")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/webhooks")
 
-      @client.get_webhooks.must_equal(@json_response_object)
+      client.get_webhooks.must_equal(response_struct)
     end
   end
 
   describe 'get_webhook method' do
     it 'fetches the domain webhook resource with the given id and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/webhooks/#@id")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/webhooks/#{id}")
 
-      @client.get_webhook(@id).must_equal(@json_response_object)
+      client.get_webhook(id).must_equal(response_struct)
     end
   end
 
   describe 'add_webhook method' do
     it 'posts to the domain webhooks resource and returns the response object' do
-      attributes = {id: @id, url: 'http://example.com/webhook'}
+      attributes = {id: id, url: 'http://example.com/webhook'}
 
-      stub(:post, "#@base_url/domains/#@domain/webhooks", body: attributes)
+      stub(:post, "#{base_url}/v3/domains/#{domain}/webhooks", body: attributes)
 
-      @client.add_webhook(attributes).must_equal(@json_response_object)
+      client.add_webhook(attributes).must_equal(response_struct)
     end
   end
 
@@ -583,25 +571,25 @@ describe 'Mailgunner::Client' do
     it 'updates the domain webhook resource with the given id and returns the response object' do
       attributes = {url: 'http://example.com/webhook'}
 
-      stub(:put, "#@base_url/domains/#@domain/webhooks/#@id", body: attributes)
+      stub(:put, "#{base_url}/v3/domains/#{domain}/webhooks/#{id}", body: attributes)
 
-      @client.update_webhook(@id, attributes).must_equal(@json_response_object)
+      client.update_webhook(id, attributes).must_equal(response_struct)
     end
   end
 
   describe 'delete_webhook method' do
     it 'deletes the domain webhook resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/domains/#@domain/webhooks/#@id")
+      stub(:delete, "#{base_url}/v3/domains/#{domain}/webhooks/#{id}")
 
-      @client.delete_webhook(@id).must_equal(@json_response_object)
+      client.delete_webhook(id).must_equal(response_struct)
     end
   end
 
   describe 'get_all_ips method' do
     it 'fetches the ips resource and returns the response object' do
-      stub(:get, "#@base_url/ips")
+      stub(:get, "#{base_url}/v3/ips")
 
-      @client.get_all_ips.must_equal(@json_response_object)
+      client.get_all_ips.must_equal(response_struct)
     end
   end
 
@@ -609,17 +597,17 @@ describe 'Mailgunner::Client' do
     it 'fetches the ip resource with the given address and returns the response object' do
       address = '127.0.0.1'
 
-      stub(:get, "#@base_url/ips/#{address}")
+      stub(:get, "#{base_url}/v3/ips/#{address}")
 
-      @client.get_ip(address).must_equal(@json_response_object)
+      client.get_ip(address).must_equal(response_struct)
     end
   end
 
   describe 'get_ips method' do
     it 'fetches the domain ips resource and returns the response object' do
-      stub(:get, "#@base_url/domains/#@domain/ips")
+      stub(:get, "#{base_url}/v3/domains/#{domain}/ips")
 
-      @client.get_ips.must_equal(@json_response_object)
+      client.get_ips.must_equal(response_struct)
     end
   end
 
@@ -627,9 +615,9 @@ describe 'Mailgunner::Client' do
     it 'posts to the domain ips resource and returns the response object' do
       address = '127.0.0.1'
 
-      stub(:post, "#@base_url/domains/#@domain/ips", body: {ip: address})
+      stub(:post, "#{base_url}/v3/domains/#{domain}/ips", body: {ip: address})
 
-      @client.add_ip(address).must_equal(@json_response_object)
+      client.add_ip(address).must_equal(response_struct)
     end
   end
 
@@ -637,101 +625,101 @@ describe 'Mailgunner::Client' do
     it 'deletes the domain ip resource with the given address and returns the response object' do
       address = '127.0.0.1'
 
-      stub(:delete, "#@base_url/domains/#@domain/ips/#{address}")
+      stub(:delete, "#{base_url}/v3/domains/#{domain}/ips/#{address}")
 
-      @client.delete_ip(address).must_equal(@json_response_object)
+      client.delete_ip(address).must_equal(response_struct)
     end
   end
 
   describe 'get_lists method' do
     it 'fetches the lists resource and returns the response object' do
-      stub(:get, "#@base_url/lists/pages")
+      stub(:get, "#{base_url}/v3/lists/pages")
 
-      @client.get_lists.must_equal(@json_response_object)
+      client.get_lists.must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/lists/pages?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/lists/pages?skip=1&limit=2")
 
-      @client.get_lists(skip: 1, limit: 2)
+      client.get_lists(skip: 1, limit: 2)
     end
   end
 
   describe 'get_list method' do
     it 'fetches the list resource with the given address and returns the response object' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net")
+      stub(:get, "#{base_url}/v3/lists/developers%40mailgun.net")
 
-      @client.get_list('developers@mailgun.net').must_equal(@json_response_object)
+      client.get_list(list_address).must_equal(response_struct)
     end
   end
 
   describe 'add_list method' do
     it 'posts to the lists resource and returns the response object' do
-      stub(:post, "#@base_url/lists", body: 'address=developers%40mailgun.net')
+      stub(:post, "#{base_url}/v3/lists", body: 'address=developers%40mailgun.net')
 
-      @client.add_list({address: 'developers@mailgun.net'}).must_equal(@json_response_object)
+      client.add_list(address: list_address).must_equal(response_struct)
     end
   end
 
   describe 'update_list method' do
     it 'updates the list resource and returns the response object' do
-      stub(:put, "#@base_url/lists/developers%40mailgun.net", body: 'name=Example+list')
+      stub(:put, "#{base_url}/v3/lists/developers%40mailgun.net", body: 'name=Example+list')
 
-      @client.update_list('developers@mailgun.net', {name: 'Example list'}).must_equal(@json_response_object)
+      client.update_list(list_address, {name: 'Example list'}).must_equal(response_struct)
     end
   end
 
   describe 'delete_list method' do
     it 'deletes the list resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/lists/developers%40mailgun.net")
+      stub(:delete, "#{base_url}/v3/lists/developers%40mailgun.net")
 
-      @client.delete_list('developers@mailgun.net').must_equal(@json_response_object)
+      client.delete_list(list_address).must_equal(response_struct)
     end
   end
 
   describe 'get_list_members method' do
     it 'fetches the list members resource and returns the response object' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net/members/pages")
+      stub(:get, "#{base_url}/v3/lists/developers%40mailgun.net/members/pages")
 
-      @client.get_list_members('developers@mailgun.net').must_equal(@json_response_object)
+      client.get_list_members(list_address).must_equal(response_struct)
     end
 
     it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net/members/pages?skip=1&limit=2")
+      stub(:get, "#{base_url}/v3/lists/developers%40mailgun.net/members/pages?skip=1&limit=2")
 
-      @client.get_list_members('developers@mailgun.net', skip: 1, limit: 2)
+      client.get_list_members(list_address, skip: 1, limit: 2)
     end
   end
 
   describe 'get_list_member method' do
     it 'fetches the list member resource with the given address and returns the response object' do
-      stub(:get, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
+      stub(:get, "#{base_url}/v3/lists/developers%40mailgun.net/members/#{encoded_address}")
 
-      @client.get_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
+      client.get_list_member(list_address, address).must_equal(response_struct)
     end
   end
 
   describe 'add_list_member method' do
     it 'posts to the list members resource and returns the response object' do
-      stub(:post, "#@base_url/lists/developers%40mailgun.net/members", body: "address=#@encoded_address")
+      stub(:post, "#{base_url}/v3/lists/developers%40mailgun.net/members", body: "address=#{encoded_address}")
 
-      @client.add_list_member('developers@mailgun.net', {address: @address}).must_equal(@json_response_object)
+      client.add_list_member(list_address, address: address).must_equal(response_struct)
     end
   end
 
   describe 'update_list_member method' do
     it 'updates the list member resource with the given address and returns the response object' do
-      stub(:put, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address", body: 'subscribed=no')
+      stub(:put, "#{base_url}/v3/lists/developers%40mailgun.net/members/#{encoded_address}", body: 'subscribed=no')
 
-      @client.update_list_member('developers@mailgun.net', @address, {subscribed: 'no'}).must_equal(@json_response_object)
+      client.update_list_member(list_address, address, {subscribed: 'no'}).must_equal(response_struct)
     end
   end
 
   describe 'delete_list_member method' do
     it 'deletes the list member resource with the given address and returns the response object' do
-      stub(:delete, "#@base_url/lists/developers%40mailgun.net/members/#@encoded_address")
+      stub(:delete, "#{base_url}/v3/lists/developers%40mailgun.net/members/#{encoded_address}")
 
-      @client.delete_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
+      client.delete_list_member(list_address, address).must_equal(response_struct)
     end
   end
 end
