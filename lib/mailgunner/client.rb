@@ -4,8 +4,6 @@ require 'json'
 
 module Mailgunner
   class Client
-    attr_accessor :domain, :api_key, :http
-
     def initialize(options = {})
       @domain = options.fetch(:domain) { Mailgunner.config.domain }
 
