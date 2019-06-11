@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_domains(params = {})
+    def get_domains(params = PARAMS)
       get('/v3/domains', query: params)
     end
 
@@ -10,7 +10,7 @@ module Mailgunner
       get("/v3/domains/#{escape name}")
     end
 
-    def add_domain(attributes = {})
+    def add_domain(attributes = ATTRIBUTES)
       post('/v3/domains', attributes)
     end
 

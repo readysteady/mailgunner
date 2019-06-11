@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_lists(params = {})
+    def get_lists(params = PARAMS)
       get('/v3/lists', query: params)
     end
 
@@ -10,11 +10,11 @@ module Mailgunner
       get("/v3/lists/#{escape address}")
     end
 
-    def add_list(attributes = {})
+    def add_list(attributes = ATTRIBUTES)
       post('/v3/lists', attributes)
     end
 
-    def update_list(address, attributes = {})
+    def update_list(address, attributes = ATTRIBUTES)
       put("/v3/lists/#{escape address}", attributes)
     end
 
@@ -22,7 +22,7 @@ module Mailgunner
       delete("/v3/lists/#{escape address}")
     end
 
-    def get_list_members(list_address, params = {})
+    def get_list_members(list_address, params = PARAMS)
       get("/v3/lists/#{escape list_address}/members", query: params)
     end
 

@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_total_stats(params = {})
+    def get_total_stats(params = PARAMS)
       get("/v3/#{escape @domain}/stats/total", query: params)
     end
   end

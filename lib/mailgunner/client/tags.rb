@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_tags(params = {})
+    def get_tags(params = PARAMS)
       get("/v3/#{escape @domain}/tags", query: params)
     end
 

@@ -10,7 +10,7 @@ module Mailgunner
       get("/v3/domains/#{escape @domain}/messages/#{escape key}", headers: {'Accept' => 'message/rfc2822'})
     end
 
-    def send_message(attributes = {})
+    def send_message(attributes = ATTRIBUTES)
       post("/v3/#{escape @domain}/messages", attributes)
     end
 

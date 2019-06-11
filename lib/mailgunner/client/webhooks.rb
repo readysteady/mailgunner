@@ -10,11 +10,11 @@ module Mailgunner
       get("/v3/domains/#{escape @domain}/webhooks/#{escape id}")
     end
 
-    def add_webhook(attributes = {})
+    def add_webhook(attributes = ATTRIBUTES)
       post("/v3/domains/#{escape @domain}/webhooks", attributes)
     end
 
-    def update_webhook(id, attributes = {})
+    def update_webhook(id, attributes = ATTRIBUTES)
       put("/v3/domains/#{escape @domain}/webhooks/#{escape id}", attributes)
     end
 

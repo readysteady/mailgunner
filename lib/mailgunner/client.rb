@@ -18,7 +18,9 @@ module Mailgunner
 
     private
 
-    def get(path, query: {}, headers: {})
+    ATTRIBUTES = PARAMS = HEADERS = {}.freeze
+
+    def get(path, query: PARAMS, headers: HEADERS)
       uri = URI(path)
       uri.query = Params.encode(query) unless query.empty?
 
@@ -29,7 +31,7 @@ module Mailgunner
       transmit(request)
     end
 
-    def post(path, attributes = {})
+    def post(path, attributes = ATTRIBUTES)
       transmit(Net::HTTP::Post.new(path)) { |message| message.set_form_data(attributes) }
     end
 
@@ -37,7 +39,7 @@ module Mailgunner
       transmit(Net::HTTP::Post.new(path)) { |message| message.set_form(data, 'multipart/form-data') }
     end
 
-    def put(path, attributes = {})
+    def put(path, attributes = ATTRIBUTES)
       transmit(Net::HTTP::Put.new(path)) { |message| message.set_form_data(attributes) }
     end
 

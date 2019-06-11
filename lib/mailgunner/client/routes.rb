@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_routes(params = {})
+    def get_routes(params = PARAMS)
       get('/v3/routes', query: params)
     end
 
@@ -10,11 +10,11 @@ module Mailgunner
       get("/v3/routes/#{escape id}")
     end
 
-    def add_route(attributes = {})
+    def add_route(attributes = ATTRIBUTES)
       post('/v3/routes', attributes)
     end
 
-    def update_route(id, attributes = {})
+    def update_route(id, attributes = ATTRIBUTES)
       put("/v3/routes/#{escape id}", attributes)
     end
 

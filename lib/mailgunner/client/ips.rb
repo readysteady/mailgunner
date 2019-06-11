@@ -2,7 +2,7 @@
 
 module Mailgunner
   class Client
-    def get_all_ips(params = {})
+    def get_all_ips(params = PARAMS)
       get('/v3/ips', query: params)
     end
 
