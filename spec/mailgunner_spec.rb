@@ -690,22 +690,4 @@ describe 'Mailgunner::Client' do
       @client.delete_list_member('developers@mailgun.net', @address).must_equal(@json_response_object)
     end
   end
-
-  it 'raises an exception for authentication errors' do
-    stub_request(:any, /api\.mailgun\.net/).to_return(status: 401)
-
-    proc { @client.get_message(@id) }.must_raise(Mailgunner::AuthenticationError)
-  end
-
-  it 'raises an exception for client errors' do
-    stub_request(:any, /api\.mailgun\.net/).to_return(status: 400)
-
-    proc { @client.get_message(@id) }.must_raise(Mailgunner::ClientError)
-  end
-
-  it 'raises an exception for server errors' do
-    stub_request(:any, /api\.mailgun\.net/).to_return(status: 500)
-
-    proc { @client.get_message(@id) }.must_raise(Mailgunner::ServerError)
-  end
 end

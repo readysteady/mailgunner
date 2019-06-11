@@ -65,18 +65,11 @@ module Mailgunner
     end
 
     def parse(response)
-      case response
-      when Net::HTTPSuccess
-        parse_success(response)
-      when Net::HTTPUnauthorized
-        raise AuthenticationError, "HTTP #{response.code}"
-      when Net::HTTPClientError
-        raise ClientError, "HTTP #{response.code}"
-      when Net::HTTPServerError
-        raise ServerError, "HTTP #{response.code}"
-      else
-        raise Error, "HTTP #{response.code}"
+      unless response.is_a?(Net::HTTPSuccess)
+        raise Error.parse(response)
       end
+
+      parse_success(response)
     end
 
     def parse_success(response)
