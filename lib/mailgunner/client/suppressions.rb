@@ -53,5 +53,21 @@ module Mailgunner
     def delete_complaint(address)
       delete("/v3/#{escape @domain}/complaints/#{escape address}")
     end
+
+    def get_whitelists(params = PARAMS)
+      get("/v3/#{escape @domain}/whitelists", params)
+    end
+
+    def get_whitelist(address_or_domain)
+      get("/v3/#{escape @domain}/whitelists/#{escape address_or_domain}")
+    end
+
+    def add_whitelist(attributes = ATTRIBUTES)
+      post("/v3/#{escape @domain}/whitelists", attributes)
+    end
+
+    def delete_whitelist(address_or_domain)
+      delete("/v3/#{escape @domain}/whitelists/#{escape address_or_domain}")
+    end
   end
 end

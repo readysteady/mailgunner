@@ -359,6 +359,38 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_whitelists method' do
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v3/#{@domain}/whitelists")
+
+      @client.get_whitelists.must_equal(response_struct)
+    end
+  end
+
+  describe 'get_whitelist method' do
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v3/#{@domain}/whitelists/#{@encoded_address}")
+
+      @client.get_whitelist(@address).must_equal(response_struct)
+    end
+  end
+
+  describe 'add_whitelist method' do
+    it 'returns a response struct' do
+      stub(:post, "#{base_url}/v3/#{@domain}/whitelists", body: "address=#{@encoded_address}")
+
+      @client.add_whitelist(address: @address).must_equal(response_struct)
+    end
+  end
+
+  describe 'delete_whitelist method' do
+    it 'returns a response struct' do
+      stub(:delete, "#{base_url}/v3/#{@domain}/whitelists/#{@encoded_address}")
+
+      @client.delete_whitelist(@address).must_equal(response_struct)
+    end
+  end
+
   describe 'get_total_stats method' do
     it 'fetches the domain total stats resource and returns the response object' do
       stub(:get, "#@base_url/#@domain/stats/total?event=delivered")
