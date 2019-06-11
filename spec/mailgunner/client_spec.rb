@@ -237,6 +237,38 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'get_tracking_settings method' do
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v3/domains/#{@domain}/tracking")
+
+      @client.get_tracking_settings.must_equal(response_struct)
+    end
+  end
+
+  describe 'update_open_tracking_settings method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/open")
+
+      @client.update_open_tracking_settings(active: 'yes').must_equal(response_struct)
+    end
+  end
+
+  describe 'update_click_tracking_settings method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/click")
+
+      @client.update_click_tracking_settings(active: 'yes').must_equal(response_struct)
+    end
+  end
+
+  describe 'update_unsubscribe_tracking_settings method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{@domain}/tracking/unsubscribe")
+
+      @client.update_unsubscribe_tracking_settings(active: 'true').must_equal(response_struct)
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'fetches the domain unsubscribes resource and returns the response object' do
       stub(:get, "#@base_url/#@domain/unsubscribes")

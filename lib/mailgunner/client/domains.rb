@@ -41,5 +41,21 @@ module Mailgunner
     def update_connection_settings(attributes)
       put("/v3/domains/#{escape @domain}/connection", attributes)
     end
+
+    def get_tracking_settings
+      get("/v3/domains/#{escape @domain}/tracking")
+    end
+
+    def update_open_tracking_settings(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/tracking/open", params)
+    end
+
+    def update_click_tracking_settings(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/tracking/click", params)
+    end
+
+    def update_unsubscribe_tracking_settings(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/tracking/unsubscribe", params)
+    end
   end
 end
