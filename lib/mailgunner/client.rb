@@ -67,15 +67,11 @@ module Mailgunner
         raise Error.parse(response)
       end
 
-      return JSON.parse(response.body) if json?(response)
+      if response['Content-Type']&.start_with?('application/json')
+        return JSON.parse(response.body)
+      end
 
       response.body
-    end
-
-    def json?(response)
-      content_type = response['Content-Type']
-
-      content_type && content_type.split(';').first == 'application/json'
     end
 
     def escape(component)
