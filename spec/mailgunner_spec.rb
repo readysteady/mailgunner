@@ -379,42 +379,6 @@ describe 'Mailgunner::Client' do
     end
   end
 
-  describe 'get_stats method' do
-    before do
-      Kernel.stubs(:warn)
-    end
-
-    it 'fetches the domain stats resource and returns the response object' do
-      stub(:get, "#@base_url/#@domain/stats")
-
-      @client.get_stats.must_equal(@json_response_object)
-    end
-
-    it 'encodes skip and limit parameters' do
-      stub(:get, "#@base_url/#@domain/stats?skip=1&limit=2")
-
-      @client.get_stats(skip: 1, limit: 2)
-    end
-
-    it 'encodes an event parameter with multiple values' do
-      WebMock::Config.instance.query_values_notation = :flat_array
-
-      stub(:get, "#@base_url/#@domain/stats?event=opened&event=sent")
-
-      @client.get_stats(event: %w(sent opened))
-
-      WebMock::Config.instance.query_values_notation = nil
-    end
-
-    it 'emits a deprecation warning' do
-      stub(:get, "#@base_url/#@domain/stats")
-
-      Kernel.expects(:warn).with(regexp_matches(/Mailgunner::Client#get_stats is deprecated/))
-
-      @client.get_stats
-    end
-  end
-
   describe 'get_total_stats method' do
     it 'fetches the domain total stats resource and returns the response object' do
       stub(:get, "#@base_url/#@domain/stats/total?event=delivered")
