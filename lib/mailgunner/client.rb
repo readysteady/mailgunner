@@ -61,10 +61,8 @@ module Mailgunner
 
       yield message if block_given?
 
-      parse(@http.request(message))
-    end
+      response = @http.request(message)
 
-    def parse(response)
       unless response.is_a?(Net::HTTPSuccess)
         raise Error.parse(response)
       end
