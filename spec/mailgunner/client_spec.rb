@@ -6,6 +6,10 @@ require 'json'
 require 'mail'
 
 describe 'Mailgunner::Client' do
+  let(:list_id) { 'list_xxx' }
+  let(:base_url) { 'https://api.mailgun.net' }
+  let(:response_struct) { Mailgunner::Struct.new('key' => 'value') }
+
   before do
     @domain = 'samples.mailgun.org'
 
@@ -13,7 +17,7 @@ describe 'Mailgunner::Client' do
 
     @base_url = 'https://@api.mailgun.net/v3'
 
-    @json_response_object = Mailgunner::Struct.new('key' => 'value')
+    @json_response_object = response_struct
 
     @client = Mailgunner::Client.new(domain: @domain, api_key: @api_key)
 
@@ -41,18 +45,42 @@ describe 'Mailgunner::Client' do
   end
 
   describe 'validate_address method' do
-    it 'calls the address validate resource with the given email address and returns the response object' do
-      stub(:get, "#@base_url/address/validate?address=#@encoded_address")
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v4/address/validate?address=#{@encoded_address}")
 
-      @client.validate_address(@address).must_equal(@json_response_object)
+      @client.validate_address(@address).must_equal(response_struct)
     end
   end
 
-  describe 'parse_addresses method' do
-    it 'calls the address parse resource with the given email addresses and returns the response object' do
-      stub(:get, "#@base_url/address/parse?addresses=bob%40example.com%2Ceve%40example.com")
+  describe 'get_bulk_validations method' do
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v4/address/validate/bulk")
 
-      @client.parse_addresses(['bob@example.com', 'eve@example.com']).must_equal(@json_response_object)
+      @client.get_bulk_validations.must_equal(response_struct)
+    end
+  end
+
+  describe 'create_bulk_validation method' do
+    it 'returns a response struct' do
+      stub(:post, "#{base_url}/v4/address/validate/bulk/#{list_id}")
+
+      @client.create_bulk_validation(list_id).must_equal(response_struct)
+    end
+  end
+
+  describe 'get_bulk_validation method' do
+    it 'returns a response struct' do
+      stub(:get, "#{base_url}/v4/address/validate/bulk/#{list_id}")
+
+      @client.get_bulk_validation(list_id).must_equal(response_struct)
+    end
+  end
+
+  describe 'cancel_bulk_validation method' do
+    it 'returns a response struct' do
+      stub(:delete, "#{base_url}/v4/address/validate/bulk/#{list_id}")
+
+      @client.cancel_bulk_validation(list_id).must_equal(response_struct)
     end
   end
 
