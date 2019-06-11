@@ -4,12 +4,12 @@ require 'json'
 
 module Mailgunner
   class Client
-    def initialize(options = {})
-      @domain = options.fetch(:domain) { Mailgunner.config.domain }
+    def initialize(domain: nil, api_key: nil, api_host: nil)
+      @domain = domain || Mailgunner.config.domain
 
-      @api_key = options.fetch(:api_key) { Mailgunner.config.api_key }
+      @api_key = api_key || Mailgunner.config.api_key
 
-      @api_host = options.fetch(:api_host) { Mailgunner.config.api_host }
+      @api_host = api_host || Mailgunner.config.api_host
 
       @http = Net::HTTP.new(@api_host, Net::HTTP.https_default_port)
 
