@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'net/http'
 require 'json'
-require 'cgi'
 
 module Mailgunner
   class Client
@@ -28,7 +27,10 @@ module Mailgunner
     end
 
     def get(path, params = {}, headers = {})
-      request = Net::HTTP::Get.new(request_uri(path, params))
+      uri = URI(path)
+      uri.query = Params.encode(params) unless params.empty?
+
+      request = Net::HTTP::Get.new(uri.to_s)
 
       headers.each { |k, v| request[k] = v }
 
@@ -89,14 +91,8 @@ module Mailgunner
       content_type && content_type.split(';').first == 'application/json'
     end
 
-    def request_uri(path, params)
-      return path if params.empty?
-
-      path + '?' + params.flat_map { |k, vs| Array(vs).map { |v| "#{escape(k)}=#{escape(v)}" } }.join('&')
-    end
-
     def escape(component)
-      CGI.escape(component.to_s)
+      Params.escape(component)
     end
   end
 end

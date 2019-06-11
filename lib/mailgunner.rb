@@ -1,5 +1,6 @@
 require 'mailgunner/version'
 require 'mailgunner/errors'
+require 'mailgunner/params'
 require 'mailgunner/client'
 require 'mailgunner/client/domains'
 require 'mailgunner/client/email_validation'
