@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/readysteady/mailgunner'
   s.description = 'Ruby client for the Mailgun API'
   s.summary = 'Ruby client for the Mailgun API'
-  s.files = Dir.glob('{lib,spec}/**/*') + %w(LICENSE.txt README.md mailgunner.gemspec)
+  s.files = Dir.glob('lib/**/*.rb') + %w(LICENSE.txt README.md mailgunner.gemspec)
   s.required_ruby_version = '>= 2.5.0'
   s.add_development_dependency('rake', '~> 12')
   s.add_development_dependency('yard', '~> 0.9')
