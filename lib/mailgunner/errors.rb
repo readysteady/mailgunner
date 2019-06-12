@@ -2,6 +2,7 @@
 
 module Mailgunner
   class Error < StandardError
+    # @private
     def self.parse(response)
       exception_class = case response
         when Net::HTTPUnauthorized

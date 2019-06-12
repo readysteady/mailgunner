@@ -1,6 +1,7 @@
 require 'mail/check_delivery_params'
 
 module Mailgunner
+  # @private
   class DeliveryMethod
     attr_accessor :settings
 
