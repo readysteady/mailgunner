@@ -11,20 +11,20 @@ Ruby client for the [Mailgun API](https://documentation.mailgun.com/en/latest/ap
     $ gem install mailgunner
 
 
-## Quick start
+## Usage
 
 ```ruby
 require 'mailgunner'
 
-mailgun = Mailgunner::Client.new({
-  domain: 'samples.mailgun.org',
-  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0'
-})
+Mailgunner.configure do |config|
+  config.domain = 'samples.mailgun.org'
+  config.api_key = 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0'
+end
 
-response = mailgun.get_domains
+mailgun = Mailgunner::Client.new
 
-response['items'].each do |item|
-  p item.values_at('id', 'name')
+mailgun.get_domains.items.each do |item|
+  puts "#{item.id} #{item.name}"
 end
 ```
 
@@ -62,30 +62,12 @@ Outside of Rails you can set `ActionMailer::Base.delivery_method` directly.
 
 ## Specifying the region
 
-Mailgun offers both a US and EU region to send your e-mail from. Mailgunner uses
+Mailgun offers both a US and EU region to send your email from. Mailgunner uses
 the US region by default. If you wish to use the EU region set the `api_host`
 config option like so:
 
 ```ruby
-mailgun = Mailgunner::Client.new({
-  domain: 'eu.samples.mailgun.org',
-  api_key: 'key-3ax6xnjp29jd6fds4gc373sgvjxteol0',
-  api_host: 'api.eu.mailgun.net'
-})
-```
-
-
-## Email validation
-
-If you only need to use Mailgun's [email address validation service](http://documentation.mailgun.com/api-email-validation.html),
-you can instead use your Mailgun public key to authenticate like this:
-
-```ruby
-require 'mailgunner'
-
-public_key = 'pubkey-5ogiflzbnjrljiky49qxsiozqef5jxp7'
-
-mailgun = Mailgunner::Client.new(api_key: public_key)
-
-response = mailgun.validate_address('john@gmail.com')
+Mailgunner.configure do |config|
+  config.api_host = 'api.eu.mailgun.net'
+end
 ```
