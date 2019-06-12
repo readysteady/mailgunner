@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mailgunner
   class Struct
     def initialize(hash = nil)
@@ -28,6 +30,20 @@ module Mailgunner
       return @hash[name.to_s] if @hash.key?(name.to_s)
 
       super
+    end
+
+    def pretty_print(q)
+      q.object_address_group(self) do
+        q.seplist(@hash, lambda { q.text ',' }) do |key, value|
+          q.breakable
+          q.text key.to_s
+          q.text '='
+          q.group(1) {
+            q.breakable ''
+            q.pp value
+          }
+        end
+      end
     end
   end
 end
