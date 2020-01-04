@@ -12,13 +12,6 @@ Gem::Specification.new do |s|
   s.summary = 'Ruby client for the Mailgun API'
   s.files = Dir.glob('lib/**/*.rb') + %w(LICENSE.txt README.md mailgunner.gemspec)
   s.required_ruby_version = '>= 2.5.0'
-  s.add_development_dependency('rake', '~> 12')
-  s.add_development_dependency('yard', '~> 0.9')
-  s.add_development_dependency('redcarpet', '~> 3') unless RUBY_PLATFORM == 'java'
-  s.add_development_dependency('webmock', '~> 3')
-  s.add_development_dependency('mail', '~> 2')
-  s.add_development_dependency('actionmailer', '~> 5')
-  s.add_development_dependency('mocha', '~> 1')
   s.require_path = 'lib'
   s.metadata = {
     'homepage' => 'https://github.com/readysteady/mailgunner',
