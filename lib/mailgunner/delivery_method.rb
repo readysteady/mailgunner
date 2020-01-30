@@ -6,13 +6,14 @@ module Mailgunner
     attr_accessor :settings
 
     def initialize(values)
-      @client = Client.new(values)
+      self.settings = values
     end
 
     def deliver!(mail)
       check(mail)
 
-      @client.send_mime(mail)
+      client = Client.new(settings)
+      client.send_mime(mail)
     end
 
     private
