@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require 'minitest/global_expectations/autorun'
 require 'webmock/minitest'
 require 'mocha/minitest'
 require 'mailgunner'

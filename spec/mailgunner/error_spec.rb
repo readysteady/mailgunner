@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require 'minitest/global_expectations/autorun'
 require 'mailgunner'
 
 describe 'Mailgunner::Error' do
