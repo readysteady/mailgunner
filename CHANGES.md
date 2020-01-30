@@ -1,3 +1,7 @@
+# 3.1.0
+
+* Allow delivery method settings to be modified before delivery (#22)
+
 # 3.0.0
 
 * Changed required_ruby_version to >= 2.5.0
