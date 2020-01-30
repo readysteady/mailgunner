@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require 'webmock/minitest'
-require 'mocha/setup'
+require 'mocha/minitest'
 require 'mailgunner'
 require 'json'
 require 'mail'
