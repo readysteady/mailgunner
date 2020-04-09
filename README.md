@@ -1,6 +1,7 @@
 # mailgunner
 
-[![Gem Version](https://badge.fury.io/rb/mailgunner.svg)](https://badge.fury.io/rb/mailgunner) [![Build Status](https://api.travis-ci.org/readysteady/mailgunner.svg?branch=master)](https://travis-ci.org/readysteady/mailgunner)
+![Gem Version](https://badge.fury.io/rb/mailgunner.svg)
+![Build Status](https://github.com/readysteady/mailgunner/workflows/Test/badge.svg)
 
 
 Ruby client for the [Mailgun API](https://documentation.mailgun.com/en/latest/api_reference.html).
