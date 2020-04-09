@@ -12,7 +12,7 @@ module Mailgunner
     def deliver!(mail)
       check(mail)
 
-      client = Client.new(settings)
+      client = Client.new(**settings)
       client.send_mime(mail)
     end
 
