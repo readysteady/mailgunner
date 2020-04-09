@@ -1,3 +1,9 @@
+# 3.1.1
+
+* Fixed missing keyword argument in Mailgunner::Client#get_whitelists method
+
+* Fixed last argument as keyword parameters deprecation warning on Ruby 2.7
+
 # 3.1.0
 
 * Allow delivery method settings to be modified before delivery (#22)
