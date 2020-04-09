@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rake', '~> 12'
+gem 'rake'
 gem 'webmock', '~> 3'
 gem 'mail', '~> 2'
 gem 'actionmailer', '~> 5'
