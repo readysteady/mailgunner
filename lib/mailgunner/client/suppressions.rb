@@ -55,7 +55,7 @@ module Mailgunner
     end
 
     def get_whitelists(params = PARAMS)
-      get("/v3/#{escape @domain}/whitelists", params)
+      get("/v3/#{escape @domain}/whitelists", query: params)
     end
 
     def get_whitelist(address_or_domain)
