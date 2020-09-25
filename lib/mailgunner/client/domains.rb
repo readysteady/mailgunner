@@ -18,6 +18,10 @@ module Mailgunner
       delete("/v3/domains/#{escape name}")
     end
 
+    def verify_domain(name)
+      put("/v3/domains/#{escape name}/verify")
+    end
+
     def get_credentials
       get("/v3/domains/#{escape @domain}/credentials")
     end
