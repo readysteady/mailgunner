@@ -177,6 +177,14 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'verify_domain method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{domain}/verify")
+
+      client.verify_domain(domain).must_equal(response_struct)
+    end
+  end
+
   describe 'get_credentials method' do
     it 'returns a response struct' do
       stub(:get, "#{base_url}/v3/domains/#{domain}/credentials")
