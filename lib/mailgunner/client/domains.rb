@@ -69,5 +69,9 @@ module Mailgunner
     def update_dkim_selector(params = PARAMS)
       put("/v3/domains/#{escape @domain}/dkim_selector", params)
     end
+
+    def update_web_prefix(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/web_prefix", params)
+    end
   end
 end

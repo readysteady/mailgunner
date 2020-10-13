@@ -281,6 +281,14 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'update_web_prefix method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{domain}/web_prefix")
+
+      client.update_web_prefix(web_prefix: 'tracking.example.com').must_equal(response_struct)
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'returns a response struct' do
       stub(:get, "#{base_url}/v3/#{domain}/unsubscribes")
