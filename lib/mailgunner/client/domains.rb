@@ -65,5 +65,9 @@ module Mailgunner
     def update_dkim_authority(params = PARAMS)
       put("/v3/domains/#{escape @domain}/dkim_authority", params)
     end
+
+    def update_dkim_selector(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/dkim_selector", params)
+    end
   end
 end
