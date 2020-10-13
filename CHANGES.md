@@ -1,3 +1,13 @@
+# 3.2.0
+
+* Added update_web_prefix method
+
+* Added update_dkim_selector method
+
+* Added update_dkim_authority method
+
+* Added verify_domain method (#23)
+
 # 3.1.1
 
 * Fixed missing keyword argument in Mailgunner::Client#get_whitelists method
