@@ -61,5 +61,9 @@ module Mailgunner
     def update_unsubscribe_tracking_settings(params = PARAMS)
       put("/v3/domains/#{escape @domain}/tracking/unsubscribe", params)
     end
+
+    def update_dkim_authority(params = PARAMS)
+      put("/v3/domains/#{escape @domain}/dkim_authority", params)
+    end
   end
 end

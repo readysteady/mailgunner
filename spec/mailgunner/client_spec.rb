@@ -265,6 +265,14 @@ describe 'Mailgunner::Client' do
     end
   end
 
+  describe 'update_dkim_authority method' do
+    it 'returns a response struct' do
+      stub(:put, "#{base_url}/v3/domains/#{domain}/dkim_authority")
+
+      client.update_dkim_authority(self: true).must_equal(response_struct)
+    end
+  end
+
   describe 'get_unsubscribes method' do
     it 'returns a response struct' do
       stub(:get, "#{base_url}/v3/#{domain}/unsubscribes")
