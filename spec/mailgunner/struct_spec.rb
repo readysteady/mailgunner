@@ -1,29 +1,26 @@
-require 'minitest/global_expectations/autorun'
-require 'mailgunner'
+require 'spec_helper'
 
-describe 'Mailgunner::Struct' do
+RSpec.describe Mailgunner::Struct do
   let(:struct) { Mailgunner::Struct.new }
   let(:description) { 'This is a description' }
 
-  before do
-    struct['description'] = description
-  end
+  before { struct['description'] = description }
 
   it 'supports string key access' do
-    struct['description'].must_equal(description)
+    expect(struct['description']).to eq(description)
   end
 
   it 'supports symbol key access' do
-    struct[:description].must_equal(description)
+    expect(struct[:description]).to eq(description)
   end
 
   it 'supports method call access' do
-    struct.description.must_equal(description)
+    expect(struct.description).to eq(description)
   end
 
-  describe 'to_h method' do
+  describe '#to_h' do
     it 'returns the attribute hash' do
-      struct.to_h.must_equal('description' => description)
+      expect(struct.to_h).to eq('description' => description)
     end
   end
 end

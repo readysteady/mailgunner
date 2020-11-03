@@ -1,18 +1,6 @@
-require 'minitest/global_expectations/autorun'
-require 'webmock/minitest'
-require 'action_mailer'
-require 'mailgunner'
-require 'mailgunner/delivery_method'
+require 'spec_helper'
 
-class ExampleMailer < ActionMailer::Base
-  default from: 'testing@localhost'
-
-  def registration_confirmation(user)
-    mail to: user[:email], subject: 'Welcome!', body: 'Hello!'
-  end
-end
-
-describe 'Mailgunner::DeliveryMethod' do
+RSpec.describe Mailgunner::DeliveryMethod do
   let(:domain) { 'samples.mailgun.org' }
   let(:api_key) { 'api_key_xxx' }
   let(:address) { 'user@example.com' }
@@ -20,6 +8,14 @@ describe 'Mailgunner::DeliveryMethod' do
   before do
     ActionMailer::Base.delivery_method = :mailgun
     ActionMailer::Base.mailgun_settings = {api_key: api_key, domain: domain}
+  end
+
+  class ExampleMailer < ActionMailer::Base
+    default from: 'testing@localhost'
+
+    def registration_confirmation(user)
+      mail to: user[:email], subject: 'Welcome!', body: 'Hello!'
+    end
   end
 
   it 'delivers the mail to mailgun in mime format' do

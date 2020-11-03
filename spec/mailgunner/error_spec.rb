@@ -1,31 +1,35 @@
-require 'minitest/global_expectations/autorun'
-require 'mailgunner'
+require 'spec_helper'
 
-describe 'Mailgunner::Error' do
-  describe 'parse method' do
+RSpec.describe Mailgunner::Error do
+  describe '.parse' do
     it 'parses application/json messages' do
       error = Mailgunner::Error.parse(response(401, '{"message":"Unknown domain"}'))
-      error.message.must_equal('Unknown domain')
+
+      expect(error.message).to eq('Unknown domain')
     end
 
     it 'returns AuthenticationError for 401 responses' do
       error = Mailgunner::Error.parse(response(401))
-      error.must_be_instance_of(Mailgunner::AuthenticationError)
+
+      expect(error).to be_instance_of(Mailgunner::AuthenticationError)
     end
 
     it 'returns ClientError for 4xx responses' do
       error = Mailgunner::Error.parse(response(400))
-      error.must_be_instance_of(Mailgunner::ClientError)
+
+      expect(error).to be_instance_of(Mailgunner::ClientError)
     end
 
     it 'returns ServerError for 5xx responses' do
       error = Mailgunner::Error.parse(response(500))
-      error.must_be_instance_of(Mailgunner::ServerError)
+
+      expect(error).to be_instance_of(Mailgunner::ServerError)
     end
 
     it 'returns Error for other responses' do
       error = Mailgunner::Error.parse(response(100))
-      error.must_be_instance_of(Mailgunner::Error)
+
+      expect(error).to be_instance_of(Mailgunner::Error)
     end
   end
 

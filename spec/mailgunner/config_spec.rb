@@ -1,39 +1,39 @@
-require 'minitest/global_expectations/autorun'
-require 'mailgunner'
+require 'spec_helper'
 
-describe 'Mailgunner::Config' do
+RSpec.describe Mailgunner::Config do
   let(:config) { Mailgunner::Config.new }
-  let(:api_key) { 'api_key_xxx' }
 
-  describe 'domain method' do
+  describe '#domain' do
     it 'returns a default value' do
       ENV['MAILGUN_SMTP_LOGIN'] = 'postmaster@samples.mailgun.org'
 
-      config.domain.must_equal('samples.mailgun.org')
+      expect(config.domain).to eq('samples.mailgun.org')
 
       ENV.delete('MAILGUN_SMTP_LOGIN')
     end
   end
 
-  describe 'api_key method' do
+  describe '#api_key' do
+    let(:api_key) { 'api_key_xxx' }
+
     it 'returns a default value' do
       ENV['MAILGUN_API_KEY'] = api_key
 
-      config.api_key.must_equal(api_key)
+      expect(config.api_key).to eq(api_key)
 
       ENV.delete('MAILGUN_API_KEY')
     end
   end
 
-  describe 'api_host method' do
+  describe '#api_host' do
     it 'returns a default value' do
-      config.api_host.must_equal('api.mailgun.net')
+      expect(config.api_host).to eq('api.mailgun.net')
     end
   end
 
-  describe 'user_agent method' do
+  describe '#user_agent' do
     it 'returns a default value' do
-      config.user_agent.must_match(/\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/)
+      expect(config.user_agent).to match(/\ARuby\/\d+\.\d+\.\d+ Mailgunner\/\d+\.\d+\.\d+\z/)
     end
   end
 end
