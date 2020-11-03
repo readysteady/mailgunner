@@ -1,3 +1,7 @@
+# 3.2.1
+
+* Fixed outdated changelog_uri
+
 # 3.2.0
 
 * Added update_web_prefix method
