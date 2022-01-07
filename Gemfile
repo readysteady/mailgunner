@@ -11,3 +11,8 @@ gem 'yard', '~> 0.9'
 platforms :ruby do
   gem 'redcarpet', '~> 3'
 end
+
+# https://github.com/mikel/mail/pull/1439
+if Gem.ruby_version >= Gem::Version.new('3.1.0')
+  gem 'net-smtp'
+end
