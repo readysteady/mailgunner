@@ -1,7 +1,7 @@
 # mailgunner
 
 ![Gem Version](https://badge.fury.io/rb/mailgunner.svg)
-![Build Status](https://github.com/readysteady/mailgunner/workflows/Test/badge.svg)
+![Test Status](https://github.com/readysteady/mailgunner/actions/workflows/test.yml/badge.svg)
 
 
 Ruby client for the [Mailgun API](https://documentation.mailgun.com/en/latest/api_reference.html).
