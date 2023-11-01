@@ -1,3 +1,9 @@
+# 3.3.0
+
+* Fixed compatibility with rails/actionmailer 7.1 (#24)
+
+* Added support for Mail::SmtpEnvelope.new introduced in mail 2.8.0
+
 # 3.2.1
 
 * Fixed outdated changelog_uri
