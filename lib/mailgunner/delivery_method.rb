@@ -1,4 +1,8 @@
-require 'mail/check_delivery_params'
+begin
+  require 'mail/smtp_envelope'
+rescue LoadError
+  require 'mail/check_delivery_params'
+end
 
 module Mailgunner
   # @private
@@ -18,7 +22,11 @@ module Mailgunner
 
     private
 
-    if Mail::CheckDeliveryParams.respond_to?(:check) # mail v2.6.6+
+    if defined?(Mail::SmtpEnvelope) # mail v2.8.0+
+      def check(mail)
+        Mail::SmtpEnvelope.new(mail)
+      end
+    elsif Mail::CheckDeliveryParams.respond_to?(:check) # mail v2.6.6+
       def check(mail)
         Mail::CheckDeliveryParams.check(mail)
       end
