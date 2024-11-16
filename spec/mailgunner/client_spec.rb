@@ -315,6 +315,14 @@ RSpec.describe Mailgunner::Client do
     end
   end
 
+  describe '#delete_unsubscribes' do
+    it 'returns a response struct' do
+      stub(:delete, "#{base_url}/v3/#{domain}/unsubscribes")
+
+      expect(client.delete_unsubscribes).to eq(response_struct)
+    end
+  end
+
   describe '#add_unsubscribe' do
     it 'returns a response struct' do
       stub(:post, "#{base_url}/v3/#{domain}/unsubscribes", body: "address=#{encoded_address}")
@@ -358,6 +366,14 @@ RSpec.describe Mailgunner::Client do
       stub(:delete, "#{base_url}/v3/#{domain}/complaints/#{encoded_address}")
 
       expect(client.delete_complaint(address)).to eq(response_struct)
+    end
+  end
+
+  describe '#delete_complaints' do
+    it 'returns a response struct' do
+      stub(:delete, "#{base_url}/v3/#{domain}/complaints")
+
+      expect(client.delete_complaints).to eq(response_struct)
     end
   end
 

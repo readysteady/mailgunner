@@ -34,6 +34,10 @@ module Mailgunner
       delete("/v3/#{escape @domain}/unsubscribes/#{escape address_or_id}")
     end
 
+    def delete_unsubscribes
+      delete("/v3/#{escape @domain}/unsubscribes")
+    end
+
     def add_unsubscribe(attributes = ATTRIBUTES)
       post("/v3/#{escape @domain}/unsubscribes", attributes)
     end
@@ -52,6 +56,10 @@ module Mailgunner
 
     def delete_complaint(address)
       delete("/v3/#{escape @domain}/complaints/#{escape address}")
+    end
+
+    def delete_complaints
+      delete("/v3/#{escape @domain}/complaints")
     end
 
     def get_whitelists(params = PARAMS)
