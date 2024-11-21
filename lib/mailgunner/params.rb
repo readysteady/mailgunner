@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'cgi'
+require 'uri'
 
 module Mailgunner
   module Params
@@ -7,10 +7,8 @@ module Mailgunner
       params.flat_map { |k, vs| Array(vs).map { |v| "#{escape(k)}=#{escape(v)}" } }.join('&')
     end
 
-    def self.escape(component)
-      CGI.escape(component.to_s)
+    def self.escape(value)
+      URI.encode_uri_component(value)
     end
   end
-
-  private_constant :Params
 end
