@@ -1,3 +1,13 @@
+# 3.4.0
+
+* Added delete_unsubscribes method (#26)
+
+* Added delete_complaints method (#26)
+
+* Changed from cgi to uri for encoding query parameters
+
+* Added dependencies on net/http, json, and uri gems
+
 # 3.3.0
 
 * Fixed compatibility with rails/actionmailer 7.1 (#24)
