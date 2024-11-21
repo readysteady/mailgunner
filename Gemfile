@@ -6,7 +6,3 @@ gem 'webmock', '~> 3'
 gem 'mail', '~> 2'
 gem 'actionmailer', '~> 7'
 gem 'mocha', '~> 2'
-
-platforms :ruby do
-  gem 'redcarpet', '~> 3'
-end
