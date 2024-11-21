@@ -5,7 +5,6 @@ rescue LoadError
 end
 
 module Mailgunner
-  # @private
   class DeliveryMethod
     attr_accessor :settings
 
