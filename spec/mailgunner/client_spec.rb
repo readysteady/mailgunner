@@ -131,6 +131,22 @@ RSpec.describe Mailgunner::Client do
 
       client.send_mime(mail)
     end
+
+    it 'overrides recipients with smtp_envelope_to when present' do
+      mail.to = 'alice@example.com, john@example.com'
+      mail.cc = 'carol@example.com, eve@example.com'
+      mail.bcc = 'dave@example.com, frank@example.com'
+
+      mail.smtp_envelope_to = 'alice@example.com, carol@example.com, dave@example.com'
+
+      stub(:post, "#{base_url}/v3/#{domain}/messages.mime")
+
+      recipients = 'alice@example.com, carol@example.com, dave@example.com'
+
+      Net::HTTP::Post.any_instance.expects(:set_form).with(includes(['to', recipients]), 'multipart/form-data')
+
+      client.send_mime(mail)
+    end
   end
 
   describe '#delete_message' do
