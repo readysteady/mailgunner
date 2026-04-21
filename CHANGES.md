@@ -1,3 +1,13 @@
+# 4.0.0
+
+* Added openssl dependency
+
+* Changed to using #smtp_envelope_to in DeliveryMethod (#27)
+
+* Changed required_ruby_version to >= 3.3.0
+
+* Dropped support for mail < 2.8.0
+
 # 3.4.0
 
 * Added delete_unsubscribes method (#26)

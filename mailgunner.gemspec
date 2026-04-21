@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = 'Ruby client for the Mailgun API'
   s.summary = 'Ruby client for the Mailgun API'
   s.files = Dir.glob('lib/**/*.rb') + %w(CHANGES.md LICENSE.txt README.md mailgunner.gemspec)
-  s.required_ruby_version = '>= 2.5.0'
+  s.required_ruby_version = '>= 3.3.0'
   s.require_path = 'lib'
   s.metadata = {
     'homepage' => 'https://github.com/readysteady/mailgunner',
