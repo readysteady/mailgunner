@@ -1,8 +1,4 @@
-begin
-  require 'mail/smtp_envelope'
-rescue LoadError
-  require 'mail/check_delivery_params'
-end
+require 'mail/smtp_envelope'
 
 module Mailgunner
   class DeliveryMethod
@@ -13,28 +9,10 @@ module Mailgunner
     end
 
     def deliver!(mail)
-      check(mail)
+      envelope = Mail::SmtpEnvelope.new(mail)
 
       client = Client.new(**settings)
       client.send_mime(mail)
-    end
-
-    private
-
-    if defined?(Mail::SmtpEnvelope) # mail v2.8.0+
-      def check(mail)
-        Mail::SmtpEnvelope.new(mail)
-      end
-    elsif Mail::CheckDeliveryParams.respond_to?(:check) # mail v2.6.6+
-      def check(mail)
-        Mail::CheckDeliveryParams.check(mail)
-      end
-    else
-      include Mail::CheckDeliveryParams
-
-      def check(mail)
-        check_delivery_params(mail)
-      end
     end
   end
 

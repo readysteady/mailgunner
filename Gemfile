@@ -5,6 +5,6 @@ gemspec
 gem 'rspec-core', '~> 3'
 gem 'rspec-expectations', '~> 3'
 gem 'webmock', '~> 3'
-gem 'mail', '~> 2'
+gem 'mail', '~> 2', '>= 2.8.0'
 gem 'actionmailer', '~> 8'
 gem 'mocha', '~> 2'
